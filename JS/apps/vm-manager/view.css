@@ -1,0 +1,97 @@
+/* VM Manager — estilos convertidos do inline original (visuais idênticos). */
+.vm-wrap {
+  height: 100%;
+  overflow: auto;
+  padding: 18px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .03), transparent);
+}
+
+.vm-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.vm-kicker {
+  color: var(--dim);
+  font-size: .72rem;
+  text-transform: uppercase;
+}
+
+.vm-title {
+  margin: 4px 0 0;
+  color: #fff;
+}
+
+.vm-new {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--a), var(--a2));
+  color: white;
+  cursor: pointer;
+}
+
+.vm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.vm-card {
+  padding: 14px;
+  border: 1px solid rgba(255, 255, 255, .08);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, .05);
+}
+
+.vm-type {
+  margin-bottom: 6px;
+  color: var(--dim);
+  font-size: .78rem;
+}
+
+.vm-name {
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.vm-status {
+  margin-top: 8px;
+  color: var(--text-2);
+  font-size: .78rem;
+}
+
+.vm-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.vm-actions button {
+  padding: 7px 11px;
+  border: none;
+  border-radius: 999px;
+  color: white;
+  cursor: pointer;
+}
+
+.vm-snap {
+  background: rgba(96, 165, 250, .16);
+}
+
+.vm-restore {
+  background: rgba(34, 211, 238, .16);
+}
+
+.vm-empty {
+  grid-column: 1 / -1;
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, .08);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, .04);
+  color: var(--dim);
+}

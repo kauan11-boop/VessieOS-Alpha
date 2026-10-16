@@ -1,0 +1,34 @@
+// Exemplo G5 - Mini Sistema Operacional Web (VessieOS)
+boot;
+sistema info();
+var versao = 5;
+var memoria = 1_000_000;
+var mascara = 0xFF;
+escreva("VessieOS v" + versao + " mem=" + memoria + " mask=" + mascara);
+
+driver carregar("video");
+driver carregar("teclado");
+permissao conceder("admin", "arquivo");
+rede conectar("vessie-net");
+
+var pid1 = processo criar("explorer");
+var pid2 = processo criar("gamehub");
+processo listar();
+
+janela abrir("Explorer");
+janela abrir("GameHub");
+
+arquivo escrever("/boot/init.cfg", "boot=ok");
+escreva(arquivo ler("/boot/init.cfg"));
+arquivo listar();
+
+syscall chamar("tempo");
+
+tarefa "atualizador" {
+  escreva("segundo plano: verificando updates...");
+}
+
+janela fechar("GameHub");
+processo matar(pid2);
+processo listar();
+escreva("SO pronto!");

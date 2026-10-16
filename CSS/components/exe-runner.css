@@ -1,0 +1,147 @@
+/* Executor Windows (exe-runner): analisador PE, console emulado, GUI simulada */
+
+.vx-console {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  overflow: hidden;
+  background: #05070c;
+  color: #d6e2ff;
+  font-family: 'Cascadia Code', Consolas, monospace;
+  font-size: .8rem;
+}
+
+.vx-console-out {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 14px;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.vx-console-out .vx-dim { color: #5b6680; }
+.vx-console-out .vx-ok { color: #4ade80; }
+.vx-console-out .vx-warn { color: #fbbf24; }
+.vx-console-out .vx-err { color: #f87171; }
+.vx-console-out .vx-echo { color: #7dd3fc; }
+
+.vx-console-in {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-top: 1px solid rgba(255, 255, 255, .08);
+}
+
+.vx-prompt { color: #38bdf8; font-weight: 700; }
+
+.vx-input {
+  flex: 1;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: #fff;
+  font: inherit;
+}
+
+.vx-analyzer {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  overflow: hidden;
+  background: #10131b;
+  color: #eef2ff;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.vx-an-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 14px;
+  border-bottom: 1px solid #292f3b;
+}
+
+.vx-an-title { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.vx-an-title > div { display: grid; gap: 2px; min-width: 0; }
+.vx-an-title strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.vx-an-title small { color: #8d97a9; font-size: .72rem; }
+.vx-an-icon { font-size: 1.6rem; }
+
+.vx-an-actions { display: flex; gap: 8px; flex: 0 0 auto; }
+.vx-an-actions button {
+  padding: 7px 12px;
+  border: 1px solid #3c4657;
+  border-radius: 7px;
+  background: #222b3a;
+  color: #fff;
+  cursor: pointer;
+  font-size: .76rem;
+}
+.vx-an-actions button.primary { border-color: #38bdf8; background: #0c3550; font-weight: 700; }
+
+.vx-an-tabs { display: flex; gap: 2px; padding: 8px 14px 0; border-bottom: 1px solid #292f3b; }
+.vx-an-tabs button {
+  padding: 8px 14px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: #8d97a9;
+  cursor: pointer;
+  font-size: .78rem;
+}
+.vx-an-tabs button.ac { border-bottom-color: #38bdf8; color: #fff; }
+
+.vx-an-body { flex: 1; overflow: auto; padding: 14px; }
+.vx-an-foot { padding: 8px 14px; border-top: 1px solid #292f3b; color: #5b6680; font-size: .68rem; }
+
+.vx-kv { width: 100%; border-collapse: collapse; font-size: .8rem; }
+.vx-kv th, .vx-kv td { padding: 6px 8px; border-bottom: 1px solid rgba(255, 255, 255, .06); text-align: left; }
+.vx-kv th { width: 150px; color: #8d97a9; font-weight: 600; }
+.vx-kv td { overflow-wrap: anywhere; font-family: Consolas, monospace; }
+
+.vx-table { width: 100%; border-collapse: collapse; font-size: .74rem; font-family: Consolas, monospace; }
+.vx-table th, .vx-table td { padding: 6px 8px; border-bottom: 1px solid rgba(255, 255, 255, .06); text-align: left; }
+.vx-table th { color: #8d97a9; }
+
+.vx-imp { margin-bottom: 6px; border: 1px solid rgba(255, 255, 255, .08); border-radius: 7px; }
+.vx-imp summary { padding: 8px 10px; cursor: pointer; font-size: .8rem; font-weight: 600; }
+.vx-imp-list { display: flex; flex-wrap: wrap; gap: 4px; padding: 0 10px 10px; }
+.vx-imp-list code { padding: 2px 7px; border-radius: 5px; background: rgba(255, 255, 255, .06); font-size: .7rem; }
+.vx-imp-list code.vx-has-stub { border: 1px solid rgba(74, 222, 128, .4); background: rgba(74, 222, 128, .1); color: #4ade80; }
+
+.vx-strings {
+  margin: 0;
+  font: 11px/1.6 Consolas, monospace;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  color: #c4cede;
+}
+
+.vx-msgbox { display: flex; height: 100%; flex-direction: column; padding: 18px; gap: 16px; }
+.vx-msgbox-body { display: flex; flex: 1; align-items: flex-start; gap: 12px; }
+.vx-msgbox-icon { font-size: 2rem; }
+.vx-msgbox p { margin: 0; line-height: 1.5; }
+.vx-msgbox-actions { display: flex; justify-content: center; }
+.vx-msgbox-actions button {
+  min-width: 120px;
+  padding: 8px 16px;
+  border: 1px solid var(--hairline);
+  border-radius: 7px;
+  background: var(--a);
+  color: #fff;
+  cursor: pointer;
+}
+
+.vx-gui { display: flex; height: 100%; flex-direction: column; background: #f3f3f3; color: #1a1a1a; }
+.vx-gui-bar { display: flex; gap: 16px; padding: 6px 12px; background: #e5e5e5; font-size: .75rem; }
+.vx-gui-main { display: grid; flex: 1; place-items: center; gap: 8px; padding: 24px; text-align: center; }
+.vx-gui-icon { font-size: 3rem; }
+.vx-gui-main p { margin: 0; }
+.vx-gui-main .vx-dim { color: #666; font-size: .76rem; max-width: 340px; }
+.vx-gui-actions { display: flex; justify-content: flex-end; gap: 8px; padding: 10px 12px; border-top: 1px solid #d4d4d4; }
+.vx-gui-actions button { padding: 6px 14px; border: 1px solid #8a8a8a; border-radius: 4px; background: #fff; cursor: pointer; font-size: .78rem; }
+
+.vx-dim { color: #5b6680; font-size: .78rem; }

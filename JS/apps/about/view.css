@@ -1,0 +1,46 @@
+/* About — estilos extraídos do modelo inline (visuais idênticos). */
+.about-wrap {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 36px;
+  text-align: center;
+}
+
+.about-heart {
+  animation: pulse 2s ease infinite;
+  font-size: 5rem;
+}
+
+.about-title {
+  background: linear-gradient(135deg, var(--a), var(--a2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-size: 2rem;
+}
+
+.about-sub {
+  color: var(--dim);
+  font-size: .9rem;
+}
+
+.about-card {
+  width: 100%;
+  max-width: 360px;
+  padding: 20px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, .04);
+  color: #a0b0cc;
+  font-size: .85rem;
+  line-height: 2;
+  text-align: left;
+}
+
+.about-foot {
+  color: var(--dim);
+  font-size: .78rem;
+}

@@ -1,0 +1,4 @@
+.wrap { display:grid; grid-template-columns:220px 1fr; gap:12px; padding:12px; height:100%; }
+aside, section { min-height:0; } ul { list-style:none; margin:0; padding:0; overflow:auto; flex:1; border:1px solid var(--border); border-radius:var(--r-lg); }
+li { padding:8px 10px; cursor:pointer; border-bottom:1px solid var(--border); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; } li:hover, li.on { background:var(--surface-2); }
+textarea { flex:1; resize:none; line-height:1.55; font-family:var(--font-ui); font-size:14px; } #where { font-size:.72rem; margin:0; word-break:break-all; }

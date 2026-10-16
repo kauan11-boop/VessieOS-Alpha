@@ -1,0 +1,531 @@
+/*
+ * CSS/systems/micro-systems.css
+ * ------------------------------------------------------------------
+ * Regras visuais para os 155 micro-sistemas do SystemsRuntime
+ * (JS/kernel/modules/systems/), organizadas nas mesmas 10 categorias
+ * do registry. Cada classe aqui é alternada em <html> (ou em um
+ * elemento específico) pelo respectivo sistema em tempo real — nada
+ * neste arquivo é decorativo "morto"; toda classe tem uma
+ * contraparte funcional em JS.
+ *
+ * Também define a base visual do fundo 3D do Game Hub (Three.js) e
+ * dos widgets flutuantes (notas, pomodoro, HUD, etc.).
+ * ------------------------------------------------------------------
+ */
+
+/* ============================================================
+   VISUAL
+   ============================================================ */
+
+/* Modo CRT: leve curvatura + linhas de varredura */
+html.vsys-crt #desktop {
+  position: relative;
+}
+html.vsys-crt #desktop::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: var(--z-easter);
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.18) 0px,
+    rgba(0, 0, 0, 0.18) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  mix-blend-mode: multiply;
+}
+
+html.vsys-film-grain #desktop::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: var(--z-easter);
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: vsys-grain-shift 0.6s steps(4) infinite;
+}
+@keyframes vsys-grain-shift {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-2%, 1%); }
+}
+
+html.vsys-vignette #desktop::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: calc(var(--z-easter) - 1);
+  background: radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.55) 100%);
+}
+
+html.vsys-neon-boost {
+  --acc-glow: rgba(96, 165, 250, 0.75);
+  --acc-glow-2: rgba(167, 139, 250, 0.65);
+}
+
+html.vsys-colorblind-safe {
+  --tl-close: #ef4444;
+  --tl-max: #22c55e;
+}
+
+html.vsys-taskbar-blur-boost .taskbar {
+  backdrop-filter: blur(28px) saturate(1.4);
+}
+
+html.vsys-window-shadow-depth .window {
+  box-shadow: var(--shadow-win-deep) !important;
+}
+
+html.vsys-icon-glow .desktop-icon i,
+html.vsys-icon-glow .desktop-icon img {
+  filter: drop-shadow(0 0 8px var(--acc-glow));
+}
+
+html.vsys-animated-gradient-bg #desktop {
+  background-image: linear-gradient(120deg, #0a0a16, #171730, #0a0a16, #1a1030);
+  background-size: 300% 300%;
+  animation: vsys-gradient-shift 18s ease infinite;
+}
+@keyframes vsys-gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+html.vsys-holographic-shimmer .window,
+html.vsys-holographic-shimmer .glass-panel {
+  position: relative;
+  overflow: hidden;
+}
+html.vsys-holographic-shimmer .window::before {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  background: linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, 0.08) 50%, transparent 60%);
+  transform: translateX(-100%);
+  transition: transform 0.8s var(--ease);
+  pointer-events: none;
+}
+html.vsys-holographic-shimmer .window:hover::before {
+  transform: translateX(100%);
+}
+
+html.vsys-chromatic-aberration .window.active {
+  text-shadow: -1px 0 rgba(255, 0, 80, 0.35), 1px 0 rgba(0, 200, 255, 0.35);
+}
+
+.vsys-cursor-trail-dot {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--a2);
+  box-shadow: 0 0 8px var(--a2);
+  pointer-events: none;
+  z-index: var(--z-easter);
+  animation: vsys-trail-fade 0.6s ease-out forwards;
+  transform: translate(-50%, -50%);
+}
+@keyframes vsys-trail-fade {
+  to { opacity: 0; transform: translate(-50%, -50%) scale(0.3); }
+}
+
+.vsys-cursor-glow-ring {
+  position: fixed;
+  top: 0; left: 0;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--a2);
+  box-shadow: 0 0 16px var(--acc-glow-2);
+  pointer-events: none;
+  z-index: var(--z-easter);
+  transition: transform 0.08s linear;
+}
+
+.vsys-particles-canvas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ============================================================
+   PERFORMANCE
+   ============================================================ */
+
+html.vsys-low-power *,
+html.vsys-low-bandwidth * {
+  animation-duration: 0.001ms !important;
+  transition-duration: 0.001ms !important;
+}
+
+html.vsys-tab-hidden video {
+  filter: brightness(0.4);
+}
+
+html.vsys-anim-paused * {
+  animation-play-state: paused !important;
+}
+
+.vsys-offscreen {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 200px;
+}
+
+/* ============================================================
+   UX
+   ============================================================ */
+
+html.vsys-window-snap-enabled .window.dragging {
+  transition: box-shadow var(--motion-fast) var(--ease);
+}
+
+html.vsys-focus-mode .notification,
+html.vsys-focus-mode .vsys-widget:not(.vsys-pomodoro) {
+  display: none !important;
+}
+
+html {
+  /* Consumida por ux.ui-zoom-scale */
+  zoom: var(--vsys-ui-scale, 1);
+}
+
+html.vsys-multiselect-enabled .file-item.selected {
+  outline: 2px solid var(--a2);
+  outline-offset: -2px;
+}
+
+html.vsys-context-menu-enhanced .context-menu-item i {
+  width: 18px;
+  text-align: center;
+  color: var(--a2);
+}
+
+* {
+  transition-delay: var(--vsys-tooltip-delay, initial);
+}
+
+/* ============================================================
+   ACCESSIBILITY
+   ============================================================ */
+
+html.vsys-high-contrast {
+  --text: #ffffff;
+  --text-2: #ffffff;
+  --border: rgba(255, 255, 255, 0.4);
+  --border-strong: rgba(255, 255, 255, 0.7);
+  filter: contrast(1.25);
+}
+
+html.vsys-dyslexia-font,
+html.vsys-dyslexia-font * {
+  font-family: 'Comic Sans MS', 'Comic Sans', cursive, sans-serif !important;
+  letter-spacing: 0.02em;
+}
+
+html.vsys-underline-links a {
+  text-decoration: underline !important;
+}
+
+html.vsys-focus-outline-boost :focus-visible {
+  outline: 3px solid var(--a3) !important;
+  outline-offset: 3px !important;
+}
+
+html.vsys-cursor-large,
+html.vsys-cursor-large * {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Cpath d='M2 2 L2 26 L9 20 L14 30 L18 28 L13 18 L22 18 Z' fill='white' stroke='black'/%3E%3C/svg%3E") 2 2, auto !important;
+}
+
+html.vsys-text-spacing {
+  letter-spacing: 0.03em;
+  word-spacing: 0.08em;
+  line-height: 1.7;
+}
+
+html.vsys-reduce-motion *,
+html.vsys-reduce-motion *::before,
+html.vsys-reduce-motion *::after {
+  animation: none !important;
+  transition: none !important;
+}
+
+html {
+  font-size: calc(1rem * var(--vsys-font-scale, 1));
+}
+
+html.vsys-keyboard-nav :focus {
+  outline: 3px dashed var(--a3) !important;
+  outline-offset: 2px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+html.vsys-sticky-ctrl,
+html.vsys-sticky-shift,
+html.vsys-sticky-alt {
+  outline: 2px dotted var(--a2);
+  outline-offset: -2px;
+}
+
+/* ============================================================
+   SECURITY
+   ============================================================ */
+
+html.vsys-privacy-blur #desktop,
+html.vsys-privacy-blur .window {
+  filter: blur(20px);
+  transition: filter var(--motion-base) var(--ease);
+}
+
+/* ============================================================
+   NETWORK
+   ============================================================ */
+
+html.vsys-offline .taskbar::before {
+  content: '⚠ Offline';
+  position: absolute;
+  top: -22px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #f59e0b;
+  color: #1a1a1a;
+  font-size: var(--font-size-xs);
+  padding: 2px 10px;
+  border-radius: var(--r-sm);
+}
+
+/* ============================================================
+   GAMEHUB — fundo 3D em Three.js + bezel de jogo
+   ============================================================ */
+
+.st-content {
+  position: relative;
+}
+
+.st-3d-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  opacity: 0.55;
+  pointer-events: none;
+  border-radius: var(--r-lg);
+}
+html.vsys-gamehub-3d-disabled .st-3d-bg {
+  display: none;
+}
+
+.st-content .st-grid,
+.st-content .st-hero,
+.st-content .st-empty {
+  position: relative;
+  z-index: 1;
+}
+
+.gh-play-bezel {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  background: #05050a;
+}
+.gh-play-3d {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  opacity: 0.8;
+}
+
+.vsys-fps-overlay {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: var(--z-widget);
+  background: var(--acrylic-strong);
+  color: var(--a3);
+  font-family: monospace;
+  font-size: var(--font-size-sm);
+  padding: 4px 10px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border);
+  pointer-events: none;
+}
+
+/* ============================================================
+   WIDGETS FLUTUANTES (usados por productivity/diagnostics/ux)
+   ============================================================ */
+
+.vsys-widget {
+  position: fixed;
+  bottom: var(--space-5);
+  right: var(--space-5);
+  width: 280px;
+  max-height: 60vh;
+  background: var(--acrylic-strong);
+  backdrop-filter: blur(var(--vsys-frost-blur, 18px)) saturate(1.3);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-3);
+  z-index: var(--z-widget);
+  display: flex;
+  flex-direction: column;
+  color: var(--text);
+  font-size: var(--font-size-sm);
+  animation: vsys-widget-in var(--motion-slow) var(--ease);
+}
+@keyframes vsys-widget-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.vsys-widget-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--hairline);
+  font-weight: 600;
+}
+.vsys-widget-head i {
+  color: var(--a2);
+  margin-right: var(--space-2);
+}
+.vsys-widget-close {
+  background: none;
+  border: none;
+  color: var(--dim);
+  font-size: var(--font-size-lg);
+  cursor: pointer;
+  line-height: 1;
+}
+.vsys-widget-close:hover {
+  color: var(--text);
+}
+.vsys-widget-body {
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+.vsys-widget-body input,
+.vsys-widget-body select,
+.vsys-widget-body textarea {
+  width: 100%;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  color: var(--text);
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--space-2);
+}
+.vsys-sticky-notes textarea {
+  min-height: 140px;
+  resize: vertical;
+}
+.vsys-notes-input {
+  display: flex;
+  gap: var(--space-2);
+}
+.vsys-notes-input input { flex: 1; margin-bottom: 0; }
+.vsys-notes-input button,
+.vsys-task-list input,
+.vsys-pomodoro-toggle {
+  background: var(--a2);
+  color: #0a0a12;
+  border: none;
+  border-radius: var(--r-sm);
+  padding: var(--space-2) var(--space-3);
+  cursor: pointer;
+  font-weight: 600;
+}
+.vsys-note-item,
+.vsys-task-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--hairline);
+}
+.vsys-task-item .done {
+  text-decoration: line-through;
+  color: var(--muted);
+}
+.vsys-pomodoro-phase {
+  text-align: center;
+  color: var(--dim);
+  text-transform: uppercase;
+  font-size: var(--font-size-xs);
+  letter-spacing: 0.1em;
+}
+.vsys-pomodoro-time {
+  text-align: center;
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  margin: var(--space-2) 0;
+  color: var(--a3);
+}
+.vsys-pomodoro-toggle {
+  width: 100%;
+}
+.vsys-calc-result,
+.vsys-conv-result {
+  font-size: var(--font-size-lg);
+  color: var(--a3);
+  font-weight: 600;
+  margin-top: var(--space-2);
+}
+.vsys-cheatsheet ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.vsys-console-viewer .vsys-widget-body {
+  font-family: monospace;
+  font-size: var(--font-size-xs);
+  max-height: 40vh;
+}
+
+.vsys-perf-hud {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: var(--z-widget);
+  background: var(--acrylic-strong);
+  color: var(--a3);
+  font-family: monospace;
+  font-size: var(--font-size-xs);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border);
+  pointer-events: none;
+  line-height: 1.5;
+}
+
+/* Respeita a preferência nativa do sistema operacional além dos
+   toggles explícitos dos micro-sistemas */
+@media (prefers-reduced-motion: reduce) {
+  .vsys-particles-canvas,
+  .vsys-cursor-trail-dot,
+  .vsys-cursor-glow-ring {
+    display: none !important;
+  }
+}

@@ -1,0 +1,16 @@
+// Exemplo B1 - base simples (B1_Lang.js)
+var a = 10;
+var b = 20;
+escreva("Soma: " + (a + b));
+se (a > b) {
+  escreva("a maior");
+} senao {
+  escreva("b maior");
+}
+para (var i = 0; i < 5; i = i + 1) {
+  escreva("i = " + i);
+}
+funcao dobrar(x) {
+  retorne x * 2;
+}
+escreva("dobro de 21 = " + dobrar(21));

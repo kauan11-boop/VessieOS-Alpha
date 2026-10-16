@@ -1,0 +1,33 @@
+/* Dashboard — estilos convertidos do inline original (visuais idênticos). */
+.dash-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.dash-title {
+  color: var(--text);
+  font-size: 1.05rem;
+}
+
+.dash-filter {
+  width: 160px;
+  padding: 4px 12px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, .06);
+  color: white;
+  font-size: .78rem;
+  outline: none;
+}
+
+.dash-viewbtn {
+  padding: 3px 10px;
+  border: none;
+  border-radius: 20px;
+  background: rgba(126, 182, 255, .12);
+  color: var(--a2);
+  cursor: pointer;
+  font-size: .75rem;
+}

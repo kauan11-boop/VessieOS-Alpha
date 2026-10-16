@@ -1,0 +1,24 @@
+// app_lista.vl - Lista de tarefas (FULL: func + storage + json + string)
+import "storage" as store;
+var tarefas = [];
+func carregar() {
+  var dados = storage.get("tarefas");
+  se (dados != nulo) { tarefas = json.parse(dados); }
+}
+func salvar() { storage.set("tarefas", json.stringify(tarefas)); }
+func adicionar(texto) {
+  se (string.length(texto) > 0) {
+    tarefas = empurrar(tarefas, texto);
+    salvar();
+    system.print("adicionado: " + texto);
+  }
+}
+func principal() {
+  carregar();
+  adicionar("estudar VessieLang");
+  adicionar("jogar demo (+25 XP)");
+  system.print("total=" + tamanho(tarefas));
+  gui.notify("Lista", "tarefas salvas", "info");
+}
+principal();
+

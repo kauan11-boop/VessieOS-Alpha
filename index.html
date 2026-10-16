@@ -1,2107 +1,258 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VessieLang OS 2.0</title>
-<style>
-/* ============ BASE ============ */
-*{margin:0;padding:0;box-sizing:border-box}
-:root{
-  --accent:#7c6cff; --accent2:#4cc9f0; --ok:#4ade80; --warn:#fbbf24; --danger:#ff5c5c;
-  --taskbar-bg:rgba(12,12,26,.82); --win-bg:#161622; --win-header:#1e1e30;
-  --text:#e8e8f2; --dim:#9a9ab5; --border:#2a2a44; --field:#0e0e1a;
-  --hover:rgba(255,255,255,.07); --term-bg:#0a0a14;
-}
-body.theme-light{
-  --taskbar-bg:rgba(246,247,252,.86); --win-bg:#ffffff; --win-header:#eef0f6;
-  --text:#191a2e; --dim:#5d5e78; --border:#d5d7e6; --field:#f3f4fa;
-  --hover:rgba(20,20,60,.06); --term-bg:#101225;
-}
-html,body{height:100%;overflow:hidden}
-body{font-family:'Segoe UI',system-ui,sans-serif;background:#000;color:var(--text);user-select:none}
-input,textarea{user-select:text;font-family:inherit;color:var(--text)}
-button{font-family:inherit;color:inherit;background:none;border:none;cursor:pointer}
-::-webkit-scrollbar{width:9px;height:9px}
-::-webkit-scrollbar-thumb{background:#3a3a5a;border-radius:6px}
-body.theme-light ::-webkit-scrollbar-thumb{background:#b9bcd0}
-
-/* ============ LOGIN ============ */
-#loginScreen{position:fixed;inset:0;z-index:8000;display:flex;align-items:center;justify-content:center;
-  background:radial-gradient(1000px 600px at 70% 20%,#31307a 0%,#151530 45%,#07070f 100%);transition:opacity .45s}
-#loginScreen.fade{opacity:0;pointer-events:none}
-#loginBox{width:340px;padding:38px 32px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);
-  border-radius:18px;backdrop-filter:blur(14px);text-align:center;animation:floatIn .5s ease}
-@keyframes floatIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
-#loginBox h1{font-size:30px;font-weight:600;letter-spacing:1px}
-#loginBox .sub{color:#a9a9d0;font-size:12px;margin:4px 0 26px;letter-spacing:3px;text-transform:uppercase}
-#loginBox input{width:100%;padding:11px 14px;margin-bottom:12px;background:rgba(0,0,0,.35);
-  border:1px solid rgba(255,255,255,.14);border-radius:9px;color:#fff;outline:none;font-size:14px}
-#loginBox input:focus{border-color:var(--accent)}
-.login-btn{width:100%;padding:12px;margin-top:6px;background:linear-gradient(135deg,var(--accent),#9d6cff);
-  border-radius:9px;color:#fff;font-size:15px;font-weight:600}
-.login-btn:hover{filter:brightness(1.15)}.login-btn:active{transform:scale(.97)}
-#loginError{min-height:18px;margin-top:12px;color:#ff8080;font-size:13px}
-.login-hint{margin-top:14px;color:#7777a8;font-size:12px}
-#loginBox.shake{animation:shake .4s}
-@keyframes shake{0%,100%{transform:none}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
-
-/* ============ BOOT / POWER ============ */
-#bootScreen{position:fixed;inset:0;z-index:9000;background:#05050c;display:none;flex-direction:column;
-  align-items:center;justify-content:center;gap:26px}
-.boot-logo{font-size:74px;color:var(--accent);animation:pulse 1.2s infinite}
-@keyframes pulse{0%,100%{opacity:.55;transform:scale(.97)}50%{opacity:1;transform:scale(1)}}
-#bootLog{font:12.5px/1.9 Consolas,monospace;color:#8f8fce;min-height:130px;width:470px;max-width:92vw}
-#bootLog .ok{color:var(--ok)}
-#powerScreen{position:fixed;inset:0;z-index:9500;background:#000;display:none;flex-direction:column;
-  align-items:center;justify-content:center;gap:24px;color:#ddd;text-align:center}
-#powerScreen .pw-icon{font-size:60px;opacity:.85}
-#powerScreen p{color:#888;font-size:14px}
-#powerOn{padding:11px 26px;border:1px solid #444;border-radius:10px;color:#fff;font-size:14px}
-#powerOn:hover{border-color:var(--accent);color:var(--accent)}
-
-/* ============ DESKTOP ============ */
-#desktop{position:fixed;inset:0;display:none}
-#desktop.ready{display:block;animation:fadeIn .5s}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-#desktopIcons{position:absolute;top:14px;left:14px;bottom:62px;display:flex;flex-direction:column;
-  flex-wrap:wrap;align-content:flex-start;gap:6px;z-index:1}
-.dicon{width:86px;padding:10px 4px;border-radius:10px;text-align:center;cursor:pointer;border:1px solid transparent}
-.dicon:hover{background:var(--hover);border-color:var(--border)}
-.dicon:active{transform:scale(.95)}
-.dicon-icon{font-size:36px;line-height:1.15;filter:drop-shadow(0 3px 6px rgba(0,0,0,.5))}
-.dicon-label{margin-top:5px;font-size:11.5px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.9);word-break:break-word}
-
-/* ============ TASKBAR ============ */
-#taskbar{position:absolute;left:0;right:0;bottom:0;height:48px;z-index:2000;display:flex;align-items:center;
-  gap:8px;padding:0 10px;background:var(--taskbar-bg);backdrop-filter:blur(16px);border-top:1px solid var(--border)}
-#startBtn{width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,var(--accent),#9d6cff);
-  display:flex;align-items:center;justify-content:center}
-#startBtn svg{width:19px;height:19px;fill:#fff}
-#startBtn:hover{filter:brightness(1.15)}
-#taskbarApps{display:flex;gap:6px;flex:1;overflow-x:auto}
-.task-app{height:34px;min-width:38px;padding:0 10px;border-radius:8px;font-size:17px;display:flex;
-  align-items:center;gap:6px;position:relative}
-.task-app:hover,.task-app.active{background:var(--hover)}
-.task-app.active::after{content:'';position:absolute;left:10px;right:10px;bottom:3px;height:2.5px;
-  border-radius:2px;background:var(--accent)}
-#taskbarRight{display:flex;align-items:center}
-#taskbarClock{font-size:13px;padding:6px 11px;border-radius:8px;cursor:pointer;text-align:center;line-height:1.25}
-#taskbarClock:hover{background:var(--hover)}
-#taskbarClock .d{display:block;font-size:10.5px;color:var(--dim)}
-
-/* ============ START MENU ============ */
-#startMenu{position:absolute;left:8px;bottom:56px;width:440px;max-width:calc(100vw - 16px);z-index:3000;
-  background:rgba(20,20,36,.93);backdrop-filter:blur(18px);border:1px solid var(--border);border-radius:14px;
-  padding:14px;opacity:0;transform:translateY(14px) scale(.98);pointer-events:none;transition:.18s}
-body.theme-light #startMenu{background:rgba(250,250,255,.95)}
-#startMenu.open{opacity:1;transform:none;pointer-events:auto}
-#startMenuSearch{width:100%;padding:10px 14px;background:var(--field);border:1px solid var(--border);
-  border-radius:9px;outline:none;font-size:13.5px;margin-bottom:12px}
-#startMenuSearch:focus{border-color:var(--accent)}
-#startMenuContent{display:flex;gap:12px;height:300px}
-#startMenuLeft{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:3px;padding-right:4px}
-.sm-app{display:flex;align-items:center;gap:11px;padding:9px 10px;border-radius:9px;cursor:pointer;font-size:13.5px}
-.sm-app:hover{background:var(--hover)}
-.sm-icon{font-size:19px;width:24px;text-align:center}
-#startMenuRight{width:130px;display:flex;flex-direction:column;border-left:1px solid var(--border);padding-left:12px}
-#startMenuRight .spacer{flex:1}
-.start-power-btn{display:flex;align-items:center;gap:9px;padding:9px 8px;border-radius:8px;cursor:pointer;font-size:13px}
-.start-power-btn:hover{background:var(--hover)}
-.start-power-btn .icon{font-size:15px;width:18px;text-align:center}
-.sm-empty{color:var(--dim);font-size:13px;text-align:center;margin-top:30px}
-
-/* ============ JANELAS ============ */
-#windowsLayer{position:absolute;inset:0 0 48px 0;z-index:5;pointer-events:none}
-.window{position:absolute;pointer-events:auto;display:flex;flex-direction:column;background:var(--win-bg);
-  border:1px solid var(--border);border-radius:12px;box-shadow:0 18px 48px rgba(0,0,0,.5);
-  overflow:hidden;animation:winIn .16s ease;min-width:300px;min-height:180px}
-@keyframes winIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:none}}
-.window.focused{box-shadow:0 22px 60px rgba(0,0,0,.65);border-color:#3d3d66}
-.win-header{height:38px;flex:none;display:flex;align-items:center;gap:9px;padding:0 6px 0 13px;
-  background:var(--win-header);border-bottom:1px solid var(--border);touch-action:none}
-.window.focused .win-header{box-shadow:inset 0 2px 0 var(--accent)}
-.win-icon{font-size:15px}
-.win-title{flex:1;font-size:12.5px;font-weight:600;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.window.focused .win-title{color:var(--text)}
-.win-controls{display:flex;gap:2px}
-.wc-btn{width:34px;height:30px;border-radius:7px;font-size:12px;color:var(--dim);
-  display:flex;align-items:center;justify-content:center}
-.wc-btn:hover{background:var(--hover);color:var(--text)}
-.wc-close:hover{background:var(--danger);color:#fff}
-.win-body{flex:1;overflow:auto;position:relative;display:flex;flex-direction:column}
-.win-resize{position:absolute;right:0;bottom:0;width:17px;height:17px;cursor:nwse-resize;touch-action:none;z-index:5}
-.win-resize::after{content:'';position:absolute;right:4px;bottom:4px;width:8px;height:8px;
-  border-right:2px solid var(--dim);border-bottom:2px solid var(--dim);opacity:.6}
-.window.max{left:0!important;top:0!important;width:100%!important;height:100%!important;border-radius:0;border:none}
-.window.max .win-resize{display:none}
-.fx-list,.term-out,.vs-console,.ed-text,.pt-wrap,.sk-wrap,.vs-main{min-height:0}
-
-/* ============ CONTEXT MENU / NOTIFICAÇÕES ============ */
-#ctxMenu{position:fixed;z-index:4000;min-width:210px;background:rgba(24,24,40,.96);border:1px solid var(--border);
-  border-radius:10px;padding:6px;display:none;backdrop-filter:blur(12px);box-shadow:0 12px 34px rgba(0,0,0,.5)}
-body.theme-light #ctxMenu{background:rgba(250,250,255,.97)}
-#ctxMenu.open{display:block}
-.ctx-item{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:7px;font-size:13px;cursor:pointer}
-.ctx-item:hover{background:var(--hover)}
-.ctx-sep{height:1px;background:var(--border);margin:5px 4px}
-#notifications{position:fixed;top:14px;right:14px;z-index:5000;display:flex;flex-direction:column;gap:9px;
-  width:320px;max-width:calc(100vw - 28px)}
-.notification{display:flex;gap:12px;padding:13px 15px;background:rgba(22,22,38,.95);border:1px solid var(--border);
-  border-left:3px solid var(--accent);border-radius:11px;backdrop-filter:blur(12px);
-  box-shadow:0 10px 30px rgba(0,0,0,.45);transform:translateX(120%);
-  transition:transform .3s cubic-bezier(.2,.9,.3,1.2)}
-body.theme-light .notification{background:rgba(255,255,255,.97)}
-.notification.show{transform:none}
-.nt-icon{font-size:21px}
-.nt-title{font-size:13px;font-weight:600}
-.nt-msg{font-size:12px;color:var(--dim);margin-top:2px}
-
-/* ============ COMPONENTES DE APPS ============ */
-.term{flex:1;display:flex;flex-direction:column;background:var(--term-bg);
-  font:13px/1.55 Consolas,'Courier New',monospace}
-.term-out{flex:1;overflow-y:auto;padding:12px 14px;color:#cfd0ea;user-select:text}
-.term-out div{white-space:pre-wrap;word-break:break-word}
-.t-dim{color:#7a7aa5}.t-ok{color:#5eea8d}.t-err{color:#ff7b7b}.t-acc{color:#a48bff}.t-warn{color:#ffd479}
-.term-line{display:flex;align-items:center;gap:8px;padding:9px 14px;border-top:1px solid rgba(255,255,255,.07)}
-.term-prompt{color:#5eea8d;white-space:nowrap;font-size:12.5px}
-.term-in{flex:1;background:none;border:none;outline:none;color:#eef;font:inherit}
-
-.ed-toolbar,.fx-toolbar,.vs-toolbar,.pt-toolbar{flex:none;display:flex;align-items:center;gap:7px;
-  padding:8px 10px;border-bottom:1px solid var(--border);flex-wrap:wrap}
-.abtn{padding:6.5px 12px;background:var(--field);border:1px solid var(--border);border-radius:7px;
-  font-size:12px;color:var(--text);transition:.15s}
-.abtn:hover{border-color:var(--accent);background:var(--hover)}
-.abtn.primary{background:linear-gradient(135deg,var(--accent),#9d6cff);color:#fff;border:none}
-.abtn.danger{color:#fff;background:var(--danger);border-color:var(--danger)}
-.abtn.danger:hover{filter:brightness(1.1)}
-select.abtn{outline:none}
-.ed-name{font-size:12px;color:var(--dim);margin-left:auto}
-.ed-text{flex:1;width:100%;background:var(--field);border:none;outline:none;resize:none;padding:13px 15px;
-  font:13.5px/1.6 Consolas,monospace;color:var(--text)}
-.ed-status{flex:none;padding:6px 12px;font-size:11px;color:var(--dim);border-top:1px solid var(--border);text-align:right}
-
-.fx-path{flex:1;min-width:120px;font:12px Consolas,monospace;color:var(--dim);background:var(--field);
-  border:1px solid var(--border);border-radius:7px;padding:7px 10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.fx-btn{padding:6px 9px;border-radius:7px;border:1px solid var(--border);background:var(--field);font-size:12.5px}
-.fx-btn:hover{background:var(--hover);border-color:var(--accent)}
-.fx-list{flex:1;overflow-y:auto;padding:6px}
-.fx-row{display:flex;align-items:center;gap:11px;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:13px}
-.fx-row:hover{background:var(--hover)}
-.fx-row.sel{background:rgba(124,108,255,.18)}
-.fx-ic{width:22px;text-align:center;font-size:16px}
-.fx-name{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.fx-meta{font-size:11px;color:var(--dim)}
-.fx-status{flex:none;padding:6px 12px;border-top:1px solid var(--border);font-size:11px;color:var(--dim)}
-.fx-empty{padding:30px;text-align:center;color:var(--dim);font-size:13px;width:100%}
-
-.vs-run{padding:7px 16px;background:linear-gradient(135deg,#34d399,#0ea5a0);border-radius:7px;
-  color:#04241c;font-weight:700;font-size:12.5px}
-.vs-run:hover{filter:brightness(1.1)}
-.vs-main{flex:1;display:flex}
-.vs-code{flex:1.15;background:var(--field);border:none;outline:none;resize:none;padding:13px;
-  font:13px/1.6 Consolas,monospace;color:var(--text);border-right:1px solid var(--border)}
-.vs-console-wrap{flex:1;display:flex;flex-direction:column}
-.vs-console-title{flex:none;padding:7px 12px;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;
-  color:var(--dim);border-bottom:1px solid var(--border)}
-.vs-console{flex:1;overflow-y:auto;padding:11px 13px;background:var(--term-bg);
-  font:12.5px/1.7 Consolas,monospace;color:#cfd0ea;user-select:text}
-.vs-console div{white-space:pre-wrap;word-break:break-word}
-.vs-err{color:#ff7b7b}.vs-ok{color:#5eea8d}
-.vs-docs{position:absolute;inset:0;background:var(--win-bg);z-index:10;overflow-y:auto;padding:18px 22px;display:none}
-.vs-docs.open{display:block}
-.vs-docs h3{margin:14px 0 7px;font-size:14px;color:var(--accent2)}
-.vs-docs pre{background:var(--field);border:1px solid var(--border);border-radius:8px;padding:11px 13px;
-  font:12.5px/1.65 Consolas,monospace;overflow-x:auto;user-select:text}
-
-.calc{flex:1;display:flex;flex-direction:column;padding:12px;gap:11px}
-.calc-display{background:var(--field);border:1px solid var(--border);border-radius:10px;padding:14px 15px;
-  text-align:right;overflow-x:auto}
-.calc-expr{font:13px Consolas,monospace;color:var(--dim);min-height:17px;word-break:break-all}
-.calc-result{font-size:30px;font-weight:600;white-space:nowrap}
-.calc-grid{flex:1;display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.calc-grid button{border-radius:9px;background:var(--field);border:1px solid var(--border);font-size:17px}
-.calc-grid button:hover{border-color:var(--accent)}
-.calc-grid button:active{transform:scale(.94)}
-.calc-grid .op{color:var(--accent2)}
-.calc-grid .danger{color:var(--danger)}
-.calc-grid .eq{grid-column:1/-1;background:linear-gradient(135deg,var(--accent),#9d6cff);color:#fff;
-  font-weight:700;border:none}
-
-.pt-color{width:34px;height:30px;border:1px solid var(--border);border-radius:7px;background:none;padding:2px;cursor:pointer}
-.pt-size{width:110px;accent-color:var(--accent)}
-.pt-mode.active{border-color:var(--accent);background:rgba(124,108,255,.15)}
-.pt-wrap{flex:1;overflow:hidden;background:#202036;display:flex;align-items:center;justify-content:center}
-.pt-canvas{background:#fff;max-width:100%;max-height:100%;border-radius:4px;
-  box-shadow:0 6px 22px rgba(0,0,0,.4);touch-action:none;cursor:crosshair}
-
-.set-wrap{padding:16px 18px;display:flex;flex-direction:column;gap:20px;overflow-y:auto}
-.set-sec h4{font-size:12px;letter-spacing:1.4px;text-transform:uppercase;color:var(--dim);margin-bottom:10px}
-.set-row{display:flex;align-items:center;gap:10px;margin-bottom:9px;font-size:13px;flex-wrap:wrap}
-.wp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
-.wp-item{height:52px;border-radius:9px;border:2px solid transparent;cursor:pointer;transition:.15s}
-.wp-item:hover{transform:scale(1.04)}
-.wp-item.sel{border-color:var(--accent)}
-.set-input{padding:8px 11px;background:var(--field);border:1px solid var(--border);border-radius:7px;
-  outline:none;font-size:12.5px;width:150px}
-.set-input:focus{border-color:var(--accent)}
-.switch{position:relative;width:40px;height:22px;appearance:none;background:var(--field);
-  border:1px solid var(--border);border-radius:20px;cursor:pointer;transition:.2s;outline:none;flex:none}
-.switch:checked{background:var(--accent);border-color:var(--accent)}
-.switch::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;
-  background:#fff;transition:.2s}
-.switch:checked::after{left:20px}
-
-.tm-wrap{padding:14px 16px;display:flex;flex-direction:column;gap:12px;overflow-y:auto}
-.tm-stat{margin-bottom:10px}
-.tm-stat label{font-size:11.5px;color:var(--dim);display:flex;justify-content:space-between}
-.tm-bar{height:9px;background:var(--field);border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-top:5px}
-.tm-fill{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--accent),var(--accent2));
-  transition:width .5s;width:0}
-.tm-sub{font-size:12px;color:var(--dim);margin-bottom:4px}
-.tm-row{display:flex;align-items:center;gap:11px;padding:8px 4px;border-bottom:1px solid var(--border);font-size:13px}
-.tm-row:last-child{border:none}
-.tm-row .fx-name{flex:1}
-.tm-kill{padding:4px 11px;font-size:11.5px;background:rgba(255,92,92,.12);color:var(--danger);
-  border:1px solid rgba(255,92,92,.4);border-radius:6px}
-.tm-kill:hover{background:var(--danger);color:#fff}
-
-.cal-wrap{padding:14px 16px;display:flex;flex-direction:column;gap:12px;height:100%}
-.cal-head{display:flex;align-items:center;justify-content:space-between}
-.cal-head b{font-size:14.5px;text-transform:capitalize}
-.cal-nav{width:30px;height:30px;border-radius:8px;border:1px solid var(--border);background:var(--field);font-size:15px}
-.cal-nav:hover{border-color:var(--accent)}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;text-align:center}
-.cal-dow{font-size:10.5px;color:var(--dim);padding:5px 0;font-weight:600}
-.cal-day{font-size:12.5px;padding:8px 0;border-radius:8px}
-.cal-day.other{opacity:.2}
-.cal-day.today{background:var(--accent);color:#fff;font-weight:700}
-.cal-foot{margin-top:auto;text-align:center;font-size:12px;color:var(--dim);padding:9px;
-  background:var(--field);border-radius:9px;text-transform:capitalize}
-
-.sk-top{flex:none;display:flex;align-items:center;gap:14px;padding:10px 13px;
-  border-bottom:1px solid var(--border);font-size:13px}
-.sk-wrap{flex:1;position:relative;display:flex;align-items:center;justify-content:center;background:#0d0d1c}
-.sk-canvas{max-width:100%;max-height:100%;border-radius:6px}
-.sk-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-  background:rgba(5,5,14,.72);color:#fff;font-size:16px;font-weight:600;text-align:center;padding:20px;line-height:1.7}
-.sk-hint{flex:none;padding:8px;text-align:center;font-size:11.5px;color:var(--dim)}
-
-.ck-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:16px}
-.ck-time{font-size:52px;font-weight:200;letter-spacing:3px;font-variant-numeric:tabular-nums}
-.ck-date{color:var(--dim);font-size:13.5px;text-transform:capitalize}
-.ck-sep{width:70%;height:1px;background:var(--border);margin:14px 0}
-.ck-sw{font:30px Consolas,monospace;font-variant-numeric:tabular-nums}
-.ck-btns{display:flex;gap:9px}
-
-.ab-wrap{padding:22px 26px;text-align:center;overflow-y:auto}
-.ab-logo{font-size:52px;color:var(--accent)}
-.ab-wrap h2{margin-top:6px;font-size:20px}
-.ab-ver{color:var(--dim);font-size:12.5px;margin:3px 0 16px}
-.ab-grid{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;text-align:left;font-size:12.5px;
-  background:var(--field);border:1px solid var(--border);border-radius:11px;padding:14px 17px}
-.ab-grid b{color:var(--dim);font-weight:600}
-.ab-msg{margin-top:16px;font-size:13px;line-height:1.7;color:var(--dim)}
-.iv-wrap{flex:1;display:flex;align-items:center;justify-content:center;background:#101020}
-.iv-wrap img{max-width:96%;max-height:96%;border-radius:6px;box-shadow:0 8px 30px rgba(0,0,0,.5)}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>VessieOS · Windows 11 Ultra</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="./CSS/systems/desktop/main.css">
+  <!-- Three.js: motor gráfico usado por Vessie3DProEngine, pelos jogos com renderização 3D
+       e pelo novo fundo do Game Hub. Antes desta correção, NENHUM HTML do projeto carregava
+       o Three.js — os motores gráficos existentes dependiam de `window.THREE`, que nunca
+       existia, e por isso nunca chegavam a renderizar nada. -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 </head>
+
 <body>
 
-  <script type="module" src="js\lang/index.js"></script>
-
-<!-- TELA DE LOGIN -->
-<div id="loginScreen">
-  <div id="loginBox">
-    <h1>⧩ VessieLang</h1>
-    <div class="sub">Sistema Operacional Web</div>
-    <input id="loginUser" type="text" placeholder="Usuário" value="admin" autocomplete="off">
-    <input id="loginPass" type="password" placeholder="Senha" value="admin">
-    <button class="login-btn" id="loginBtn">Entrar</button>
-    <div id="loginError"></div>
-    <div class="login-hint">Padrão: admin / admin</div>
+  <!-- BOOT SCREEN -->
+  <div id="boot" class="boot-screen" role="status" aria-busy="true" aria-label="Inicializando o sistema">
+    <h1 class="boot-logo">VessieOS</h1>
+    <p class="boot-sub">VessieOS Version 1.0.3 <span aria-hidden="true">*</span></p>
+    <div class="boot-spin" aria-hidden="true"></div>
+    <span class="sr-only">Carregando sistema operacional, por favor aguarde.</span>
   </div>
-</div>
 
-<!-- TELA DE BOOT -->
-<div id="bootScreen">
-  <div class="boot-logo">⧩</div>
-  <div id="bootLog"></div>
-</div>
-
-<!-- TELA DE DESLIGAMENTO -->
-<div id="powerScreen">
-  <div class="pw-icon">⏻</div>
-  <p>É seguro desligar o seu dispositivo.</p>
-  <button id="powerOn">⏻ Ligar</button>
-</div>
-
-<!-- DESKTOP -->
-<div id="desktop">
-  <div id="desktopIcons"></div>
-  <div id="windowsLayer"></div>
-  <div id="ctxMenu"></div>
-  <div id="startMenu">
-    <input id="startMenuSearch" type="text" placeholder="Pesquisar aplicativos...">
-    <div id="startMenuContent">
-      <div id="startMenuLeft"></div>
-      <div id="startMenuRight">
-        <div class="spacer"></div>
-        <div class="start-power-btn" data-action="shutdown"><span class="icon">⏻</span> Desligar</div>
-        <div class="start-power-btn" data-action="reboot"><span class="icon">⟳</span> Reiniciar</div>
-        <div class="start-power-btn" data-action="logout"><span class="icon">⇤</span> Sair</div>
+  <!-- Tela de bloqueio com wallpaper e painel de entrada por interação. -->
+  <section id="login" class="login-screen" style="display:none" aria-label="Boas-vindas do VessieOS">
+    <div class="login-wallpaper" id="login-wallpaper" aria-hidden="true"></div>
+    <div class="lc login-content">
+      <button class="l-av" id="login-avatar" type="button" title="Escolher foto de perfil" aria-label="Escolher foto de perfil">
+        <img id="login-avatar-photo" alt="" hidden>
+        <i class="fas fa-user" id="login-avatar-icon" aria-hidden="true"></i>
+      </button>
+      <input id="login-avatar-file" type="file" accept="image/*" hidden>
+      <p class="login-greeting">Bem-vindo de volta</p>
+      <h2>VessieOS</h2>
+      <label class="login-name-label" for="l-name">Como podemos chamar você?</label>
+      <input class="l-inp" id="l-name" placeholder="Visitante" value="Visitante" maxlength="40"
+        autocomplete="nickname">
+      <button class="l-btn" id="l-btn" type="button">Entrar <i class="fas fa-arrow-right"></i></button>
+      <p class="login-hint">Entre sem senha para continuar</p>
+    </div>
+    <div class="login-lock-info" aria-live="polite">
+      <div class="login-lock-time" id="lock-time">--:--</div>
+      <div class="login-lock-date" id="lock-date">Carregando data...</div>
+      <div class="login-lock-card">
+        <strong><i class="fas fa-cloud" aria-hidden="true"></i> Clima</strong>
+        <span id="lock-weather">Clima indisponível no momento.</span>
       </div>
+      <div class="login-lock-card">
+        <strong><i class="fas fa-circle-info" aria-hidden="true"></i> VessieOS</strong>
+        <span id="lock-news">Seu espaço de trabalho está pronto para iniciar.</span>
+      </div>
+      <button class="login-continue" id="login-continue" type="button">Clique ou pressione uma tecla para entrar</button>
+    </div>
+    <div class="login-brand"><span>VessieOS</span><span>Um espaço para criar e explorar</span></div>
+  </section>
+
+  <!-- DESKTOP -->
+  <div id="desktop" style="display:none">
+    <div id="desktop-media-bg"></div>
+    <div id="icons-area" style="position:absolute;inset:0;pointer-events:none"></div>
+    <div id="ctx" style="display:none">
+      <div class="cti" data-act="refresh"><i class="fas fa-sync-alt"></i> Atualizar Desktop</div>
+      <div class="cti" data-act="newFolder"><i class="fas fa-folder-plus"></i> Nova Pasta</div>
+      <div class="cti" data-act="personalize"><i class="fas fa-paint-brush"></i> Personalizar</div>
+      <div class="cts"></div>
+      <div class="cti" data-act="terminal"><i class="fas fa-terminal"></i> Abrir Terminal</div>
+      <div class="cti" data-act="taskManager"><i class="fas fa-tasks"></i> Gerenciador de Tarefas</div>
+      <div class="cts"></div>
+      <div class="cti" data-act="about"><i class="fas fa-info-circle"></i> Sobre o VessieOS</div>
     </div>
   </div>
-  <div id="notifications"></div>
-  <div id="taskbar">
-    <button id="startBtn" title="Menu Iniciar">
-      <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
-    </button>
-    <div id="taskbarApps"></div>
-    <div id="taskbarRight"><span id="taskbarClock">--:--</span></div>
+
+  <!-- TASKBAR -->
+  <div id="tb" style="display:none">
+    <div class="tb-l">
+      <button class="tbtn" id="tb-start" title="Iniciar">
+        <i class="fab fa-windows"
+          style="background:linear-gradient(135deg,var(--a),var(--a2));-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 6px rgba(196,111,255,.7))"></i>
+      </button>
+      <button class="tb-search" id="tb-search" type="button" aria-label="Pesquisar apps e arquivos"><i class="fas fa-search" style="font-size:.85rem"></i><span>Pesquisar...</span></button>
+    </div>
+    <div class="tb-c" id="tb-wins"></div>
+    <div class="tb-r">
+      <div class="tb-sys">
+        <button class="tsy" id="tsy-wifi" title="Wi-Fi"><i class="fas fa-wifi"></i></button>
+        <button class="tsy" id="tsy-vol" title="Volume"><i class="fas fa-volume-up" id="vol-icon"></i></button>
+        <button class="tsy" id="tsy-bat" title="Bateria"><i class="fas fa-battery-three-quarters"></i></button>
+      </div>
+      <div class="tb-clk">
+        <div class="t" id="tb-time"></div>
+        <div class="d" id="tb-date"></div>
+      </div>
+      <button class="tbtn" id="tb-notif" title="Notificações" style="font-size:1rem"><i
+          class="fas fa-bell"></i></button>
+    </div>
   </div>
-</div>
 
-<script>
-/* ================================================================
-   VESSIELANG OS 2.0 "AURORA" — tudo em um único arquivo
-   ================================================================ */
-'use strict';
-const $ = id => document.getElementById(id);
-const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const clamp = (v,a,b) => Math.max(a, Math.min(v,b));
-function load(k, fb){ try{ const v = localStorage.getItem(k); return v===null? fb : JSON.parse(v); }catch(e){ return fb; } }
-function save(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){ notify('Armazenamento','Não foi possível salvar (storage cheio).','⚠️'); } }
-function fmtSize(n){ if(n<1024) return n+' B'; if(n<1048576) return (n/1024).toFixed(1)+' KB'; return (n/1048576).toFixed(1)+' MB'; }
-function fmtDate(t){ const d = new Date(t||Date.now()); return d.toLocaleDateString('pt-BR')+' '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}); }
-
-/* ---------- Estado persistente ---------- */
-const bootTime = Date.now();
-let SETTINGS = load('vl_settings', null) || { theme:'dark', wallpaper:0, sounds:true, currentUser:'admin' };
-let USERS    = load('vl_users', null)    || { admin:{ pass:'admin', nome:'Administrador' } };
-function saveSettings(){ save('vl_settings', SETTINGS); }
-function uptimeStr(){
-  const s = Math.floor((Date.now()-bootTime)/1000), m = Math.floor(s/60), h = Math.floor(m/60);
-  if (h) return `${h}h ${m%60}min`; if (m) return `${m}min ${s%60}s`; return `${s}s`;
-}
-const WALLPAPERS = [
-  'radial-gradient(1100px 650px at 18% 12%, #35317e 0%, #191a3a 40%, #0b0b1a 100%)',
-  'linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)',
-  'linear-gradient(135deg, #1e1e3f 0%, #2d2b55 50%, #6f6798 100%)',
-  'linear-gradient(135deg, #0b8793 0%, #07376b 100%)',
-  'linear-gradient(135deg, #dd5e89 0%, #f7bb97 100%)',
-  'linear-gradient(135deg, #83a4d4 0%, #b6fbff 100%)'
-];
-function applySettings(){
-  document.body.classList.toggle('theme-light', SETTINGS.theme==='light');
-  $('desktop').style.background = WALLPAPERS[SETTINGS.wallpaper % WALLPAPERS.length];
-}
-
-/* ---------- Som ---------- */
-let audioCtx;
-function beep(freq=600, dur=.08, type='sine', vol=.04){
-  if (!SETTINGS.sounds) return;
-  try{
-    audioCtx = audioCtx || new (window.AudioContext||window.webkitAudioContext)();
-    const o = audioCtx.createOscillator(), g = audioCtx.createGain();
-    o.type = type; o.frequency.value = freq;
-    g.gain.setValueAtTime(vol, audioCtx.currentTime);
-    g.gain.exponentialRampToValueAtTime(.0001, audioCtx.currentTime + dur);
-    o.connect(g); g.connect(audioCtx.destination);
-    o.start(); o.stop(audioCtx.currentTime + dur);
-  }catch(e){}
-}
-
-/* ---------- Notificações ---------- */
-function notify(title, msg, icon='ℹ️'){
-  const n = document.createElement('div');
-  n.className = 'notification';
-  n.innerHTML = `<div class="nt-icon">${icon}</div><div><div class="nt-title">${esc(title)}</div><div class="nt-msg">${esc(msg)}</div></div>`;
-  $('notifications').appendChild(n);
-  requestAnimationFrame(()=> n.classList.add('show'));
-  beep(760,.06); setTimeout(()=>beep(980,.07), 70);
-  setTimeout(()=>{ n.classList.remove('show'); setTimeout(()=>n.remove(), 350); }, 3800);
-}
-
-/* ================================================================
-   SISTEMA DE ARQUIVOS VIRTUAL (persistente em localStorage)
-   ================================================================ */
-function defaultFS(){
-  return { type:'dir', children:{
-    'Documentos': { type:'dir', children:{
-      'bem-vindo.txt': { type:'file', modified:Date.now(), content:
-`Bem-vindo ao VessieLang OS 2.0 "Aurora"!
-
-Dicas rápidas:
- • Clique duplo nos ícones da área de trabalho abre os apps
- • Botão direito na área de trabalho: menu de contexto
- • Terminal: digite 'help' para ver todos os comandos
- • VessieLang Studio: escreva e execute programas na linguagem ⧩
- • Seus arquivos ficam salvos no navegador (localStorage)
-
-Divirta-se explorando o sistema!` },
-      'anotacoes.md': { type:'file', modified:Date.now(), content:
-`# Minhas anotações
-
-## Todo
-- [x] Instalar o VessieLang OS
-- [ ] Criar meu primeiro programa .vl
-- [ ] Jogar Snake
-
-## Ideias
-Escreva suas ideias aqui...` },
-      'comandos-do-terminal.txt': { type:'file', modified:Date.now(), content:
-`Guia rápido do terminal (vsh 1.3)
-
-ls, cd, pwd, cat, mkdir, touch, rm [-r]
-echo texto > arquivo.txt
-ves programa.vl        → executa código VessieLang
-ves -c "print(1+1)"    → executa código direto
-open <app> | apps
-calc <expressão> | theme dark|light
-neofetch | date | whoami | history | clear` }
-    }},
-    'Imagens': { type:'dir', children:{} },
-    'Música': { type:'dir', children:{} },
-    'Projetos': { type:'dir', children:{
-      'ola.vl': { type:'file', modified:Date.now(), content:
-`// Meu primeiro programa VessieLang
-var nome = "Vessie"
-print("Olá, " + nome + "!")
-repeat 3 { print("⧩ funciona!") }` },
-      'fibonacci.vl': { type:'file', modified:Date.now(), content:
-`// Sequência de Fibonacci
-func fib(n) {
-  if n < 2 { return n }
-  return fib(n-1) + fib(n-2)
-}
-var i = 0
-while i < 12 {
-  print(fib(i))
-  i = i + 1
-}` },
-      'jogo-adivinha.vl': { type:'file', modified:Date.now(), content:
-`// Jogo: adivinhe o número (1 a 10)
-var segredo = rnd(1, 10)
-var tries = 0
-var chute = num(ask("Seu chute (1-10): "))
-while chute != segredo {
-  tries = tries + 1
-  if chute < segredo { print("É maior!") } else { print("É menor!") }
-  chute = num(ask("Tente de novo: "))
-}
-print("🎉 Acertou em " + (tries + 1) + " tentativas!")` }
-    }},
-    'Sistema': { type:'dir', children:{
-      'versao.txt': { type:'file', modified:Date.now(), content:'VessieLang OS 2.0 "Aurora"\nves-kernel 2.0.1\nvsh 1.3' }
-    }}
-  }};
-}
-let FS = load('vl_fs', null);
-if (!FS || FS.type !== 'dir' || !FS.children) FS = defaultFS();
-(function mergeDefaults(){
-  const d = defaultFS();
-  for (const k in d.children) if (!FS.children[k]) FS.children[k] = d.children[k];
-})();
-function saveFS(){ save('vl_fs', FS); }
-
-function normalizePath(path, cwd='/'){
-  if (!path) path = cwd;
-  if (!path.startsWith('/')) path = (cwd === '/' ? '/' : cwd + '/') + path;
-  const out = [];
-  for (const p of path.split('/').filter(Boolean)){
-    if (p === '.') continue;
-    if (p === '..') out.pop(); else out.push(p);
-  }
-  return '/' + out.join('/');
-}
-const joinPath = (dir, name) => dir === '/' ? '/'+name : dir+'/'+name;
-function getNode(path){
-  let node = FS;
-  for (const p of normalizePath(path).split('/').filter(Boolean)){
-    if (node.type !== 'dir' || !node.children[p]) return null;
-    node = node.children[p];
-  }
-  return node;
-}
-function getParent(path){
-  const norm = normalizePath(path);
-  if (norm === '/') return null;
-  const idx = norm.lastIndexOf('/');
-  const parent = getNode(idx === 0 ? '/' : norm.slice(0, idx));
-  if (!parent || parent.type !== 'dir') return null;
-  return [parent, norm.slice(idx+1)];
-}
-function ensureParent(path){
-  const parts = normalizePath(path).split('/').filter(Boolean);
-  let node = FS;
-  for (let i = 0; i < parts.length - 1; i++){
-    if (!node.children[parts[i]]) node.children[parts[i]] = { type:'dir', children:{} };
-    node = node.children[parts[i]];
-    if (node.type !== 'dir') throw new Error('"'+parts[i]+'" não é uma pasta');
-  }
-  return node;
-}
-function writeFile(path, content, kind){
-  const norm = normalizePath(path);
-  const parts = norm.split('/').filter(Boolean);
-  if (!parts.length) throw new Error('caminho inválido');
-  const dir = ensureParent(norm);
-  const name = parts[parts.length-1];
-  dir.children[name] = { type:'file', content, kind, modified:Date.now() };
-  saveFS();
-  return norm;
-}
-function deleteNode(path){
-  const par = getParent(path);
-  if (!par || !par[0].children[par[1]]) return false;
-  delete par[0].children[par[1]]; saveFS(); return true;
-}
-function renameNode(path, newName){
-  const par = getParent(path);
-  if (!par || !par[0].children[par[1]] || !newName || par[0].children[newName]) return false;
-  par[0].children[newName] = par[0].children[par[1]];
-  delete par[0].children[par[1]]; saveFS(); return true;
-}
-function safeEval(expr){
-  if (!/^[0-9+\-*/().%\s]+$/.test(expr)) throw new Error('expressão inválida');
-  const r = Function('"use strict";return(' + expr + ')')();
-  if (typeof r !== 'number' || !isFinite(r)) throw new Error('expressão inválida');
-  return Math.round(r * 1e10) / 1e10;
-}
-
-/* ================================================================
-   INTERPRETADOR VESSIELANG (lexer → parser → avaliador)
-   ================================================================ */
-class VlError extends Error {}
-function vlTokenize(src){
-  const toks = []; let i = 0, line = 1; const n = src.length;
-  while (i < n){
-    const c = src[i];
-    if (c === '\n'){ toks.push({t:'nl', line}); line++; i++; continue; }
-    if (c === ' ' || c === '\t' || c === '\r'){ i++; continue; }
-    if (c === '/' && src[i+1] === '/'){ while (i < n && src[i] !== '\n') i++; continue; }
-    if (/[0-9]/.test(c) || (c === '.' && /[0-9]/.test(src[i+1]||''))){
-      let s = ''; while (i < n && /[0-9.]/.test(src[i])) s += src[i++];
-      toks.push({t:'num', v:parseFloat(s), line}); continue;
-    }
-    if (/[A-Za-z_À-ÿ]/.test(c)){
-      let s = ''; while (i < n && /[A-Za-z0-9_À-ÿ]/.test(src[i])) s += src[i++];
-      toks.push({t:'id', v:s, line}); continue;
-    }
-    if (c === '"' || c === "'"){
-      const q = c; i++; let s = '';
-      while (i < n && src[i] !== q){
-        if (src[i] === '\\'){ i++; const e = src[i]; s += (e === 'n' ? '\n' : e); i++; }
-        else s += src[i++];
-      }
-      if (i >= n) throw new VlError(`Linha ${line}: string não fechada`);
-      i++; toks.push({t:'str', v:s, line}); continue;
-    }
-    const two = src[i] + (src[i+1] || '');
-    if (['==','!=','<=','>='].includes(two)){ toks.push({t:'op', v:two, line}); i += 2; continue; }
-    if ('+-*/%<>='.includes(c)){ toks.push({t:'op', v:c, line}); i++; continue; }
-    if ('(){}[],;'.includes(c)){ toks.push({t:'punc', v:c, line}); i++; continue; }
-    throw new VlError(`Linha ${line}: caractere inesperado "${c}"`);
-  }
-  toks.push({t:'eof', line});
-  return toks;
-}
-function vlParse(toks){
-  let p = 0;
-  const peek = () => toks[p];
-  const at = (t,v) => toks[p].t === t && (v === undefined || toks[p].v === v);
-  const nx = () => toks[p++];
-  const desc = t => t.t === 'eof' ? 'fim do código' : `"${t.v ?? t.t}"`;
-  const err = (msg, line) => { throw new VlError(`Linha ${line}: ${msg}`); };
-  const expect = (t,v) => {
-    if (!at(t,v)) err(`esperado "${v}", encontrado ${desc(peek())}`, peek().line);
-    return nx();
-  };
-  const skipNl = () => { while (at('nl') || at('punc',';')) p++; };
-
-  function parseBlock(){
-    expect('punc','{');
-    const stmts = []; skipNl();
-    while (!at('punc','}')){
-      if (at('eof')) err('bloco não fechado — faltou "}"', peek().line);
-      stmts.push(parseStmt());
-      if (at('nl') || at('punc',';')) skipNl();
-      else if (!at('punc','}')) err('instrução incompleta no bloco', peek().line);
-    }
-    expect('punc','}');
-    return stmts;
-  }
-  function parseIf(){
-    const line = nx().line;
-    const cond = parseExpr();
-    const then = parseBlock();
-    let els = null;
-    if (at('id','else')){
-      nx();
-      els = at('id','if') ? [parseIf()] : parseBlock();
-    }
-    return { k:'if', cond, then, els, line };
-  }
-  function parseStmt(){
-    const tk = peek();
-    if (at('id','var')){
-      nx(); const name = expect('id').v;
-      let expr = null;
-      if (at('op','=')){ nx(); expr = parseExpr(); }
-      return { k:'var', name, expr, line:tk.line };
-    }
-    if (at('id','if')) return parseIf();
-    if (at('id','while')){ nx(); const cond = parseExpr(); return { k:'while', cond, body:parseBlock(), line:tk.line }; }
-    if (at('id','repeat')){ nx(); const count = parseExpr(); return { k:'repeat', count, body:parseBlock(), line:tk.line }; }
-    if (at('id','func')){
-      nx(); const name = expect('id').v; expect('punc','(');
-      const params = [];
-      if (!at('punc',')')){
-        params.push(expect('id').v);
-        while (at('punc',',')){ nx(); params.push(expect('id').v); }
-      }
-      expect('punc',')');
-      return { k:'func', name, params, body:parseBlock(), line:tk.line };
-    }
-    if (at('id','return')){
-      nx(); let expr = null;
-      if (!at('nl') && !at('punc',';') && !at('punc','}') && !at('eof')) expr = parseExpr();
-      return { k:'return', expr, line:tk.line };
-    }
-    if (at('id') && toks[p+1] && toks[p+1].t === 'op' && toks[p+1].v === '='){
-      const name = nx().v; nx();
-      return { k:'assign', name, expr:parseExpr(), line:tk.line };
-    }
-    return { k:'expr', expr:parseExpr(), line:tk.line };
-  }
-  function parseExpr(){ return parseOr(); }
-  function parseOr(){ let l = parseAnd(); while (at('id','or')){ const line = nx().line; l = {k:'or', l, r:parseAnd(), line}; } return l; }
-  function parseAnd(){ let l = parseEq(); while (at('id','and')){ const line = nx().line; l = {k:'and', l, r:parseEq(), line}; } return l; }
-  function parseEq(){ let l = parseCmp(); while (at('op','==')||at('op','!=')){ const op = nx(); l = {k:'bin', op:op.v, l, r:parseCmp(), line:op.line}; } return l; }
-  function parseCmp(){ let l = parseAdd(); while (at('op','<')||at('op','>')||at('op','<=')||at('op','>=')){ const op = nx(); l = {k:'bin', op:op.v, l, r:parseAdd(), line:op.line}; } return l; }
-  function parseAdd(){ let l = parseMul(); while (at('op','+')||at('op','-')){ const op = nx(); l = {k:'bin', op:op.v, l, r:parseMul(), line:op.line}; } return l; }
-  function parseMul(){ let l = parseUnary(); while (at('op','*')||at('op','/')||at('op','%')){ const op = nx(); l = {k:'bin', op:op.v, l, r:parseUnary(), line:op.line}; } return l; }
-  function parseUnary(){
-    if (at('op','-')){ const op = nx(); return {k:'neg', expr:parseUnary(), line:op.line}; }
-    if (at('id','not')){ const op = nx(); return {k:'not', expr:parseUnary(), line:op.line}; }
-    return parseCall();
-  }
-  function parseCall(){
-    let e = parsePrimary();
-    while (at('punc','(')){
-      const line = nx().line; const args = [];
-      if (!at('punc',')')){
-        args.push(parseExpr());
-        while (at('punc',',')){ nx(); args.push(parseExpr()); }
-      }
-      expect('punc',')');
-      e = { k:'call', callee:e, args, line };
-    }
-    return e;
-  }
-  function parsePrimary(){
-    const tk = peek();
-    if (at('num')){ nx(); return {k:'num', v:tk.v, line:tk.line}; }
-    if (at('str')){ nx(); return {k:'str', v:tk.v, line:tk.line}; }
-    if (at('id','true')){ nx(); return {k:'bool', v:true, line:tk.line}; }
-    if (at('id','false')){ nx(); return {k:'bool', v:false, line:tk.line}; }
-    if (at('id','null')){ nx(); return {k:'null', line:tk.line}; }
-    if (at('id')){ nx(); return {k:'var', name:tk.v, line:tk.line}; }
-    if (at('punc','(')){ nx(); const e = parseExpr(); expect('punc',')'); return e; }
-    err(`expressão inesperada (${desc(tk)})`, tk.line);
-  }
-
-  const stmts = []; skipNl();
-  while (!at('eof')){
-    stmts.push(parseStmt());
-    if (at('nl') || at('punc',';')) skipNl();
-    else if (!at('eof') && !at('punc','}')) err('instrução incompleta', peek().line);
-  }
-  return stmts;
-}
-function vlRun(src, out){
-  if (typeof src !== 'string' || !src.trim()) throw new VlError('código vazio');
-  const ast = vlParse(vlTokenize(src));
-  const globals = new Map(), funcs = new Map();
-  let steps = 0, depth = 0, printed = 0;
-  const MAX_STEPS = 300000, MAX_DEPTH = 400;
-  const truthy = v => !(v === false || v === 0 || v === '' || v === null || v === undefined);
-  const fmt = v => {
-    if (v === null || v === undefined) return 'null';
-    if (typeof v === 'number') return Number.isInteger(v) ? String(v) : String(Math.round(v*1e6)/1e6);
-    if (typeof v === 'boolean') return v ? 'true' : 'false';
-    return String(v);
-  };
-  const rt = (msg, line) => { throw new VlError(`Linha ${line || '?'}: ${msg}`); };
-  const tick = (line) => { if (++steps > MAX_STEPS) rt('execução excedida (possível loop infinito)', line); };
-  const getVar = (name, env, line) => {
-    if (env && env.has(name)) return env.get(name);
-    if (globals.has(name)) return globals.get(name);
-    rt(`variável "${name}" não declarada (use var)`, line);
-  };
-  const BUILTINS = {
-    print: a => { if (++printed > 5000) rt('limite de 5000 linhas de saída excedido'); out(a.map(fmt).join(' ')); return null; },
-    len: (a,l) => typeof a[0] === 'string' ? a[0].length : rt('len() espera uma string', l),
-    upper: a => String(a[0]).toUpperCase(),
-    lower: a => String(a[0]).toLowerCase(),
-    str: a => fmt(a[0]),
-    num: (a,l) => { const v = parseFloat(a[0]); if (isNaN(v)) rt('num(): conversão inválida', l); return v; },
-    floor: a => Math.floor(a[0]),
-    abs: a => Math.abs(a[0]),
-    rnd: a => a.length === 2 ? Math.floor(Math.random()*(a[1]-a[0]+1))+a[0] : Math.random(),
-    time: () => new Date().toLocaleTimeString('pt-BR'),
-    ask: a => prompt(a[0] || '') ?? ''
-  };
-  function callFn(e, env){
-    if (!e.callee || e.callee.k !== 'var') rt('chamada inválida: esperado nome de função', e.line);
-    const name = e.callee.name;
-    const args = e.args.map(a => evalExpr(a, env));
-    if (BUILTINS[name]) return BUILTINS[name](args, e.line);
-    const f = funcs.get(name);
-    if (!f) rt(`função "${name}" não encontrada`, e.line);
-    if (args.length !== f.params.length) rt(`"${name}" espera ${f.params.length} argumento(s), recebeu ${args.length}`, e.line);
-    if (++depth > MAX_DEPTH) rt('recursão muito profunda', e.line);
-    const local = new Map();
-    f.params.forEach((pn, i) => local.set(pn, args[i]));
-    let ret = null;
-    for (const s of f.body){
-      const r = execStmt(s, local);
-      if (r){ ret = r.__ret; break; }
-    }
-    depth--;
-    return ret;
-  }
-  function evalExpr(e, env){
-    tick(e.line);
-    switch (e.k){
-      case 'num': case 'str': case 'bool': return e.v;
-      case 'null': return null;
-      case 'var': return getVar(e.name, env, e.line);
-      case 'neg': { const v = evalExpr(e.expr, env); if (typeof v !== 'number') rt('operador "-" exige número', e.line); return -v; }
-      case 'not': return !truthy(evalExpr(e.expr, env));
-      case 'and': { const l = evalExpr(e.l, env); return truthy(l) ? evalExpr(e.r, env) : l; }
-      case 'or':  { const l = evalExpr(e.l, env); return truthy(l) ? l : evalExpr(e.r, env); }
-      case 'bin': {
-        const a = evalExpr(e.l, env), b = evalExpr(e.r, env);
-        switch (e.op){
-          case '+': if (typeof a === 'string' || typeof b === 'string') return fmt(a) + fmt(b); return a + b;
-          case '-': if (typeof a !== 'number' || typeof b !== 'number') rt('"-" exige números', e.line); return a - b;
-          case '*': if (typeof a === 'string' && typeof b === 'number') return a.repeat(Math.max(0, b|0));
-                    if (typeof a !== 'number' || typeof b !== 'number') rt('"*" exige números', e.line); return a * b;
-          case '/': if (typeof a !== 'number' || typeof b !== 'number') rt('"/" exige números', e.line);
-                    if (b === 0) rt('divisão por zero', e.line); return a / b;
-          case '%': if (b === 0) rt('módulo por zero', e.line); return a % b;
-          case '==': return a === b;
-          case '!=': return a !== b;
-          default:
-            if (typeof a !== typeof b) rt('comparação entre tipos diferentes', e.line);
-            if (e.op === '<') return a < b; if (e.op === '>') return a > b;
-            if (e.op === '<=') return a <= b; return a >= b;
-        }
-      }
-      case 'call': return callFn(e, env);
-    }
-  }
-  function execStmt(s, env){
-    tick(s.line);
-    switch (s.k){
-      case 'var': {
-        const target = env || globals;
-        if (target.has(s.name)) rt(`"${s.name}" já foi declarada`, s.line);
-        target.set(s.name, s.expr ? evalExpr(s.expr, env) : null);
-        return;
-      }
-      case 'assign': {
-        if (env && env.has(s.name)) env.set(s.name, evalExpr(s.expr, env));
-        else if (globals.has(s.name)) globals.set(s.name, evalExpr(s.expr, env));
-        else rt(`variável "${s.name}" não declarada (use var)`, s.line);
-        return;
-      }
-      case 'if': {
-        if (truthy(evalExpr(s.cond, env))){
-          for (const st of s.then){ const r = execStmt(st, env); if (r) return r; }
-        } else if (s.els){
-          for (const st of s.els){ const r = execStmt(st, env); if (r) return r; }
-        }
-        return;
-      }
-      case 'while': {
-        while (truthy(evalExpr(s.cond, env))){
-          tick(s.line);
-          for (const st of s.body){ const r = execStmt(st, env); if (r) return r; }
-        }
-        return;
-      }
-      case 'repeat': {
-        const nn = evalExpr(s.count, env);
-        if (typeof nn !== 'number') rt('repeat espera um número', s.line);
-        for (let i = 0; i < Math.floor(nn); i++){
-          tick(s.line);
-          for (const st of s.body){ const r = execStmt(st, env); if (r) return r; }
-        }
-        return;
-      }
-      case 'func': funcs.set(s.name, s); return;
-      case 'return': return { __ret: s.expr ? evalExpr(s.expr, env) : null };
-      case 'expr': evalExpr(s.expr, env); return;
-    }
-  }
-  for (const s of ast){ const r = execStmt(s, null); if (r) break; }
-}
-
-/* ================================================================
-   GERENCIADOR DE JANELAS
-   ================================================================ */
-const windowsLayer = $('windowsLayer'), taskbarApps = $('taskbarApps');
-let zTop = 10, winSeq = 0;
-const openWins = new Map();
-
-function createWindow(opts){
-  const id = 'w' + (++winSeq);
-  const el = document.createElement('div');
-  el.className = 'window';
-  const W = Math.min(opts.width || 520, innerWidth - 16);
-  const H = Math.min(opts.height || 400, innerHeight - 70);
-  el.style.width = W + 'px'; el.style.height = H + 'px';
-  const off = (openWins.size % 6) * 26;
-  el.style.left = Math.max(6, opts.x ?? 90 + off) + 'px';
-  el.style.top  = Math.max(6, opts.y ?? 46 + off) + 'px';
-  el.innerHTML = `
-    <div class="win-header">
-      <span class="win-icon">${opts.icon || '▢'}</span>
-      <span class="win-title">${esc(opts.title || 'Janela')}</span>
-      <span class="win-controls">
-        <button class="wc-btn" data-a="min" title="Minimizar">─</button>
-        <button class="wc-btn" data-a="max" title="Maximizar">▢</button>
-        <button class="wc-btn wc-close" data-a="close" title="Fechar">✕</button>
-      </span>
+  <!-- NOTIFICATION PANEL -->
+  <div id="np">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+      <h3 style="font-size:1.1rem">Central de Notificações</h3>
+      <button id="np-close" style="background:none;border:none;color:var(--dim);font-size:1.1rem;cursor:pointer"><i
+          class="fas fa-times"></i></button>
     </div>
-    <div class="win-body"></div>
-    ${opts.resizable === false ? '' : '<div class="win-resize"></div>'}`;
-  windowsLayer.appendChild(el);
-
-  const body = el.querySelector('.win-body');
-  const rec = { id, el, body, title:opts.title, icon:opts.icon, minimized:false, taskBtn:null, onClose:opts.onClose };
-  openWins.set(id, rec);
-
-  const tb = document.createElement('button');
-  tb.className = 'task-app';
-  tb.title = opts.title;
-  tb.innerHTML = `<span>${opts.icon || '▢'}</span>`;
-  tb.onclick = () => {
-    if (rec.minimized){ restoreWin(rec); focusWin(rec); }
-    else if (el.classList.contains('focused')) minimizeWin(rec);
-    else focusWin(rec);
-  };
-  taskbarApps.appendChild(tb);
-  rec.taskBtn = tb;
-
-  el.querySelector('[data-a=min]').onclick = () => minimizeWin(rec);
-  el.querySelector('[data-a=max]').onclick = () => toggleMax(rec);
-  el.querySelector('[data-a=close]').onclick = () => closeWin(rec);
-  el.addEventListener('pointerdown', () => focusWin(rec));
-
-  const header = el.querySelector('.win-header');
-  header.addEventListener('dblclick', e => { if (!e.target.closest('.wc-btn')) toggleMax(rec); });
-  header.addEventListener('pointerdown', e => {
-    if (e.target.closest('.wc-btn') || el.classList.contains('max')) return;
-    const sx = e.clientX, sy = e.clientY, sl = el.offsetLeft, st = el.offsetTop;
-    const mv = ev => {
-      el.style.left = clamp(sl + ev.clientX - sx, 60 - el.offsetWidth, innerWidth - 60) + 'px';
-      el.style.top  = clamp(st + ev.clientY - sy, 0, innerHeight - 100) + 'px';
-    };
-    const up = () => { removeEventListener('pointermove', mv); removeEventListener('pointerup', up); };
-    addEventListener('pointermove', mv); addEventListener('pointerup', up);
-  });
-
-  const rz = el.querySelector('.win-resize');
-  if (rz) rz.addEventListener('pointerdown', e => {
-    e.stopPropagation();
-    const sx = e.clientX, sy = e.clientY, sw = el.offsetWidth, sh = el.offsetHeight;
-    const mv = ev => {
-      el.style.width  = Math.max(300, sw + ev.clientX - sx) + 'px';
-      el.style.height = Math.max(190, sh + ev.clientY - sy) + 'px';
-    };
-    const up = () => { removeEventListener('pointermove', mv); removeEventListener('pointerup', up); };
-    addEventListener('pointermove', mv); addEventListener('pointerup', up);
-  });
-
-  focusWin(rec);
-  return rec;
-}
-function focusWin(rec){
-  if (!openWins.has(rec.id)) return;
-  openWins.forEach(r => { r.el.classList.remove('focused'); r.taskBtn.classList.remove('active'); });
-  rec.el.classList.add('focused');
-  rec.el.style.zIndex = ++zTop;
-  if (!rec.minimized) rec.taskBtn.classList.add('active');
-}
-function minimizeWin(rec){ rec.minimized = true; rec.el.style.display = 'none'; rec.taskBtn.classList.remove('active'); }
-function restoreWin(rec){ rec.minimized = false; rec.el.style.display = ''; }
-function toggleMax(rec){
-  const el = rec.el;
-  if (el.classList.contains('max')){
-    el.classList.remove('max');
-    Object.assign(el.style, rec.prevRect);
-  } else {
-    rec.prevRect = { left:el.style.left, top:el.style.top, width:el.style.width, height:el.style.height };
-    el.classList.add('max');
-  }
-}
-function closeWin(rec){
-  if (!openWins.has(rec.id)) return;
-  if (rec.onClose) try{ rec.onClose(); }catch(e){}
-  rec.el.remove(); rec.taskBtn.remove(); openWins.delete(rec.id);
-}
-function closeAllWindows(){ [...openWins.values()].forEach(closeWin); }
-
-/* ================================================================
-   APLICATIVOS
-   ================================================================ */
-
-/* ---------- Terminal ---------- */
-function openTerminal(){
-  const rec = createWindow({ title:'Terminal', icon:'▮', width:660, height:430 });
-  rec.body.innerHTML = `
-    <div class="term">
-      <div class="term-out"></div>
-      <div class="term-line">
-        <span class="term-prompt"></span>
-        <input class="term-in" autocomplete="off" spellcheck="false">
+    <div class="qt-grid">
+      <div class="qt on" data-qt="wifi"><i class="fas fa-wifi"></i>Wi-Fi</div>
+      <div class="qt on" data-qt="bt"><i class="fab fa-bluetooth-b"></i>Bluetooth</div>
+      <div class="qt" data-qt="dnd"><i class="fas fa-moon"></i>Não Perturbe</div>
+      <div class="qt" data-qt="dark"><i class="fas fa-adjust"></i>Tema</div>
+      <div class="qt on" data-qt="vol"><i class="fas fa-volume-up"></i>Som</div>
+      <div class="qt" data-qt="focus"><i class="fas fa-crosshairs"></i>Foco</div>
+      <div class="qt" data-qt="nightlight"><i class="fas fa-sun"></i>Luz Noturna</div>
+      <div class="qt" data-qt="airplane"><i class="fas fa-plane"></i>Avião</div>
+    </div>
+    <div style="margin-top:22px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <span style="font-size:.85rem;font-weight:600">Notificações</span>
+        <button id="clr-notifs"
+          style="background:none;border:none;color:var(--dim);font-size:.78rem;cursor:pointer">Limpar todas</button>
       </div>
-    </div>`;
-  const outEl = rec.body.querySelector('.term-out');
-  const inEl  = rec.body.querySelector('.term-in');
-  const prEl  = rec.body.querySelector('.term-prompt');
-  let cwd = '/';
-  const hist = []; let hIdx = 0;
-  const user = SETTINGS.currentUser || 'admin';
-
-  const P = (txt, cls) => {
-    const d = document.createElement('div');
-    if (cls) d.className = cls;
-    d.textContent = txt;
-    outEl.appendChild(d);
-    outEl.scrollTop = outEl.scrollHeight;
-  };
-  const HTML = h => {
-    const d = document.createElement('div');
-    d.innerHTML = h;
-    outEl.appendChild(d);
-    outEl.scrollTop = outEl.scrollHeight;
-  };
-  const updatePrompt = () => { prEl.textContent = `${user}@vessie:${cwd}$`; };
-  updatePrompt();
-  P('VessieLang OS 2.0 "Aurora" — vsh 1.3', 't-acc');
-  P("Digite 'help' para ver os comandos disponíveis.", 't-dim');
-
-  function runVes(code){
-    try{
-      vlRun(code, t => P(String(t)));
-      P('— execução concluída —', 't-dim');
-    }catch(e){ P('✖ ' + e.message, 't-err'); }
-  }
-  function handle(raw){
-    const line = raw.trim();
-    if (!line) return;
-    if (line.startsWith('echo')){
-      const gt = line.indexOf('>');
-      if (gt !== -1){
-        const text = line.slice(4, gt).trim(), file = line.slice(gt+1).trim();
-        if (!file) return P('uso: echo texto > arquivo', 't-warn');
-        const p = normalizePath(file, cwd), par = getParent(p);
-        if (!par) return P('echo: caminho inválido', 't-err');
-        par[0].children[par[1]] = { type:'file', content:text, modified:Date.now() };
-        saveFS();
-        return P('gravado em ' + file, 't-ok');
-      }
-      return P(line.slice(4).trim());
-    }
-    const [cmd, ...a] = line.split(/\s+/);
-    switch (cmd){
-      case 'help': {
-        const HELP = [
-          ['help','lista os comandos'], ['ls [dir]','lista arquivos'],
-          ['cd <dir>','muda de diretório'], ['pwd','caminho atual'],
-          ['cat <arq>','mostra o conteúdo'], ['mkdir <nome>','cria diretório'],
-          ['touch <nome>','cria arquivo vazio'], ['rm [-r] <nome>','remove arquivo/pasta'],
-          ['echo txt > arq','escreve em arquivo'], ['ves <arq.vl>','executa VessieLang'],
-          ['ves -c "cód"','executa código direto'], ['open <app>','abre aplicativo'],
-          ['apps','lista aplicativos'], ['calc <expr>','calculadora rápida'],
-          ['theme dark|light','alterna o tema'], ['neofetch','info do sistema'],
-          ['date / whoami / history','utilidades'], ['clear','limpa o terminal'],
-          ['logout / reboot / shutdown','sessão'], ['exit','fecha o terminal']
-        ];
-        HELP.forEach(([c,d]) => HTML(`<span class="t-ok">${esc(c.padEnd(26))}</span><span class="t-dim">${esc(d)}</span>`));
-        break;
-      }
-      case 'ls': case 'dir': {
-        const node = getNode(normalizePath(a[0] || cwd, cwd));
-        if (!node) return P('ls: caminho não encontrado: ' + (a[0]||''), 't-err');
-        if (node.type === 'file') return P(a[0]);
-        const entries = Object.entries(node.children)
-          .sort((x,y) => x[1].type === y[1].type ? x[0].localeCompare(y[0]) : (x[1].type === 'dir' ? -1 : 1));
-        if (!entries.length) return P('(vazio)', 't-dim');
-        entries.forEach(([name, n]) => {
-          if (n.type === 'dir') HTML(`<span class="t-acc">📁 ${esc(name)}/</span>`);
-          else P('📄 ' + name.padEnd(30) + fmtSize((n.content||'').length));
-        });
-        break;
-      }
-      case 'cd': {
-        if (!a[0]) { cwd = '/'; }
-        else {
-          const t = normalizePath(a[0], cwd), node = getNode(t);
-          if (!node || node.type !== 'dir') return P('cd: diretório não encontrado: ' + a[0], 't-err');
-          cwd = t;
-        }
-        updatePrompt(); break;
-      }
-      case 'pwd': P(cwd); break;
-      case 'cat': {
-        const node = getNode(normalizePath(a[0]||'', cwd));
-        if (!node || node.type !== 'file') return P('cat: arquivo não encontrado', 't-err');
-        (node.content||'').split('\n').forEach(l => P(l));
-        break;
-      }
-      case 'mkdir': {
-        if (!a[0]) return P('uso: mkdir <nome>', 't-warn');
-        const par = getParent(normalizePath(a[0], cwd));
-        if (!par) return P('mkdir: caminho inválido', 't-err');
-        if (par[0].children[par[1]]) return P(`mkdir: "${par[1]}" já existe`, 't-warn');
-        par[0].children[par[1]] = { type:'dir', children:{} }; saveFS();
-        P(`diretório "${par[1]}" criado`, 't-ok'); break;
-      }
-      case 'touch': {
-        if (!a[0]) return P('uso: touch <nome>', 't-warn');
-        const par = getParent(normalizePath(a[0], cwd));
-        if (!par) return P('touch: caminho inválido', 't-err');
-        if (!par[0].children[par[1]]){ par[0].children[par[1]] = { type:'file', content:'', modified:Date.now() }; saveFS(); }
-        P(`arquivo "${par[1]}" pronto`, 't-ok'); break;
-      }
-      case 'rm': {
-        const rec2 = a[0] === '-r' || a[0] === '-rf';
-        const name = rec2 ? a[1] : a[0];
-        if (!name) return P('uso: rm [-r] <nome>', 't-warn');
-        const p = normalizePath(name, cwd);
-        if (p === '/') return P('rm: não é possível remover a raiz', 't-err');
-        const par = getParent(p), node = getNode(p);
-        if (!par || !node) return P('rm: não encontrado: ' + name, 't-err');
-        if (node.type === 'dir' && !rec2) return P(`rm: "${name}" é um diretório (use rm -r)`, 't-warn');
-        delete par[0].children[par[1]]; saveFS();
-        P('removido: ' + name, 't-ok'); break;
-      }
-      case 'ves': {
-        if (a[0] === '-c') return runVes(a.slice(1).join(' '));
-        if (!a[0]) return P('uso: ves arquivo.vl   |   ves -c "código"', 't-warn');
-        const node = getNode(normalizePath(a[0], cwd));
-        if (!node || node.type !== 'file') return P('ves: arquivo não encontrado', 't-err');
-        runVes(node.content || ''); break;
-      }
-      case 'apps': Object.keys(APPS).forEach(k => HTML(`<span class="t-acc">${esc(k.padEnd(12))}</span> ${esc(APPS[k].name)}`)); break;
-      case 'open': {
-        const q = (a[0]||'').toLowerCase();
-        if (!q) return P('uso: open <app> — veja "apps"', 't-warn');
-        const key = Object.keys(APPS).find(k => k === q || APPS[k].name.toLowerCase().includes(q));
-        if (!key) return P('aplicativo não encontrado', 't-err');
-        APPS[key].open(); P('abrindo ' + APPS[key].name + '…', 't-ok'); break;
-      }
-      case 'calc': {
-        const ex = a.join(' ');
-        if (!ex) return P('uso: calc 2+2*3', 't-warn');
-        try{ P('= ' + safeEval(ex), 't-ok'); }catch(e){ P('erro: expressão inválida', 't-err'); }
-        break;
-      }
-      case 'theme':
-        if (a[0] === 'dark' || a[0] === 'light'){ SETTINGS.theme = a[0]; applySettings(); saveSettings(); P('tema: ' + a[0], 't-ok'); }
-        else P('uso: theme dark|light', 't-warn');
-        break;
-      case 'neofetch': {
-        const L = [
-          ['        ⧩⧩⧩⧩⧩⧩        ', `${user}@vessie`],
-          ['     ⧩⧩⧩⧩⧩⧩⧩⧩⧩⧩     ', '─────────────────────────'],
-          ['    ⧩⧩⧩     ⧩⧩⧩    ', 'OS        VessieLang OS 2.0'],
-          ['    ⧩⧩         ⧩⧩    ', 'Núcleo    ves-kernel 2.0.1'],
-          ['    ⧩⧩         ⧩⧩    ', 'Shell     vsh 1.3'],
-          ['    ⧩⧩⧩     ⧩⧩⧩    ', 'Uptime    ' + uptimeStr()],
-          ['     ⧩⧩⧩⧩⧩⧩⧩⧩⧩⧩     ', 'Janelas   ' + openWins.size],
-          ['        ⧩⧩⧩⧩⧩⧩        ', `Tela      ${innerWidth}x${innerHeight}`]
-        ];
-        L.forEach(([x,y], i) => HTML(`<span class="${i<2?'t-acc':''}">${esc(x)}</span><span class="${i<2?'t-acc':''}"> ${esc(y)}</span>`));
-        break;
-      }
-      case 'date': P(new Date().toLocaleString('pt-BR')); break;
-      case 'whoami': P(user); break;
-      case 'history': hist.forEach((h,i) => HTML(`<span class="t-dim">${String(i+1).padStart(3)}</span>  ${esc(h)}`)); break;
-      case 'clear': outEl.innerHTML = ''; break;
-      case 'sudo': P('Você já é o administrador deste universo. ✨', 't-acc'); break;
-      case 'logout': logout(); break;
-      case 'reboot': notify('Sistema','Reiniciando…','⟳'); setTimeout(()=>location.reload(), 500); break;
-      case 'shutdown': case 'poweroff': shutdown(); break;
-      case 'exit': closeWin(rec); break;
-      default: P(`vsh: comando não encontrado: ${cmd}  (digite 'help')`, 't-err');
-    }
-  }
-  inEl.addEventListener('keydown', e => {
-    if (e.key === 'Enter'){
-      const v = inEl.value; inEl.value = '';
-      HTML(`<span class="t-ok">${esc(prEl.textContent)}</span> ${esc(v)}`);
-      if (v.trim()) hist.push(v);
-      hIdx = hist.length;
-      handle(v);
-    } else if (e.key === 'ArrowUp'){ e.preventDefault(); if (hIdx > 0){ hIdx--; inEl.value = hist[hIdx] || ''; } }
-    else if (e.key === 'ArrowDown'){ e.preventDefault(); if (hIdx < hist.length){ hIdx++; inEl.value = hist[hIdx] || ''; } }
-  });
-  rec.body.addEventListener('click', () => { if (!getSelection().toString()) inEl.focus(); });
-  setTimeout(() => inEl.focus(), 60);
-}
-
-/* ---------- Explorador de Arquivos ---------- */
-function openFiles(startPath='/'){
-  const rec = createWindow({ title:'Arquivos', icon:'📁', width:700, height:460 });
-  rec.body.innerHTML = `
-    <div class="fx-toolbar">
-      <button class="fx-btn" data-a="back" title="Voltar">←</button>
-      <button class="fx-btn" data-a="up" title="Subir">↑</button>
-      <span class="fx-path"></span>
-      <button class="fx-btn" data-a="nf" title="Novo arquivo">📄＋</button>
-      <button class="fx-btn" data-a="nd" title="Nova pasta">📁＋</button>
-      <button class="fx-btn" data-a="ren" title="Renomear">✏️</button>
-      <button class="fx-btn" data-a="del" title="Excluir">🗑️</button>
-      <button class="fx-btn" data-a="ref" title="Atualizar">↻</button>
-    </div>
-    <div class="fx-list"></div>
-    <div class="fx-status"></div>`;
-  const listEl = rec.body.querySelector('.fx-list');
-  const pathEl = rec.body.querySelector('.fx-path');
-  const statusEl = rec.body.querySelector('.fx-status');
-  let cwd = normalizePath(startPath), sel = null, hist = [];
-
-  function openFileWith(name, node){
-    const ext = (name.split('.').pop() || '').toLowerCase();
-    if (node.kind === 'image' || ['png','jpg','jpeg','gif','webp'].includes(ext)){
-      if (String(node.content).startsWith('data:image')) return openImageViewer(name, node.content);
-      return notify('Arquivos','Imagem não suportada nesta versão.','🖼️');
-    }
-    if (ext === 'vl') return openVessie(joinPath(cwd, name));
-    openEditor(joinPath(cwd, name));
-  }
-  function render(){
-    const node = getNode(cwd);
-    if (!node || node.type !== 'dir'){ cwd = '/'; return render(); }
-    pathEl.textContent = cwd;
-    listEl.innerHTML = '';
-    if (cwd !== '/'){
-      const up = document.createElement('div');
-      up.className = 'fx-row';
-      up.innerHTML = `<span class="fx-ic">↩️</span><span class="fx-name" style="color:var(--dim)">..</span>`;
-      up.ondblclick = () => { hist.push(cwd); cwd = normalizePath(cwd + '/..'); sel = null; render(); };
-      listEl.appendChild(up);
-    }
-    const entries = Object.entries(node.children)
-      .sort((x,y) => x[1].type === y[1].type ? x[0].localeCompare(y[0]) : (x[1].type === 'dir' ? -1 : 1));
-    if (!entries.length){
-      const e = document.createElement('div');
-      e.className = 'fx-empty'; e.textContent = 'Pasta vazia';
-      listEl.appendChild(e);
-    }
-    entries.forEach(([name, n]) => {
-      const isDir = n.type === 'dir';
-      const icon = isDir ? '📁'
-        : (n.kind === 'image' || /\.(png|jpe?g|gif|webp)$/i.test(name)) ? '🖼️'
-        : /\.vl$/i.test(name) ? '⧩' : /\.md$/i.test(name) ? '📘' : '📄';
-      const row = document.createElement('div');
-      row.className = 'fx-row'; row.dataset.name = name;
-      row.innerHTML = `<span class="fx-ic">${icon}</span><span class="fx-name">${esc(name)}</span>
-        <span class="fx-meta">${isDir ? Object.keys(n.children).length + ' itens' : fmtSize((n.content||'').length)}</span>`;
-      row.onclick = () => {
-        sel = name;
-        listEl.querySelectorAll('.fx-row').forEach(r => r.classList.toggle('sel', r.dataset.name === sel));
-      };
-      row.ondblclick = () => {
-        if (isDir){ hist.push(cwd); cwd = joinPath(cwd, name); sel = null; render(); }
-        else openFileWith(name, n);
-      };
-      listEl.appendChild(row);
-    });
-    statusEl.textContent = `${entries.length} item(ns) • ${cwd}`;
-  }
-  const q = s => rec.body.querySelector(s);
-  q('[data-a=back]').onclick = () => { if (hist.length){ cwd = hist.pop(); render(); } };
-  q('[data-a=up]').onclick   = () => { if (cwd !== '/'){ hist.push(cwd); cwd = normalizePath(cwd + '/..'); render(); } };
-  q('[data-a=ref]').onclick  = render;
-  q('[data-a=nf]').onclick = () => {
-    const n = prompt('Nome do novo arquivo:', 'novo.txt');
-    if (!n) return;
-    if (n.includes('/')) return notify('Arquivos','Nome inválido.','⚠️');
-    const p = joinPath(cwd, n);
-    if (getNode(p)) return notify('Arquivos','Já existe um item com esse nome.','⚠️');
-    writeFile(p, ''); render(); notify('Arquivos', `"${n}" criado.`, '📄');
-  };
-  q('[data-a=nd]').onclick = () => {
-    const n = prompt('Nome da nova pasta:', 'nova-pasta');
-    if (!n) return;
-    if (n.includes('/')) return notify('Arquivos','Nome inválido.','⚠️');
-    const par = getParent(joinPath(cwd, n));
-    if (!par) return;
-    if (par[0].children[par[1]]) return notify('Arquivos','Já existe.','⚠️');
-    par[0].children[par[1]] = { type:'dir', children:{} }; saveFS(); render();
-    notify('Arquivos', `"${n}" criada.`, '📁');
-  };
-  q('[data-a=ren]').onclick = () => {
-    if (!sel) return statusEl.textContent = 'Selecione um item primeiro.';
-    const nn = prompt('Novo nome:', sel);
-    if (!nn || nn === sel) return;
-    if (nn.includes('/')) return notify('Arquivos','Nome inválido.','⚠️');
-    if (renameNode(joinPath(cwd, sel), nn)){ sel = nn; render(); }
-    else notify('Arquivos','Não foi possível renomear.','⚠️');
-  };
-  q('[data-a=del]').onclick = () => {
-    if (!sel) return statusEl.textContent = 'Selecione um item primeiro.';
-    if (!confirm(`Excluir "${sel}"?`)) return;
-    deleteNode(joinPath(cwd, sel));
-    notify('Arquivos', `"${sel}" foi excluído.`, '🗑️');
-    sel = null; render();
-  };
-  render();
-}
-function openImageViewer(name, src){
-  const rec = createWindow({ title:name, icon:'🖼️', width:540, height:440 });
-  rec.body.innerHTML = `<div class="iv-wrap"><img alt="${esc(name)}"></div>`;
-  rec.body.querySelector('img').src = src;
-}
-
-/* ---------- Editor de Texto ---------- */
-function openEditor(path){
-  const rec = createWindow({ title:'Editor de Texto', icon:'📝', width:640, height:470 });
-  rec.body.innerHTML = `
-    <div class="ed-toolbar">
-      <button class="abtn primary ed-save">💾 Salvar</button>
-      <button class="abtn ed-saveas">Salvar como…</button>
-      <span class="ed-name"></span>
-    </div>
-    <textarea class="ed-text" spellcheck="false" placeholder="Digite seu texto aqui…"></textarea>
-    <div class="ed-status"></div>`;
-  const ta = rec.body.querySelector('.ed-text');
-  const nameEl = rec.body.querySelector('.ed-name');
-  const stEl = rec.body.querySelector('.ed-status');
-  let cur = path ? normalizePath(path) : null, dirty = false;
-  if (cur){
-    const node = getNode(cur);
-    if (node && node.type === 'file') ta.value = node.content || '';
-    else { notify('Editor','Arquivo não encontrado: ' + cur, '⚠️'); cur = null; }
-  }
-  const upd = () => {
-    const v = ta.value;
-    stEl.textContent = `${v.length} caracteres • ${v ? v.split('\n').length : 0} linhas${dirty ? ' • não salvo' : ''}`;
-    nameEl.textContent = cur || ' (sem título)';
-  };
-  ta.addEventListener('input', () => { dirty = true; upd(); });
-  function doSave(){
-    let target = cur;
-    if (!target){
-      const inp = prompt('Salvar como (caminho completo):', '/Documentos/sem-titulo.txt');
-      if (!inp) return;
-      target = normalizePath(inp);
-    }
-    try{
-      writeFile(target, ta.value);
-      cur = target; dirty = false; upd();
-      notify('Editor','Salvo em ' + cur, '💾'); beep(720,.06);
-    }catch(e){ notify('Editor','Erro ao salvar: ' + e.message, '⚠️'); }
-  }
-  rec.body.querySelector('.ed-save').onclick = doSave;
-  rec.body.querySelector('.ed-saveas').onclick = () => {
-    const inp = prompt('Salvar como:', cur || '/Documentos/sem-titulo.txt');
-    if (!inp) return;
-    const old = cur; cur = null;
-    const tmp = normalizePath(inp);
-    try{
-      writeFile(tmp, ta.value);
-      cur = tmp; dirty = false; upd();
-      notify('Editor','Salvo em ' + cur, '💾');
-    }catch(e){ cur = old; notify('Editor','Erro: ' + e.message, '⚠️'); }
-  };
-  ta.addEventListener('keydown', e => {
-    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's'){ e.preventDefault(); doSave(); }
-  });
-  upd();
-  setTimeout(() => ta.focus(), 60);
-}
-
-/* ---------- VessieLang Studio ---------- */
-const VS_DEFAULT = `// ✨ Bem-vindo ao VessieLang!
-var nome = "Vessie"
-print("Olá, " + nome + "!")
-
-// Repetição
-repeat 3 {
-  print("⧩ VessieLang é divertido")
-}
-
-// Funções e recursão
-func fatorial(n) {
-  if n <= 1 { return 1 }
-  return n * fatorial(n - 1)
-}
-print("5! = " + fatorial(5))
-
-// Condições
-var idade = 18
-if idade >= 18 {
-  print("Maior de idade")
-} else {
-  print("Menor de idade")
-}`;
-const VS_EXAMPLES = {
-  'Olá, mundo': 'print("Olá, mundo!")\nprint("Bem-vindo ao VessieLang OS")',
-  'Laços (while/repeat)': 'var i = 1\nwhile i <= 5 {\n  print("contando: " + i)\n  i = i + 1\n}\nrepeat 3 { print("de novo!") }',
-  'Fibonacci': 'func fib(n) {\n  if n < 2 { return n }\n  return fib(n-1) + fib(n-2)\n}\nvar i = 0\nwhile i < 10 {\n  print(fib(i))\n  i = i + 1\n}',
-  'Funções': 'func dobro(x) { return x * 2 }\nfunc soma(a, b) { return a + b }\nprint(dobro(21))\nprint(soma("ves-", "lang"))',
-  'Adivinhe o número': 'var segredo = rnd(1, 10)\nvar tries = 0\nvar chute = num(ask("Seu chute (1-10): "))\nwhile chute != segredo {\n  tries = tries + 1\n  if chute < segredo { print("É maior!") } else { print("É menor!") }\n  chute = num(ask("Tente de novo: "))\n}\nprint("Acertou em " + (tries + 1) + " tentativas!")'
-};
-const VS_DOCS = `
-<h3>⧩ VessieLang — Referência rápida</h3>
-<h3>Variáveis e operadores</h3>
-<pre>var x = 10
-x = x + 1
-// operadores: + - * / %   == != < > <= >=   and or not</pre>
-<h3>Condicionais e laços</h3>
-<pre>if x > 5 { print("maior") } else { print("menor") }
-while x > 0 { x = x - 1 }
-repeat 5 { print("oi") }</pre>
-<h3>Funções</h3>
-<pre>func soma(a, b) {
-  return a + b
-}
-print(soma(2, 3))</pre>
-<h3>Funções embutidas</h3>
-<pre>print(v)  len(s)  upper(s)  lower(s)  str(v)  num(s)
-floor(n)  abs(n)  rnd(a, b)  time()  ask(msg)</pre>
-<h3>Observações</h3>
-<pre>// comentários usam //
-// o "else" deve ficar na mesma linha do "}"
-// strings usam "aspas" ou 'aspas simples'
-// "abc" + 123 vira "abc123" (concatenação automática)</pre>`;
-
-function openVessie(path){
-  const rec = createWindow({ title:'VessieLang Studio', icon:'⧩', width:880, height:560 });
-  rec.body.innerHTML = `
-    <div class="vs-toolbar">
-      <button class="vs-run" data-a="run">▶ Executar</button>
-      <select class="abtn vs-examples"></select>
-      <button class="abtn" data-a="save">💾 Salvar</button>
-      <button class="abtn" data-a="docs">📖 Documentação</button>
-      <button class="abtn" data-a="clear">🧹 Limpar console</button>
-    </div>
-    <div class="vs-main">
-      <textarea class="vs-code" spellcheck="false"></textarea>
-      <div class="vs-console-wrap">
-        <div class="vs-console-title">Console de saída</div>
-        <div class="vs-console"></div>
-      </div>
-    </div>
-    <div class="vs-docs">${VS_DOCS}</div>`;
-  const codeEl = rec.body.querySelector('.vs-code');
-  const consoleEl = rec.body.querySelector('.vs-console');
-  const sel = rec.body.querySelector('.vs-examples');
-  const docsEl = rec.body.querySelector('.vs-docs');
-  codeEl.value = VS_DEFAULT;
-  if (path){
-    const node = getNode(path);
-    if (node && node.type === 'file') codeEl.value = node.content || '';
-  }
-  Object.keys(VS_EXAMPLES).forEach(k => {
-    const o = document.createElement('option'); o.textContent = k; sel.appendChild(o);
-  });
-  sel.onchange = () => { const c = VS_EXAMPLES[sel.value]; if (c) codeEl.value = c; sel.selectedIndex = -1; };
-  sel.selectedIndex = -1;
-
-  function run(){
-    consoleEl.innerHTML = '';
-    const t0 = performance.now();
-    try{
-      vlRun(codeEl.value, line => {
-        const d = document.createElement('div');
-        d.textContent = line;
-        consoleEl.appendChild(d);
-        consoleEl.scrollTop = consoleEl.scrollHeight;
-      });
-      const d = document.createElement('div');
-      d.className = 'vs-ok';
-      d.textContent = `✔ programa finalizado em ${(performance.now()-t0).toFixed(1)} ms`;
-      consoleEl.appendChild(d);
-    }catch(e){
-      const d = document.createElement('div');
-      d.className = 'vs-err';
-      d.textContent = '✖ ' + e.message;
-      consoleEl.appendChild(d);
-    }
-  }
-  rec.body.querySelector('[data-a=run]').onclick = run;
-  rec.body.querySelector('[data-a=clear]').onclick = () => consoleEl.innerHTML = '';
-  rec.body.querySelector('[data-a=docs]').onclick = () => docsEl.classList.toggle('open');
-  rec.body.querySelector('[data-a=save]').onclick = () => {
-    const p = prompt('Salvar programa como:', '/Projetos/meu-programa.vl');
-    if (!p) return;
-    try{
-      const full = writeFile(p, codeEl.value);
-      notify('VessieLang Studio','Salvo em ' + full, '💾');
-    }catch(e){ notify('Studio','Erro: ' + e.message, '⚠️'); }
-  };
-  codeEl.addEventListener('keydown', e => {
-    if (e.key === 'F5' || (e.ctrlKey && e.key === 'Enter')){ e.preventDefault(); run(); }
-  });
-  docsEl.addEventListener('click', () => docsEl.classList.remove('open'));
-}
-
-/* ---------- Calculadora ---------- */
-function openCalc(){
-  const rec = createWindow({ title:'Calculadora', icon:'🧮', width:300, height:430, resizable:false });
-  rec.body.innerHTML = `
-    <div class="calc">
-      <div class="calc-display"><div class="calc-expr">&nbsp;</div><div class="calc-result">0</div></div>
-      <div class="calc-grid"></div>
-    </div>`;
-  const grid = rec.body.querySelector('.calc-grid');
-  const exprEl = rec.body.querySelector('.calc-expr');
-  const resEl = rec.body.querySelector('.calc-result');
-  let expr = '';
-  const keys = ['C','(',')','⌫','7','8','9','÷','4','5','6','×','1','2','3','−','0','.','%','+'];
-  keys.forEach(k => {
-    const b = document.createElement('button');
-    b.textContent = k;
-    if ('÷×−+%()'.includes(k)) b.classList.add('op');
-    if (k === 'C') b.classList.add('danger');
-    b.onclick = () => {
-      beep(520,.03,'sine',.02);
-      if (k === 'C') expr = '';
-      else if (k === '⌫') expr = expr.slice(0,-1);
-      else expr += k;
-      exprEl.textContent = expr || '\u00a0';
-      try{ resEl.textContent = expr ? String(safeEval(expr.replace(/÷/g,'/').replace(/×/g,'*').replace(/−/g,'-'))) : '0'; }catch(e){}
-    };
-    grid.appendChild(b);
-  });
-  const eq = document.createElement('button');
-  eq.className = 'eq'; eq.textContent = '=';
-  eq.onclick = () => {
-    if (!expr) return;
-    try{
-      const v = safeEval(expr.replace(/÷/g,'/').replace(/×/g,'*').replace(/−/g,'-'));
-      expr = String(v); exprEl.textContent = expr; resEl.textContent = expr;
-      beep(700,.06);
-    }catch(e){ resEl.textContent = 'Erro'; beep(180,.15,'square',.05); }
-  };
-  grid.appendChild(eq);
-}
-
-/* ---------- Paint ---------- */
-function openPaint(){
-  const rec = createWindow({ title:'Paint', icon:'🎨', width:740, height:540 });
-  rec.body.innerHTML = `
-    <div class="pt-toolbar">
-      <input type="color" class="pt-color" value="#7c6cff">
-      <input type="range" class="pt-size" min="1" max="40" value="5" title="Espessura">
-      <button class="abtn pt-mode active" data-m="brush">🖌️ Pincel</button>
-      <button class="abtn pt-mode" data-m="eraser">🧽 Borracha</button>
-      <button class="abtn" data-a="clear">Limpar</button>
-      <button class="abtn primary" data-a="save">💾 Salvar em /Imagens</button>
-    </div>
-    <div class="pt-wrap"><canvas class="pt-canvas" width="900" height="560"></canvas></div>`;
-  const canvas = rec.body.querySelector('.pt-canvas');
-  const ctx = canvas.getContext('2d');
-  const colorEl = rec.body.querySelector('.pt-color');
-  const sizeEl = rec.body.querySelector('.pt-size');
-  ctx.fillStyle = '#ffffff';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  let drawing = false, last = null, eraser = false;
-  rec.body.querySelectorAll('.pt-mode').forEach(b => b.onclick = () => {
-    eraser = b.dataset.m === 'eraser';
-    rec.body.querySelectorAll('.pt-mode').forEach(x => x.classList.toggle('active', x === b));
-  });
-  const pos = e => {
-    const r = canvas.getBoundingClientRect();
-    return { x:(e.clientX - r.left) * canvas.width / r.width, y:(e.clientY - r.top) * canvas.height / r.height };
-  };
-  const stroke = (p, q) => {
-    ctx.strokeStyle = eraser ? '#ffffff' : colorEl.value;
-    ctx.lineWidth = +sizeEl.value;
-    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-    ctx.beginPath();
-    ctx.moveTo(p.x, p.y);
-    ctx.lineTo(q.x || p.x + .01, q.y || p.y + .01);
-    ctx.stroke();
-  };
-  canvas.addEventListener('pointerdown', e => { drawing = true; canvas.setPointerCapture(e.pointerId); last = pos(e); stroke(last); });
-  canvas.addEventListener('pointermove', e => { if (!drawing) return; const p = pos(e); stroke(last, p); last = p; });
-  ['pointerup','pointercancel'].forEach(ev => canvas.addEventListener(ev, () => drawing = false));
-  rec.body.querySelector('[data-a=clear]').onclick = () => { ctx.fillStyle = '#fff'; ctx.fillRect(0,0,canvas.width,canvas.height); };
-  rec.body.querySelector('[data-a=save]').onclick = () => {
-    const url = canvas.toDataURL('image/png');
-    const name = '/Imagens/desenho-' + Date.now() + '.png';
-    try{
-      writeFile(name, url, 'image');
-      notify('Paint','Salvo em ' + name, '🎨');
-    }catch(e){ notify('Paint','Erro ao salvar: ' + e.message, '⚠️'); }
-  };
-}
-
-/* ---------- Gerenciador de Tarefas ---------- */
-function openTasks(){
-  let iv;
-  const rec = createWindow({ title:'Gerenciador de Tarefas', icon:'📊', width:460, height:480,
-    onClose(){ clearInterval(iv); } });
-  rec.body.innerHTML = `
-    <div class="tm-wrap">
-      <div>
-        <div class="tm-stat"><label><span>CPU</span><span class="tm-cpu-v"></span></label><div class="tm-bar"><div class="tm-fill tm-cpu"></div></div></div>
-        <div class="tm-stat"><label><span>Memória</span><span class="tm-mem-v"></span></label><div class="tm-bar"><div class="tm-fill tm-mem"></div></div></div>
-        <div class="tm-sub">Uptime: <b class="tm-up"></b></div>
-      </div>
-      <div>
-        <div class="tm-sub">Processos (janelas abertas)</div>
-        <div class="tm-list"></div>
-      </div>
-    </div>`;
-  const list = rec.body.querySelector('.tm-list');
-  function update(){
-    if (!rec.el.isConnected) return clearInterval(iv);
-    const cpu = Math.min(98, 6 + openWins.size * 4 + Math.round(Math.random() * 14));
-    const mem = Math.min(96, 24 + openWins.size * 5 + Math.round(Math.random() * 6));
-    rec.body.querySelector('.tm-cpu').style.width = cpu + '%';
-    rec.body.querySelector('.tm-mem').style.width = mem + '%';
-    rec.body.querySelector('.tm-cpu-v').textContent = cpu + '%';
-    rec.body.querySelector('.tm-mem-v').textContent = mem + '%';
-    rec.body.querySelector('.tm-up').textContent = uptimeStr();
-    list.innerHTML = '';
-    if (!openWins.size){
-      list.innerHTML = '<div class="fx-empty">Nenhum processo em execução</div>';
-      return;
-    }
-    openWins.forEach(r => {
-      const row = document.createElement('div');
-      row.className = 'tm-row';
-      row.innerHTML = `<span>${r.icon}</span><span class="fx-name">${esc(r.title)}</span>`;
-      const btn = document.createElement('button');
-      btn.className = 'tm-kill'; btn.textContent = 'Finalizar';
-      btn.onclick = () => closeWin(r);
-      row.appendChild(btn);
-      list.appendChild(row);
-    });
-  }
-  iv = setInterval(update, 1000);
-  update();
-}
-
-/* ---------- Calendário ---------- */
-function openCalendar(){
-  const rec = createWindow({ title:'Calendário', icon:'📅', width:340, height:430 });
-  rec.body.innerHTML = `
-    <div class="cal-wrap">
-      <div class="cal-head">
-        <button class="cal-nav" data-a="prev">‹</button>
-        <b class="cal-title"></b>
-        <button class="cal-nav" data-a="next">›</button>
-      </div>
-      <div class="cal-grid"></div>
-      <div class="cal-foot"></div>
-    </div>`;
-  const grid = rec.body.querySelector('.cal-grid');
-  const title = rec.body.querySelector('.cal-title');
-  const foot = rec.body.querySelector('.cal-foot');
-  const DOW = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
-  let view = new Date(); view.setDate(1);
-  function render(){
-    title.textContent = view.toLocaleDateString('pt-BR', { month:'long', year:'numeric' });
-    grid.innerHTML = '';
-    DOW.forEach(d => {
-      const e = document.createElement('div'); e.className = 'cal-dow'; e.textContent = d; grid.appendChild(e);
-    });
-    const first = new Date(view.getFullYear(), view.getMonth(), 1).getDay();
-    const days = new Date(view.getFullYear(), view.getMonth()+1, 0).getDate();
-    const today = new Date();
-    for (let i = 0; i < first; i++){
-      const e = document.createElement('div'); e.className = 'cal-day other'; grid.appendChild(e);
-    }
-    for (let d = 1; d <= days; d++){
-      const e = document.createElement('div'); e.className = 'cal-day'; e.textContent = d;
-      if (d === today.getDate() && view.getMonth() === today.getMonth() && view.getFullYear() === today.getFullYear())
-        e.classList.add('today');
-      grid.appendChild(e);
-    }
-  }
-  rec.body.querySelector('[data-a=prev]').onclick = () => { view.setMonth(view.getMonth()-1); render(); };
-  rec.body.querySelector('[data-a=next]').onclick = () => { view.setMonth(view.getMonth()+1); render(); };
-  const updFoot = () => {
-    const n = new Date();
-    foot.textContent = n.toLocaleDateString('pt-BR', { weekday:'long', day:'numeric', month:'long', year:'numeric' })
-      + ' • ' + n.toLocaleTimeString('pt-BR');
-  };
-  updFoot();
-  const iv = setInterval(() => { if (!rec.el.isConnected) return clearInterval(iv); updFoot(); }, 1000);
-  render();
-}
-
-/* ---------- Snake ---------- */
-function openSnake(){
-  function onKey(e){
-    if (!rec.el.isConnected || !running) return;
-    const k = e.key.length === 1 ? e.key.toLowerCase() : e.key;
-    const m = KEYS[k];
-    if (!m) return;
-    e.preventDefault();
-    if (m[0] === -dir.x && m[1] === -dir.y) return;
-    nextDir = { x:m[0], y:m[1] };
-  }
-  const KEYS = { ArrowUp:[0,-1], ArrowDown:[0,1], ArrowLeft:[-1,0], ArrowRight:[1,0], w:[0,-1], s:[0,1], a:[-1,0], d:[1,0] };
-  let timer = null;
-  const rec = createWindow({ title:'Snake', icon:'🐍', width:470, height:560,
-    onClose(){ document.removeEventListener('keydown', onKey); clearInterval(timer); } });
-  rec.body.innerHTML = `
-    <div class="sk-top">
-      <span>Pontos: <b class="sk-score">0</b></span>
-      <span>Recorde: <b class="sk-best">0</b></span>
-      <button class="abtn primary sk-start" style="margin-left:auto">▶ Iniciar</button>
-    </div>
-    <div class="sk-wrap">
-      <canvas class="sk-canvas" width="420" height="420"></canvas>
-      <div class="sk-overlay">🐍 Pressione <b>Iniciar</b><br><small>Setas ou WASD para mover</small></div>
-    </div>
-    <div class="sk-hint">Setas ou WASD para mover</div>`;
-  const cv = rec.body.querySelector('.sk-canvas');
-  const ctx = cv.getContext('2d');
-  const overlay = rec.body.querySelector('.sk-overlay');
-  const scoreEl = rec.body.querySelector('.sk-score');
-  const bestEl = rec.body.querySelector('.sk-best');
-  const btnStart = rec.body.querySelector('.sk-start');
-  const N = 21, S = 20;
-  let snake, dir, nextDir, food, score, running = false;
-  let best = load('vl_snake_best', 0);
-  bestEl.textContent = best;
-  const rr = (x,y,w,h,r) => {
-    ctx.beginPath();
-    ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r);
-    ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath();
-  };
-  function placeFood(){
-    do { food = { x:Math.floor(Math.random()*N), y:Math.floor(Math.random()*N) }; }
-    while (snake.some(s => s.x === food.x && s.y === food.y));
-  }
-  function reset(){
-    snake = [{x:10,y:10},{x:9,y:10},{x:8,y:10}];
-    dir = {x:1,y:0}; nextDir = dir; score = 0;
-    placeFood(); draw(); updateHud();
-  }
-  function updateHud(){ scoreEl.textContent = score; bestEl.textContent = best; }
-  function draw(){
-    ctx.fillStyle = '#101024';
-    ctx.fillRect(0,0,420,420);
-    ctx.fillStyle = 'rgba(255,255,255,.045)';
-    for (let x = 0; x < N; x++) for (let y = 0; y < N; y++) ctx.fillRect(x*S+9, y*S+9, 2, 2);
-    ctx.fillStyle = '#ff5c7c';
-    ctx.beginPath(); ctx.arc(food.x*S+10, food.y*S+10, 7, 0, Math.PI*2); ctx.fill();
-    snake.forEach((s,i) => {
-      const t = i / snake.length;
-      ctx.fillStyle = i === 0 ? '#a48bff' : `rgba(${Math.round(124-40*t)},${Math.round(108+60*t)},255,${1 - t*.55})`;
-      rr(s.x*S+1.5, s.y*S+1.5, S-3, S-3, 5);
-      ctx.fill();
-    });
-  }
-  function step(){
-    dir = nextDir;
-    const head = { x:snake[0].x + dir.x, y:snake[0].y + dir.y };
-    if (head.x < 0 || head.y < 0 || head.x >= N || head.y >= N || snake.some(s => s.x === head.x && s.y === head.y))
-      return gameOver();
-    snake.unshift(head);
-    if (head.x === food.x && head.y === food.y){ score++; beep(700,.05); placeFood(); }
-    else snake.pop();
-    draw(); updateHud();
-  }
-  function gameOver(){
-    running = false; clearInterval(timer);
-    beep(160,.25,'square',.05);
-    if (score > best){ best = score; save('vl_snake_best', best); }
-    overlay.innerHTML = `💀 Fim de jogo!<br><small>Pontuação: ${score} — Recorde: ${best}</small>`;
-    overlay.style.display = 'flex';
-    updateHud();
-  }
-  btnStart.onclick = () => {
-    reset();
-    running = true;
-    overlay.style.display = 'none';
-    btnStart.textContent = '⟳ Reiniciar';
-    clearInterval(timer);
-    timer = setInterval(step, 120);
-  };
-  document.addEventListener('keydown', onKey);
-  reset();
-}
-
-/* ---------- Relógio + Cronômetro ---------- */
-function openClock(){
-  const rec = createWindow({ title:'Relógio', icon:'⏰', width:360, height:420, resizable:false,
-    onClose(){ clearInterval(iv1); clearInterval(iv2); } });
-  rec.body.innerHTML = `
-    <div class="ck-wrap">
-      <div class="ck-time"></div>
-      <div class="ck-date"></div>
-      <div class="ck-sep"></div>
-      <div class="ck-sw">00:00.0</div>
-      <div class="ck-btns">
-        <button class="abtn primary sw-toggle">▶ Iniciar</button>
-        <button class="abtn sw-reset">↺ Zerar</button>
-      </div>
-    </div>`;
-  const timeEl = rec.body.querySelector('.ck-time');
-  const dateEl = rec.body.querySelector('.ck-date');
-  const swEl = rec.body.querySelector('.ck-sw');
-  const tog = rec.body.querySelector('.sw-toggle');
-  const iv1 = setInterval(() => {
-    if (!rec.el.isConnected) return clearInterval(iv1);
-    const n = new Date();
-    timeEl.textContent = n.toLocaleTimeString('pt-BR');
-    dateEl.textContent = n.toLocaleDateString('pt-BR', { weekday:'long', day:'numeric', month:'long' });
-  }, 500);
-  let swRun = false, swBase = 0, swAcc = 0;
-  const swFmt = t => {
-    const m = Math.floor(t/60000), s = Math.floor(t/1000)%60, d = Math.floor(t/100)%10;
-    return String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0') + '.' + d;
-  };
-  tog.onclick = () => {
-    if (!swRun){ swBase = Date.now(); swRun = true; tog.textContent = '⏸ Pausar'; }
-    else { swAcc += Date.now() - swBase; swRun = false; tog.textContent = '▶ Continuar'; }
-  };
-  rec.body.querySelector('.sw-reset').onclick = () => {
-    swRun = false; swAcc = 0; tog.textContent = '▶ Iniciar'; swEl.textContent = '00:00.0';
-  };
-  const iv2 = setInterval(() => {
-    if (!rec.el.isConnected) return clearInterval(iv2);
-    swEl.textContent = swFmt(swAcc + (swRun ? Date.now() - swBase : 0));
-  }, 100);
-}
-
-/* ---------- Sobre ---------- */
-function openAbout(welcome){
-  const rec = createWindow({ title: welcome ? 'Bem-vindo' : 'Sobre o Sistema', icon:'⧩', width:440, height:490 });
-  const bytes = (localStorage.getItem('vl_fs') || '').length;
-  rec.body.innerHTML = `
-    <div class="ab-wrap">
-      <div class="ab-logo">⧩</div>
-      <h2>VessieLang OS</h2>
-      <div class="ab-ver">Versão 2.0 "Aurora"</div>
-      <div class="ab-grid">
-        <b>Núcleo</b><span>ves-kernel 2.0.1</span>
-        <b>Interpretador</b><span>VessieLang VM 1.0</span>
-        <b>Sessão</b><span>${esc(SETTINGS.currentUser)}</span>
-        <b>Uptime</b><span class="ab-up">${uptimeStr()}</span>
-        <b>Disco</b><span>${fmtSize(bytes)} usados</span>
-        <b>Janelas</b><span class="ab-wins">${openWins.size} aberta(s)</span>
-      </div>
-      ${welcome
-        ? `<div class="ab-msg">👋 Olá, <b>${esc(SETTINGS.currentUser)}</b>! Explore os ícones da <b>Área de Trabalho</b>, abra o <b>Terminal</b> e programe no <b>VessieLang Studio</b>.<br>Clique com o <b>botão direito</b> na área de trabalho para mais opções.</div>`
-        : `<div class="ab-msg">Criado com HTML, CSS e JavaScript puros.<br>Arquivos e configurações persistem no navegador.</div>`}
-    </div>`;
-  const iv = setInterval(() => {
-    const u = rec.body.querySelector('.ab-up');
-    if (!u) return clearInterval(iv);
-    u.textContent = uptimeStr();
-    rec.body.querySelector('.ab-wins').textContent = openWins.size + ' aberta(s)';
-  }, 1000);
-}
-
-/* ---------- Configurações ---------- */
-function openSettings(){
-  const rec = createWindow({ title:'Configurações', icon:'⚙️', width:560, height:540 });
-  rec.body.innerHTML = `
-    <div class="set-wrap">
-      <div class="set-sec"><h4>Aparência</h4>
-        <div class="set-row">
-          <span>Tema:</span>
-          <button class="abtn th-btn" data-t="dark">🌙 Escuro</button>
-          <button class="abtn th-btn" data-t="light">☀️ Claro</button>
+      <div id="notif-list">
+        <div class="n-item">
+          <div class="n-title">Bem-vindo ao VessieOS</div>
+          <div class="n-body">Sistema iniciado com sucesso. O motor neural está aprendendo com o seu uso — abra o Vessie Neural para acompanhar.</div>
         </div>
-        <div style="font-size:12px;color:var(--dim)">Papel de parede</div>
-        <div class="wp-grid"></div>
-      </div>
-      <div class="set-sec"><h4>Conta</h4>
-        <div class="set-row"><span>Usuário:</span><b>${esc(SETTINGS.currentUser)}</b></div>
-        <div class="set-row">
-          <input type="password" class="set-input pw-old" placeholder="Senha atual">
-          <input type="password" class="set-input pw-new" placeholder="Nova senha">
-          <button class="abtn pw-save">Alterar senha</button>
+        <div class="n-item info">
+          <div class="n-title">Jogos disponíveis</div>
+          <div class="n-body">Jogos desbloqueados. Abra o Game Hub para jogar!</div>
         </div>
       </div>
-      <div class="set-sec"><h4>Sistema</h4>
-        <div class="set-row">
-          <label style="display:flex;align-items:center;gap:9px;cursor:pointer">
-            <input type="checkbox" class="switch snd"> Sons do sistema
-          </label>
-        </div>
-        <div class="set-row"><button class="abtn danger reset-sys">⟲ Restaurar sistema (apaga tudo)</button></div>
+    </div>
+  </div>
+
+  <!-- TRAY FLYOUTS: um menu próprio por ícone da bandeja -->
+  <div class="fly" id="fly-wifi" role="dialog" aria-label="Wi-Fi">
+    <div class="fly-h"><i class="fas fa-wifi"></i><b>Wi-Fi</b><button class="fly-x" data-fly-close title="Fechar">✕</button></div>
+    <div class="tw-row"><span id="tw-wifi-state">Verificando…</span><span class="tw-dot" id="tw-wifi-dot"></span></div>
+    <div class="tw-sub" id="tw-wifi-type"></div>
+    <div class="tw-row"><button class="tw-btn" id="tw-wifi-open">Abrir Central de Notificações</button></div>
+    <div class="tw-note">O navegador mostra o status real, mas não lista redes — isso só o sistema operacional faz.</div>
+  </div>
+
+  <div class="fly" id="fly-vol" role="dialog" aria-label="Volume">
+    <div class="fly-h"><i class="fas fa-volume-up"></i><b>Volume</b><button class="fly-x" data-fly-close title="Fechar">✕</button></div>
+    <div class="tw-row"><span id="tw-vol-label">70%</span><button class="tw-mute" id="tw-vol-mute" title="Mudo">🔊</button></div>
+    <input class="tw-slider" id="tw-vol-slider" type="range" min="0" max="100" value="70">
+    <div class="tw-note">Controla de verdade músicas e vídeos tocados no VessieOS.</div>
+  </div>
+
+  <div class="fly" id="fly-bat" role="dialog" aria-label="Bateria">
+    <div class="fly-h"><i class="fas fa-battery-three-quarters"></i><b>Bateria</b><button class="fly-x" data-fly-close title="Fechar">✕</button></div>
+    <div class="tw-bat"><div class="tw-bat-pct" id="tw-bat-pct">—</div><div class="tw-bat-bar"><i id="tw-bat-fill"></i></div><div class="tw-bat-sub" id="tw-bat-sub">Lendo sensor…</div></div>
+    <div class="tw-note" id="tw-bat-note">Dados reais do sensor do computador, quando o navegador permite.</div>
+  </div>
+
+  <!-- START MENU -->
+  <div id="sm" role="dialog" aria-label="Menu Iniciar">
+    <div class="sm-top">
+      <div class="sm-srch">
+        <i class="fas fa-search" style="color:var(--dim)"></i>
+        <input id="sm-q" placeholder="Pesquisar apps, configurações..." autocomplete="off">
       </div>
-    </div>`;
-  const wpGrid = rec.body.querySelector('.wp-grid');
-  function renderWp(){
-    wpGrid.innerHTML = '';
-    WALLPAPERS.forEach((w,i) => {
-      const d = document.createElement('div');
-      d.className = 'wp-item' + (SETTINGS.wallpaper === i ? ' sel' : '');
-      d.style.background = w;
-      d.onclick = () => { SETTINGS.wallpaper = i; saveSettings(); applySettings(); renderWp(); beep(600,.05); };
-      wpGrid.appendChild(d);
-    });
-  }
-  renderWp();
-  rec.body.querySelectorAll('.th-btn').forEach(b => b.onclick = () => {
-    SETTINGS.theme = b.dataset.t; saveSettings(); applySettings();
-    notify('Configurações','Tema alterado para ' + (SETTINGS.theme === 'dark' ? 'escuro' : 'claro') + '.','🎨');
-  });
-  const snd = rec.body.querySelector('.snd');
-  snd.checked = !!SETTINGS.sounds;
-  snd.onchange = () => { SETTINGS.sounds = snd.checked; saveSettings(); if (snd.checked) beep(700,.07); };
-  rec.body.querySelector('.pw-save').onclick = () => {
-    const oldP = rec.body.querySelector('.pw-old').value;
-    const newP = rec.body.querySelector('.pw-new').value;
-    const u = SETTINGS.currentUser;
-    if (!USERS[u] || USERS[u].pass !== oldP) return notify('Conta','Senha atual incorreta.','⚠️');
-    if (newP.length < 3) return notify('Conta','A nova senha precisa ter ao menos 3 caracteres.','⚠️');
-    USERS[u].pass = newP; save('vl_users', USERS);
-    notify('Conta','Senha alterada com sucesso!','✅'); beep(800,.08);
-    rec.body.querySelector('.pw-old').value = '';
-    rec.body.querySelector('.pw-new').value = '';
-  };
-  rec.body.querySelector('.reset-sys').onclick = () => {
-    if (!confirm('Restaurar o sistema? Todos os arquivos e configurações serão apagados.')) return;
-    ['vl_fs','vl_settings','vl_users','vl_snake_best'].forEach(k => localStorage.removeItem(k));
-    location.reload();
-  };
-}
+    </div>
 
-/* ================================================================
-   REGISTRO DE APLICATIVOS
-   ================================================================ */
-const APPS = {
-  files:    { name:'Explorador de Arquivos', icon:'📁', open:() => openFiles('/') },
-  editor:   { name:'Editor de Texto',        icon:'📝', open:() => openEditor() },
-  terminal: { name:'Terminal',               icon:'▮', open:openTerminal },
-  vessie:   { name:'VessieLang Studio',      icon:'⧩', open:() => openVessie() },
-  calc:     { name:'Calculadora',            icon:'🧮', open:openCalc },
-  paint:    { name:'Paint',                  icon:'🎨', open:openPaint },
-  calendar: { name:'Calendário',             icon:'📅', open:openCalendar },
-  clock:    { name:'Relógio',                icon:'⏰', open:openClock },
-  snake:    { name:'Snake',                  icon:'🐍', open:openSnake },
-  tasks:    { name:'Gerenciador de Tarefas', icon:'📊', open:openTasks },
-  settings: { name:'Configurações',          icon:'⚙️', open:openSettings },
-  about:    { name:'Sobre o Sistema',        icon:'ℹ️', open:() => openAbout(false) }
-};
-const DESKTOP_APPS = ['files','editor','terminal','vessie','calc','paint','snake','settings'];
+    <div class="sm-body">
+      <div class="sm-view sm-view-pinned" id="sm-view-pinned">
+        <div class="sm-row-head">
+          <span>Fixados</span>
+          <button class="sm-alllink" id="sm-goto-all">Todos os apps <i class="fas fa-chevron-right"></i></button>
+        </div>
+        <div class="sm-pin-grid" id="sm-pin-grid"></div>
 
-/* ================================================================
-   DESKTOP / TASKBAR / START MENU / CONTEXTO
-   ================================================================ */
-function renderDesktopIcons(){
-  const c = $('desktopIcons');
-  c.innerHTML = '';
-  DESKTOP_APPS.forEach(k => {
-    const app = APPS[k];
-    const d = document.createElement('div');
-    d.className = 'dicon';
-    d.innerHTML = `<div class="dicon-icon">${app.icon}</div><div class="dicon-label">${app.name}</div>`;
-    d.ondblclick = () => app.open();
-    c.appendChild(d);
-  });
-}
-function renderStartMenu(filter=''){
-  const c = $('startMenuLeft');
-  c.innerHTML = '';
-  const f = filter.trim().toLowerCase();
-  const list = Object.entries(APPS).filter(([,a]) => a.name.toLowerCase().includes(f));
-  if (!list.length){
-    c.innerHTML = '<div class="sm-empty">Nenhum aplicativo encontrado</div>';
-    return;
-  }
-  list.forEach(([k,a]) => {
-    const item = document.createElement('div');
-    item.className = 'sm-app';
-    item.innerHTML = `<span class="sm-icon">${a.icon}</span><span>${a.name}</span>`;
-    item.onclick = () => { a.open(); $('startMenu').classList.remove('open'); };
-    c.appendChild(item);
-  });
-}
- $('startBtn').onclick = () => {
-  const sm = $('startMenu');
-  const opening = !sm.classList.contains('open');
-  sm.classList.toggle('open');
-  if (opening){
-    $('startMenuSearch').value = '';
-    renderStartMenu();
-    setTimeout(() => $('startMenuSearch').focus(), 60);
-  }
-};
- $('startMenuSearch').addEventListener('input', e => renderStartMenu(e.target.value));
- $('startMenuSearch').addEventListener('keydown', e => {
-  if (e.key === 'Enter'){
-    const first = $('startMenuLeft').querySelector('.sm-app');
-    if (first) first.click();
-  }
-});
-document.querySelectorAll('.start-power-btn').forEach(b => b.onclick = () => {
-  $('startMenu').classList.remove('open');
-  if (b.dataset.action === 'logout') logout();
-  if (b.dataset.action === 'reboot'){ notify('Sistema','Reiniciando…','⟳'); setTimeout(() => location.reload(), 600); }
-  if (b.dataset.action === 'shutdown') shutdown();
-});
-function tickClock(){
-  const n = new Date();
-  $('taskbarClock').innerHTML =
-    n.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' }) +
-    `<span class="d">${n.toLocaleDateString('pt-BR')}</span>`;
-}
- $('taskbarClock').onclick = () => openClock();
+        <div class="sm-row-head" style="margin-top:16px"><span>Recomendados</span></div>
+        <div class="sm-recent-list" id="sm-recent"><span class="sm-recent-empty">Nenhum app recente</span></div>
+      </div>
 
-/* menu de contexto da área de trabalho */
-document.addEventListener('contextmenu', e => {
-  if (e.target.closest('.window') || e.target.closest('#taskbar') || e.target.closest('#startMenu')) return;
-  e.preventDefault();
-  const cm = $('ctxMenu');
-  cm.innerHTML = `
-    <div class="ctx-item" data-a="nf">📄 Novo arquivo em /Documentos</div>
-    <div class="ctx-item" data-a="nd">📁 Nova pasta em /Documentos</div>
-    <div class="ctx-sep"></div>
-    <div class="ctx-item" data-a="term">▮ Abrir Terminal</div>
-    <div class="ctx-item" data-a="files">📁 Abrir Explorador</div>
-    <div class="ctx-sep"></div>
-    <div class="ctx-item" data-a="wall">🎨 Alterar papel de parede</div>
-    <div class="ctx-item" data-a="set">⚙️ Configurações</div>`;
-  cm.classList.add('open');
-  cm.style.left = clamp(e.clientX, 4, innerWidth - 240) + 'px';
-  cm.style.top  = clamp(e.clientY, 4, innerHeight - 300) + 'px';
-  cm.querySelectorAll('.ctx-item').forEach(item => item.onclick = () => {
-    cm.classList.remove('open');
-    const a = item.dataset.a;
-    if (a === 'term') openTerminal();
-    if (a === 'files') openFiles('/');
-    if (a === 'set') openSettings();
-    if (a === 'wall'){
-      SETTINGS.wallpaper = (SETTINGS.wallpaper + 1) % WALLPAPERS.length;
-      saveSettings(); applySettings();
-      notify('Papel de parede','Alterado com sucesso.','🎨');
-    }
-    if (a === 'nf'){
-      const n = prompt('Nome do novo arquivo:', 'novo.txt');
-      if (n && !n.includes('/')){
-        writeFile('/Documentos/' + n, '');
-        notify('Arquivos', `"${n}" criado em /Documentos.`, '📄');
-      }
-    }
-    if (a === 'nd'){
-      const n = prompt('Nome da nova pasta:', 'nova-pasta');
-      if (n && !n.includes('/')){
-        const par = getParent('/Documentos/' + n);
-        if (par && !par[0].children[par[1]]){
-          par[0].children[par[1]] = { type:'dir', children:{} }; saveFS();
-          notify('Arquivos', `"${n}" criada em /Documentos.`, '📁');
-        }
-      }
-    }
-  });
-});
-document.addEventListener('click', e => {
-  if (!e.target.closest('#ctxMenu')) $('ctxMenu').classList.remove('open');
-  if (!e.target.closest('#startMenu') && !e.target.closest('#startBtn')) $('startMenu').classList.remove('open');
-});
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape'){ $('ctxMenu').classList.remove('open'); $('startMenu').classList.remove('open'); }
-});
+      <div class="sm-view sm-view-all" id="sm-view-all" style="display:none">
+        <div class="sm-row-head sm-row-head-back">
+          <button class="sm-backlink" id="sm-goto-pinned"><i class="fas fa-chevron-left"></i></button>
+          <span>Todos os apps</span>
+        </div>
+        <div id="sm-grid"></div>
+      </div>
 
-/* ================================================================
-   LOGIN / BOOT / SESSÃO
-   ================================================================ */
-function showLoginError(msg){
-  $('loginError').textContent = msg;
-  const box = $('loginBox');
-  box.classList.remove('shake'); void box.offsetWidth; box.classList.add('shake');
-  beep(180,.15,'square',.05);
-}
-function attemptLogin(){
-  const u = $('loginUser').value.trim(), p = $('loginPass').value;
-  if (!u || !p) return showLoginError('Preencha usuário e senha.');
-  if (!USERS[u]) return showLoginError(`Usuário "${u}" não existe. (padrão: admin)`);
-  if (USERS[u].pass !== p) return showLoginError('Senha incorreta. (padrão: admin)');
-  startSession(u);
-}
- $('loginBtn').onclick = attemptLogin;
-[$('loginUser'), $('loginPass')].forEach(el => el.addEventListener('keydown', e => { if (e.key === 'Enter') attemptLogin(); }));
+      <div class="sm-view sm-view-search" id="sm-view-search" style="display:none">
+        <div class="sm-row-head"><span id="sm-search-count">Resultados</span></div>
+        <div class="sm-search-grid" id="sm-search-grid"></div>
+      </div>
+    </div>
 
-function startSession(user){
-  SETTINGS.currentUser = u0(user); saveSettings();
-  function u0(x){ return x; }
-  beep(660,.09); setTimeout(() => beep(880,.12), 90);
-  $('loginScreen').classList.add('fade');
-  setTimeout(() => {
-    $('loginScreen').style.display = 'none';
-    $('bootScreen').style.display = 'flex';
-    const log = $('bootLog');
-    log.innerHTML = '';
-    const lines = [
-      ['ves-kernel 2.0.1 — iniciando núcleo…', 'ok'],
-      ['montando sistema de arquivos virtual…', 'ok'],
-      ['carregando interpretador VessieLang…', 'ok'],
-      ['inicializando servidor gráfico…', 'ok'],
-      [`sessão de "${user}" iniciada. bem-vindo(a)!`, '']
-    ];
-    let i = 0;
-    (function step(){
-      if (i < lines.length){
-        const d = document.createElement('div');
-        d.innerHTML = esc(lines[i][0]) + (lines[i][1] ? ' <span class="ok">[ ' + lines[i][1] + ' ]</span>' : '');
-        log.appendChild(d);
-        i++;
-        setTimeout(step, 230);
-      } else setTimeout(finishBoot, 380);
-    })();
-  }, 430);
-}
-function finishBoot(){
-  $('bootScreen').style.display = 'none';
-  $('desktop').classList.add('ready');
-  notify('Bem-vindo!', `Sessão iniciada como ${SETTINGS.currentUser}.`, '👋');
-  if (!SETTINGS.firstRunDone){
-    SETTINGS.firstRunDone = true; saveSettings();
-    setTimeout(() => openAbout(true), 600);
-  }
-}
-function logout(){
-  closeAllWindows();
-  $('startMenu').classList.remove('open');
-  $('desktop').classList.remove('ready');
-  const ls = $('loginScreen');
-  ls.style.display = 'flex';
-  requestAnimationFrame(() => ls.classList.remove('fade'));
-  $('loginPass').value = '';
-  $('loginError').textContent = '';
-}
-function shutdown(){
-  closeAllWindows();
-  $('startMenu').classList.remove('open');
-  beep(440,.2,'sine',.05);
-  $('desktop').classList.remove('ready');
-  setTimeout(() => $('powerScreen').style.display = 'flex', 350);
-}
- $('powerOn').onclick = () => location.reload();
+    <div class="sm-ft">
+      <div class="sm-usr" id="sm-usr">
+        <div class="sm-uav"><i class="fas fa-user"></i></div>
+        <span id="sm-uname">Visitante</span>
+      </div>
+      <div class="sm-pw-wrap">
+        <button class="sm-pw" id="sm-power" title="Opções de energia"><i class="fas fa-power-off"></i></button>
+        <div class="sm-pw-menu" id="sm-pw-menu">
+          <div class="cti" data-act="sleep"><i class="fas fa-moon"></i> Suspender</div>
+          <div class="cti" data-act="restart"><i class="fas fa-rotate-right"></i> Reiniciar</div>
+          <div class="cti" data-act="shutdown"><i class="fas fa-power-off"></i> Desligar</div>
+        </div>
+      </div>
+    </div>
+  </div>
 
+  <!-- GLOBAL SEARCH (lupa da taskbar: apps + web + configurações) -->
+  <div id="gsearch" role="dialog" aria-label="Pesquisa">
+    <div class="gs-bar">
+      <i class="fas fa-search"></i>
+      <input id="gsearch-input" placeholder="Pesquisar apps, sites e configurações..." autocomplete="off">
+      <button id="gsearch-close" title="Fechar pesquisa"><i class="fas fa-times"></i></button>
+    </div>
+    <div id="gsearch-results"></div>
+  </div>
 
-/* ================================================================
-   INICIALIZAÇÃO
-   ================================================================ */
-applySettings();
-renderDesktopIcons();
-renderStartMenu();
-tickClock();
-setInterval(tickClock, 1000);
-</script>
+  <!-- TOAST CONTAINER -->
+  <aside id="toasts" class="toast-container" role="region" aria-label="Notificações do sistema" aria-live="polite"
+    aria-atomic="true"></aside>
+
+  <!-- EASTER EGG: digite "vessie" em qualquer lugar do desktop para ativar.
+       Tema "assombrado" original do VessieOS — visual próprio (glitch +
+       estática), nada de imagem de terceiros. Assustador na estética, mas
+       inofensivo: dura 4s e não trava nem exige nenhuma ação do usuário. -->
+  <div id="eg">
+    <div class="eg-static"></div>
+    <div class="eg-heart">💜</div>
+    <div class="horror-title">V E S S I E</div>
+    <div class="horror-sub">...eu sabia que você me chamaria 👁️</div>
+  </div>
+  <script src="./JS/systems/desktop/main.js"></script>
+  <!-- Motor VessieScript (linguagem própria do ecossistema, ver assets/vessiescript/SPEC.md)
+       + extensões (comandos reais), adaptador de kernel real e adaptador de C#.
+       Precisam ser <script> clássicos carregados ANTES do pipeline de módulos ES
+       abaixo, para que window.VessieScript já exista quando o ScriptingManager
+       inicializar (ver NEW-MODULES.md § ScriptingManager). A cadeia clássica do
+       VessieLang (B1/J3/G5/FULL) é carregada à parte, dinamicamente, pelo
+       array de scripts de JS/systems/desktop/main.js. -->
+  <script src="./JS/kernel/modules/scripting/lib/vessiescript.js"></script>
+  <script src="./JS/kernel/modules/scripting/lib/kernel-adapter.js"></script>
+  <script src="./JS/kernel/modules/scripting/lib/vessiescript-extensions.js"></script>
+  <script src="./JS/kernel/modules/scripting/lib/csharp-adapter.js"></script>
+  <!-- Pipeline de módulos ES (PerformanceManager, RenderManager, MotionBlurEngine,
+       GraphicsHub/GameHubRenderer, SystemsRuntime com os 155 sistemas, etc.).
+       Precisa de type="module" por causa dos import/export internos — por isso
+       roda em uma tag separada da cadeia clássica de scripts acima. Falhas aqui
+       não travam o boot: cada módulo tem espera defensiva pelo kernel. -->
+  <script type="module" src="./JS/kernel/modules/index.js"></script>
+  <script src="./JS/kernel/autohealer.js"></script>
 </body>
+
 </html>

@@ -1,0 +1,182 @@
+/* Gerenciador de Tarefas - estilos movidos do <style> embutido na janela (visuais identicos). */
+      .taskmgr-container {
+        display:flex;
+        flex-direction:column;
+        height:100%;
+        background:#1a1a2e;
+        color:#eef2ff;
+        overflow:hidden;
+        font-family:'Segoe UI',system-ui,sans-serif;
+      }
+      .taskmgr-tabs {
+        display:flex;
+        gap:0;
+        background:rgba(0,0,0,.2);
+        border-bottom:1px solid rgba(255,255,255,.05);
+        padding:0 12px;
+        flex-shrink:0;
+      }
+      .taskmgr-tab {
+        padding:10px 18px;
+        font-size:.78rem;
+        font-weight:500;
+        color:var(--dim);
+        cursor:pointer;
+        border-bottom:2px solid transparent;
+        transition:.14s;
+        background:transparent;
+        border-top:none;
+        border-left:none;
+        border-right:none;
+        font-family:inherit;
+      }
+      .taskmgr-tab:hover {
+        color:#fff;
+        background:rgba(255,255,255,.04);
+      }
+      .taskmgr-tab.active {
+        color:#fff;
+        border-bottom-color:var(--a);
+        background:rgba(96,165,250,.08);
+      }
+      .taskmgr-content {
+        flex:1;
+        overflow:auto;
+        padding:12px 16px;
+        background:rgba(0,0,0,.15);
+      }
+      .taskmgr-content::-webkit-scrollbar { width:6px; }
+      .taskmgr-content::-webkit-scrollbar-thumb { background:var(--a); border-radius:3px; }
+      .taskmgr-stats {
+        display:grid;
+        grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
+        gap:10px;
+        margin-bottom:16px;
+        background:rgba(255,255,255,.03);
+        border-radius:10px;
+        padding:12px 16px;
+        border:1px solid rgba(255,255,255,.05);
+      }
+      .taskmgr-stat-item {
+        text-align:center;
+      }
+      .taskmgr-stat-item .label {
+        font-size:.65rem;
+        text-transform:uppercase;
+        color:var(--dim);
+        letter-spacing:.05em;
+      }
+      .taskmgr-stat-item .value {
+        font-size:1.2rem;
+        font-weight:600;
+        color:#fff;
+        margin-top:2px;
+      }
+      .taskmgr-table {
+        width:100%;
+        border-collapse:collapse;
+        font-size:.82rem;
+      }
+      .taskmgr-table thead th {
+        text-align:left;
+        padding:8px 12px;
+        color:var(--dim);
+        border-bottom:1px solid rgba(255,255,255,.06);
+        font-weight:600;
+        font-size:.7rem;
+        text-transform:uppercase;
+        letter-spacing:.05em;
+        position:sticky;
+        top:0;
+        background:#1a1a2e;
+        z-index:2;
+      }
+      .taskmgr-table tbody tr {
+        transition:.1s;
+      }
+      .taskmgr-table tbody tr:hover {
+        background:rgba(255,255,255,.04);
+      }
+      .taskmgr-table tbody td {
+        padding:8px 12px;
+        border-bottom:1px solid rgba(255,255,255,.03);
+      }
+      .taskmgr-perf {
+        display:grid;
+        grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+        gap:12px;
+        margin-top:16px;
+      }
+      .taskmgr-perf-card {
+        background:rgba(255,255,255,.04);
+        border:1px solid rgba(255,255,255,.06);
+        border-radius:10px;
+        padding:14px 16px;
+      }
+      .taskmgr-perf-card .label {
+        font-size:.7rem;
+        color:var(--dim);
+        text-transform:uppercase;
+        letter-spacing:.04em;
+      }
+      .taskmgr-perf-card .value {
+        font-size:1.5rem;
+        font-weight:600;
+        color:#fff;
+        margin-top:2px;
+      }
+      .taskmgr-perf-card .bar {
+        height:4px;
+        background:rgba(255,255,255,.08);
+        border-radius:2px;
+        margin-top:6px;
+        overflow:hidden;
+      }
+      .taskmgr-perf-card .bar .fill {
+        height:100%;
+        border-radius:2px;
+        transition:width .8s ease;
+        width:0%;
+      }
+      .taskmgr-actions {
+        display:flex;
+        gap:8px;
+        margin-top:12px;
+        flex-wrap:wrap;
+      }
+      .taskmgr-actions button {
+        background:rgba(255,255,255,.06);
+        border:1px solid rgba(255,255,255,.06);
+        color:#fff;
+        padding:6px 14px;
+        border-radius:6px;
+        font-size:.78rem;
+        cursor:pointer;
+        transition:.14s;
+      }
+      .taskmgr-actions button:hover {
+        background:rgba(255,255,255,.12);
+      }
+      .taskmgr-actions button.danger {
+        background:rgba(239,68,68,.15);
+        border-color:rgba(239,68,68,.2);
+        color:#f87171;
+      }
+      .taskmgr-actions button.danger:hover {
+        background:rgba(239,68,68,.25);
+      }
+      @media (max-width:640px) {
+        .taskmgr-stats { grid-template-columns:repeat(2,1fr); }
+        .taskmgr-perf { grid-template-columns:1fr; }
+        .taskmgr-table { font-size:.72rem; }
+        .taskmgr-table thead th, .taskmgr-table tbody td { padding:6px 8px; }
+      }
+
+/* Classes convertidas do inline do modelo (visuais identicos). */
+.taskmgr-table thead th.tmg-th-c { text-align:center; }
+.tmg-membox { margin-top:16px;background:rgba(255,255,255,.03);border-radius:10px;padding:14px;border:1px solid rgba(255,255,255,.05); }
+.tmg-boxtitle { font-size:.8rem;color:var(--dim); }
+.tmg-histlist { margin-top:8px;font-size:.78rem;color:var(--text-2);max-height:300px;overflow-y:auto; }
+.tmg-histempty { color:#5b6680;padding:4px 0; }
+.tmg-memdetails { margin-top:8px;font-size:.75rem;color:var(--text-2); }
+.tmg-note { font-size:.7rem;color:#5b6680;margin-top:8px; }

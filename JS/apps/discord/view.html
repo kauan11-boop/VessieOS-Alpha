@@ -1,0 +1,88 @@
+    <div id="discrod-root" style="display:flex;flex-direction:column;height:100%;background:#313338;overflow:hidden;">
+      <!-- TELA DE LOGIN -->
+      <div id="drd-login-panel" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:16px;padding:20px;background:#313338;">
+        <div style="font-size:3rem;background:#5865F2;width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;">💬</div>
+        <h2 style="color:#fff;margin:0;font-weight:700;">Discord</h2>
+        <p style="color:#b5bac1;margin:0;text-align:center;font-size:.9rem;">Digite seu nome e senha para entrar</p>
+        <input id="drd-login-user" placeholder="Usuário" style="width:80%;padding:12px 16px;border-radius:8px;border:1px solid #1e1f22;background:#1e1f22;color:#fff;font-size:.95rem;outline:none;transition:.15s;">
+        <input id="drd-login-pass" type="password" placeholder="Senha" style="width:80%;padding:12px 16px;border-radius:8px;border:1px solid #1e1f22;background:#1e1f22;color:#fff;font-size:.95rem;outline:none;transition:.15s;">
+        <button id="drd-login-btn" style="width:80%;padding:12px;border-radius:8px;border:none;background:#5865F2;color:#fff;font-weight:600;font-size:1rem;cursor:pointer;transition:.15s;">Entrar</button>
+        <div id="drd-login-error" style="color:#f87171;font-size:.85rem;min-height:24px;"></div>
+      </div>
+
+      <!-- TELA DO DISCORD -->
+      <div id="drd-chat-panel" style="display:none;flex-direction:column;height:100%;background:#313338;">
+        <div style="display:flex;height:100%;">
+          <!-- SERVER SIDEBAR -->
+          <div id="drd-server-sidebar" style="width:72px;background:#1e1f22;display:flex;flex-direction:column;align-items:center;padding:12px 0;gap:8px;overflow-y:auto;flex-shrink:0;border-right:1px solid #2b2d31;">
+            <div id="drd-server-list" style="display:flex;flex-direction:column;gap:8px;width:100%;align-items:center;"></div>
+            <button id="drd-add-server-btn" style="width:48px;height:48px;border-radius:50%;background:#2b2d31;border:none;color:#3ba55c;font-size:1.8rem;cursor:pointer;transition:.15s;display:flex;align-items:center;justify-content:center;margin-top:4px;">+</button>
+          </div>
+
+          <!-- CHAT PRINCIPAL -->
+          <div style="flex:1;display:flex;flex-direction:column;min-width:0;">
+            <!-- TOPO -->
+            <div id="drd-server-header" style="display:flex;align-items:center;padding:8px 16px;background:#2b2d31;border-bottom:1px solid #1e1f22;flex-shrink:0;gap:12px;height:48px;">
+              <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;">
+                <span id="drd-server-name" style="font-weight:700;color:#fff;font-size:1rem;white-space:nowrap;">Servidor</span>
+                <span id="drd-server-member-count" style="color:#b5bac1;font-size:.75rem;"></span>
+              </div>
+              <div style="display:flex;gap:6px;align-items:center;">
+                <button id="drd-friends-toggle" style="background:transparent;border:none;color:#b5bac1;padding:4px 8px;border-radius:4px;font-size:.8rem;cursor:pointer;transition:.15s;"><i class="fas fa-user-friends"></i> Amigos</button>
+                <button id="drd-reload-btn" style="background:transparent;border:none;color:#b5bac1;padding:4px 8px;border-radius:4px;font-size:.8rem;cursor:pointer;transition:.15s;" title="Recarregar servidores"><i class="fas fa-server"></i></button>
+                <button id="drd-sync-btn" style="background:transparent;border:none;color:#b5bac1;padding:4px 8px;border-radius:4px;font-size:.8rem;cursor:pointer;transition:.15s;"><i class="fas fa-sync-alt"></i></button>
+                <button id="drd-settings-btn" title="Conectar com um servidor Discord real" style="background:transparent;border:none;color:#b5bac1;padding:4px 8px;border-radius:4px;font-size:.8rem;cursor:pointer;transition:.15s;"><i class="fas fa-gear"></i></button>
+                <span id="drd-online-badge" title="Sem ponte com Discord real configurada" style="display:flex;align-items:center;gap:4px;font-size:.7rem;color:#b5bac1;padding:2px 8px;border-radius:10px;background:#1e1f22;"><span style="width:6px;height:6px;border-radius:50%;background:#80848e;display:inline-block;"></span>Local</span>
+                <button id="drd-logout-btn" style="background:transparent;border:none;color:#b5bac1;padding:4px 8px;border-radius:4px;font-size:.8rem;cursor:pointer;transition:.15s;">Sair</button>
+              </div>
+            </div>
+
+            <!-- CORPO -->
+            <div style="display:flex;flex:1;min-height:0;">
+              <!-- CANAIS -->
+              <div id="drd-channel-sidebar" style="width:220px;background:#2b2d31;padding:8px 6px;overflow-y:auto;flex-shrink:0;border-right:1px solid #1e1f22;">
+                <div style="color:#b5bac1;font-size:.7rem;text-transform:uppercase;font-weight:600;padding:4px 8px;letter-spacing:.04em;">Canais de texto</div>
+                <div id="drd-channel-list"></div>
+              </div>
+
+              <!-- CHAT -->
+              <div style="flex:1;display:flex;flex-direction:column;background:#313338;min-width:0;">
+                <div id="drd-msg-list" style="flex:1;overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;gap:4px;background:#313338;"></div>
+                <div style="padding:8px 16px 12px;background:#313338;border-top:1px solid #2b2d31;flex-shrink:0;">
+                  <div style="display:flex;align-items:center;gap:6px;background:#383a40;border-radius:8px;padding:4px 8px;">
+                    <button id="drd-sticker-btn" style="background:transparent;border:none;color:#b5bac1;font-size:1.2rem;cursor:pointer;padding:4px;">😊</button>
+                    <label for="drd-file-input" style="background:transparent;border:none;color:#b5bac1;font-size:1.2rem;cursor:pointer;padding:4px;"><i class="fas fa-paperclip"></i></label>
+                    <input type="file" id="drd-file-input" accept="image/*" style="display:none;">
+                    <input id="drd-msg-input" placeholder="Mensagem" style="flex:1;background:transparent;border:none;color:#dbdee1;outline:none;font-size:.95rem;padding:8px 4px;">
+                    <button id="drd-send-btn" style="background:#5865F2;border:none;color:#fff;border-radius:6px;padding:6px 14px;font-size:.9rem;cursor:pointer;transition:.15s;font-weight:600;">Enviar</button>
+                  </div>
+                  <div id="drd-sticker-picker" style="display:none;position:absolute;bottom:70px;left:20px;background:#2b2d31;border:1px solid #1e1f22;border-radius:12px;padding:10px;gap:6px;flex-wrap:wrap;max-width:260px;max-height:150px;overflow-y:auto;z-index:10;"></div>
+                </div>
+              </div>
+
+              <!-- MEMBROS -->
+              <div id="drd-members-sidebar" style="width:200px;background:#2b2d31;padding:12px 8px;overflow-y:auto;flex-shrink:0;border-left:1px solid #1e1f22;display:block;">
+                <div style="color:#b5bac1;font-size:.7rem;text-transform:uppercase;font-weight:600;padding:4px 8px;letter-spacing:.04em;">Membros — <span id="drd-member-count">0</span></div>
+                <div id="drd-member-list"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PAINEL DE AMIGOS -->
+        <div id="drd-friends-panel" style="display:none;position:absolute;right:12px;top:56px;width:280px;max-height:400px;background:#2b2d31;border:1px solid #1e1f22;border-radius:12px;padding:12px;overflow-y:auto;z-index:20;box-shadow:0 8px 24px rgba(0,0,0,.5);"></div>
+
+        <!-- PAINEL DE CONEXÃO ONLINE (webhook do Discord real, opcional) -->
+        <div id="drd-settings-panel" style="display:none;position:absolute;right:12px;top:56px;width:320px;background:#2b2d31;border:1px solid #1e1f22;border-radius:12px;padding:14px;z-index:30;box-shadow:0 8px 24px rgba(0,0,0,.5);">
+          <div style="color:#fff;font-weight:700;margin-bottom:6px;font-size:.95rem;"><i class="fas fa-tower-broadcast" style="color:#5865F2;"></i> Conectar a um servidor Discord real</div>
+          <p style="color:#b5bac1;font-size:.78rem;line-height:1.4;margin:0 0 10px;">Este chat funciona sozinho, sem servidor (localStorage + sincronização entre abas). Para que as mensagens também apareçam no <strong>seu</strong> servidor Discord, cole abaixo a URL de uma webhook criada por você (Configurações do canal → Integrações → Webhooks → Nova Webhook). Nunca compartilhe essa URL — quem a tiver pode postar no seu servidor.</p>
+          <input id="drd-webhook-input" placeholder="https://discord.com/api/webhooks/..." style="width:100%;box-sizing:border-box;padding:9px 10px;border-radius:8px;border:1px solid #1e1f22;background:#1e1f22;color:#fff;font-size:.8rem;margin-bottom:8px;">
+          <div style="display:flex;gap:8px;">
+            <button id="drd-webhook-save" style="flex:1;padding:8px;border-radius:8px;border:none;background:#5865F2;color:#fff;font-weight:600;font-size:.82rem;cursor:pointer;">Salvar</button>
+            <button id="drd-webhook-test" style="flex:1;padding:8px;border-radius:8px;border:1px solid #3f4147;background:transparent;color:#dbdee1;font-weight:600;font-size:.82rem;cursor:pointer;">Testar</button>
+            <button id="drd-webhook-clear" title="Desconectar" style="padding:8px 10px;border-radius:8px;border:1px solid #3f4147;background:transparent;color:#f87171;font-weight:600;font-size:.82rem;cursor:pointer;"><i class="fas fa-trash"></i></button>
+          </div>
+          <div id="drd-webhook-status" style="margin-top:8px;font-size:.75rem;color:#b5bac1;"></div>
+        </div>
+      </div>
+    </div>

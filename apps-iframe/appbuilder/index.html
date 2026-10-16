@@ -1,0 +1,16 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Criador de Apps</title><link rel="stylesheet" href="../_sdk/vessie-ui.css"><link rel="stylesheet" href="style.css"></head>
+<body><div class="b">
+  <header class="card">
+    <div class="meta"><label>Nome<input id="name" value="Meu app"></label><label>ID<input id="id" value="meu-app" pattern="[a-z0-9-]+"></label><label>Ícone<input id="icon" value="fa-cube"></label>
+      <label>Meus apps<select id="mine"><option value="">— novo —</option></select></label></div>
+    <fieldset><legend>Permissões (comandos do sistema que o app pode usar)</legend><div id="perms"></div>
+      <small class="dim">Comandos puros (text, math, date, enc, json…) são sempre liberados. “admin” libera comandos perigosos, sempre com confirmação.</small></fieldset>
+  </header>
+  <main>
+    <section class="ed"><nav role="tablist"><button role="tab" data-t="html" class="on">HTML</button><button role="tab" data-t="css">CSS</button><button role="tab" data-t="js">JS</button></nav>
+      <textarea id="code" spellcheck="false" aria-label="Código"></textarea></section>
+    <aside class="card col"><b>Inserir comando</b><input id="find" placeholder="Buscar (ex.: toast, cor, arquivo)"><ul id="cmds"></ul></aside>
+  </main>
+  <footer class="row"><button class="primary" id="run">Salvar e abrir</button><button id="save">Salvar</button><button id="export">Exportar arquivos para Documentos/Apps</button><button class="danger" id="remove">Remover</button><span id="st" class="dim"></span></footer>
+</div><script src="../_sdk/vessie-sdk.js"></script><script src="app.js"></script></body></html>

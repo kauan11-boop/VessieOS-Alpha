@@ -1,0 +1,46 @@
+/* Loja VessieCoin — shell convertido do inline original (visuais idênticos). */
+.vc-wrap {
+  height: 100%;
+  overflow-y: auto;
+  padding: 18px;
+  background: #0d0d12;
+  color: #eee;
+}
+
+.vc-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.vc-title {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.vc-title i {
+  color: #f6c343;
+}
+
+.vc-balance {
+  padding: 6px 14px;
+  border: 1px solid rgba(246, 195, 67, .3);
+  border-radius: 20px;
+  background: rgba(246, 195, 67, .12);
+  color: #f6c343;
+  font-size: .9rem;
+  font-weight: 700;
+}
+
+.vc-sub {
+  margin-bottom: 16px;
+  color: #8fa0bf;
+  font-size: .85rem;
+}
+
+.vc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}

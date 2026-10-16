@@ -1,0 +1,4 @@
+/* Navegador — seta "ir" com a cor de destaque (era inline). */
+.brow .bnav-go i {
+  color: var(--a);
+}

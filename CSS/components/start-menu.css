@@ -1,0 +1,577 @@
+/* ================================================================
+   MENU INICIAR — v2
+   Painel maior, com 3 vistas (Fixados / Todos os apps / Busca),
+   tiles maiores com gradiente por categoria, seção "Recomendados",
+   e um menu de energia com Suspender/Reiniciar/Desligar.
+   Abertura/fechamento usa opacidade+transform (sem display:none
+   abrupto) para uma transição suave, no espírito do Windows 11.
+   ================================================================ */
+
+#sm {
+  position: fixed;
+  left: 24px;
+  bottom: 74px;
+  width: min(500px, calc(100vw - 32px));
+  max-height: min(680px, calc(100vh - 110px));
+  display: flex;
+  flex-direction: column;
+  border-radius: 20px;
+  background: var(--mica-2, rgba(15, 18, 26, 0.86));
+  backdrop-filter: blur(26px) saturate(1.4);
+  -webkit-backdrop-filter: blur(26px) saturate(1.4);
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
+  box-shadow: var(--shadow-2, 0 24px 60px rgba(0, 0, 0, .5));
+  z-index: 1400;
+  overflow: hidden;
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(14px) scale(.97);
+  pointer-events: none;
+  transition: opacity .18s var(--ease, ease), transform .18s var(--ease, ease), visibility .18s;
+}
+
+#sm.open {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+/* ---------- topo: busca ---------- */
+.sm-top {
+  padding: 18px 20px 12px;
+  flex: 0 0 auto;
+}
+
+.sm-srch {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 14px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  transition: border-color .12s var(--ease, ease);
+}
+
+.sm-srch:focus-within {
+  border-color: var(--a);
+}
+
+.sm-srch input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--text);
+  font-size: .88rem;
+}
+
+/* ---------- corpo (rolável) ---------- */
+.sm-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px 20px 12px;
+  min-height: 260px;
+}
+
+.sm-view {
+  animation: sm-view-in .15s var(--ease, ease);
+}
+
+@keyframes sm-view-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.sm-row-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 10px 2px 10px;
+  font-size: .72rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+.sm-row-head-back {
+  justify-content: flex-start;
+  gap: 10px;
+  text-transform: none;
+  font-size: .88rem;
+  color: var(--text);
+  letter-spacing: normal;
+}
+
+.sm-alllink {
+  background: transparent;
+  border: none;
+  color: var(--dim);
+  font-size: .72rem;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition: .12s var(--ease, ease);
+}
+
+.sm-alllink:hover {
+  background: rgba(255, 255, 255, .06);
+  color: var(--text);
+}
+
+.sm-backlink {
+  background: rgba(255, 255, 255, .06);
+  border: 1px solid var(--hairline);
+  color: var(--text);
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: .78rem;
+}
+
+.sm-backlink:hover {
+  background: rgba(255, 255, 255, .12);
+}
+
+/* ---------- Fixados: tiles grandes com gradiente por categoria ---------- */
+.sm-pin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+  gap: 10px;
+}
+
+.sm-pin-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 6px 10px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  color: var(--text-2);
+  text-align: center;
+  font-size: .72rem;
+  cursor: pointer;
+  position: relative;
+  transition: background .12s var(--ease, ease), transform .1s var(--ease, ease), border-color .12s var(--ease, ease);
+}
+
+.sm-pin-tile:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-1px);
+  color: var(--text);
+}
+
+.sm-pin-tile .sm-tile-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+}
+
+.sm-pin-tile span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 90px;
+}
+
+/* gradiente sutil por categoria, aplicado no fundo do ícone */
+.sm-cat-ai .sm-tile-icon {
+  background: linear-gradient(135deg, rgba(167, 139, 250, .35), rgba(96, 165, 250, .18));
+}
+
+.sm-cat-sys .sm-tile-icon {
+  background: linear-gradient(135deg, rgba(148, 163, 184, .3), rgba(100, 116, 139, .16));
+}
+
+.sm-cat-util .sm-tile-icon {
+  background: linear-gradient(135deg, rgba(96, 165, 250, .32), rgba(59, 130, 246, .16));
+}
+
+.sm-cat-game .sm-tile-icon {
+  background: linear-gradient(135deg, rgba(102, 192, 244, .35), rgba(27, 40, 56, .3));
+}
+
+.sm-cat-media .sm-tile-icon {
+  background: linear-gradient(135deg, rgba(251, 191, 36, .32), rgba(251, 113, 133, .18));
+}
+
+.sm-cat-learn .sm-tile-icon {
+  background: linear-gradient(135deg, rgba(134, 239, 172, .3), rgba(56, 189, 148, .16));
+}
+
+/* ---------- Recomendados: lista de pílulas horizontal ---------- */
+.sm-recent-list {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.sm-recent-empty {
+  color: var(--dim);
+  font-size: .8rem;
+}
+
+.sm-recent-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px 7px 8px;
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 999px;
+  color: var(--text-2);
+  font-size: .78rem;
+  cursor: pointer;
+  transition: .12s var(--ease, ease);
+}
+
+.sm-recent-item:hover {
+  background: rgba(255, 255, 255, 0.09);
+  color: var(--text);
+}
+
+.sm-recent-item .ri {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .78rem;
+  background: rgba(255, 255, 255, .07);
+}
+
+/* ---------- Todos os apps: categorizado, linhas compactas ---------- */
+.sm-cat-title {
+  font-size: .72rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin: 16px 2px 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sm-cat-title:first-child {
+  margin-top: 4px;
+}
+
+.sm-cat-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sm-app {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 8px;
+  border-radius: 10px;
+  color: var(--text-2);
+  font-size: .84rem;
+  cursor: pointer;
+  transition: background .1s var(--ease, ease);
+}
+
+.sm-app:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+}
+
+.sm-app .ai {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .95rem;
+  background: rgba(255, 255, 255, .05);
+  flex: 0 0 auto;
+}
+
+.sm-app span {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sm-app .sm-pin-btn {
+  opacity: 0;
+  background: transparent;
+  border: none;
+  color: var(--dim);
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  font-size: .78rem;
+  flex: 0 0 auto;
+}
+
+.sm-app:hover .sm-pin-btn {
+  opacity: 1;
+}
+
+.sm-app .sm-pin-btn:hover {
+  background: rgba(255, 255, 255, .1);
+  color: var(--text);
+}
+
+.sm-app .sm-pin-btn.pinned {
+  opacity: 1;
+  color: var(--a);
+}
+
+.sm-app.hidden {
+  display: none;
+}
+
+.sm-cat-title.hidden {
+  display: none;
+}
+
+/* ---------- Busca ---------- */
+.sm-search-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sm-search-empty {
+  color: var(--dim);
+  font-size: .84rem;
+  padding: 20px 4px;
+  text-align: center;
+}
+
+.sm-search-tag {
+  font-size: .64rem;
+  color: var(--dim);
+  background: rgba(255, 255, 255, .05);
+  border-radius: 5px;
+  padding: 2px 6px;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  flex: 0 0 auto;
+}
+
+/* ---------- rodapé: usuário + energia ---------- */
+.sm-ft {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px 16px;
+  border-top: 1px solid var(--hairline);
+  flex: 0 0 auto;
+}
+
+.sm-usr {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background .12s var(--ease, ease);
+}
+
+.sm-usr:hover {
+  background: rgba(255, 255, 255, .06);
+}
+
+.sm-uav {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--a), var(--a2));
+  display: grid;
+  place-items: center;
+}
+
+.sm-usr span {
+  color: var(--text);
+  font-size: .84rem;
+}
+
+.sm-pw-wrap {
+  position: relative;
+}
+
+.sm-pw {
+  border: 1px solid var(--hairline);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  border-radius: 10px;
+  width: 38px;
+  height: 38px;
+  cursor: pointer;
+  transition: background .12s var(--ease, ease);
+}
+
+.sm-pw:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.sm-pw-menu {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  right: 0;
+  min-width: 170px;
+  background: var(--mica-2, rgba(20, 22, 30, .95));
+  backdrop-filter: blur(18px);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .45);
+  padding: 6px;
+  display: none;
+  z-index: 10;
+}
+
+.sm-pw-menu.open {
+  display: block;
+}
+
+.sm-pw-menu .cti {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 7px;
+  font-size: .82rem;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.sm-pw-menu .cti:hover {
+  background: var(--a);
+  color: #fff;
+}
+
+.sm-pw-menu .cti i {
+  width: 16px;
+  text-align: center;
+}
+
+/* ---------- menu de contexto (fixar/desafixar num tile) ---------- */
+.sm-ctx {
+  position: fixed;
+  min-width: 170px;
+  background: var(--mica-2, rgba(20, 22, 30, .95));
+  backdrop-filter: blur(18px);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .45);
+  padding: 6px;
+  z-index: 1500;
+}
+
+.sm-ctx .cti {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 7px;
+  font-size: .82rem;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.sm-ctx .cti:hover {
+  background: var(--a);
+  color: #fff;
+}
+
+.sm-ctx .cti i {
+  width: 16px;
+  text-align: center;
+}
+
+/* ---------- tela de "suspenso" (usada pelo botão de energia) ---------- */
+.sm-sleep-overlay {
+  position: fixed;
+  inset: 0;
+  background: #05060a;
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  color: #cfd3e6;
+  cursor: pointer;
+  animation: sm-sleep-in .35s ease;
+}
+
+@keyframes sm-sleep-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.sm-sleep-overlay i {
+  font-size: 2.4rem;
+  color: var(--a);
+}
+
+.sm-sleep-overlay span {
+  font-size: .9rem;
+  letter-spacing: .02em;
+}
+
+@media (max-width: 560px) {
+  #sm {
+    left: 8px;
+    right: 8px;
+    width: auto;
+  }
+}
+
+/* Rodapé transparente: corrige artefato de borda sobre o blur. */
+.sm-ft {
+  background: transparent;
+  border-top: 1px solid transparent;
+  box-shadow: none;
+}
+
+/* Avatar do rodapé comporta foto (sincronizada do login). */
+.sm-uav {
+  overflow:hidden;
+  flex-shrink:0;
+}

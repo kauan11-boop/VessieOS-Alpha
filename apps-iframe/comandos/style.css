@@ -1,0 +1,13 @@
+.shell { display:grid; grid-template-rows:auto 1fr; height:100%; gap:10px; padding:12px; }
+main { display:grid; grid-template-columns:minmax(220px,300px) 1fr; gap:12px; min-height:0; }
+#list { list-style:none; margin:0; padding:0; overflow:auto; border:1px solid var(--border); border-radius:var(--r-lg); }
+#list li { padding:6px 10px; cursor:pointer; border-bottom:1px solid var(--border); font-family:var(--font-mono); font-size:12.5px; display:flex; justify-content:space-between; gap:8px; }
+#list li:hover, #list li.on { background:var(--surface-2); }
+#list li small { color:var(--dim); font-family:var(--font-ui); }
+#detail { overflow:auto; min-width:0; }
+#detail h2 { margin:0; font:600 1.05rem var(--font-mono); }
+.badge { font-size:.7rem; padding:1px 6px; border-radius:10px; border:1px solid var(--border); color:var(--dim); margin-left:6px; }
+.badge.warn { color:#fca5a5; border-color:rgba(248,113,113,.5); }
+.args { display:grid; grid-template-columns:110px 1fr; gap:6px 10px; align-items:center; }
+pre { margin:0; padding:10px; max-height:46vh; overflow:auto; white-space:pre-wrap; word-break:break-word; border:1px solid var(--border); border-radius:var(--r-md); background:rgba(0,0,0,.3); }
+header .row, header { padding:0; } header select { width:150px; } header input { flex:1; }

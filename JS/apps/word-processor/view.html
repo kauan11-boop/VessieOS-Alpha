@@ -1,0 +1,52 @@
+<div class="wproc" id="{{uid}}">
+  <div class="wproc-ribbon">
+    <div class="wproc-group">
+      <button data-cmd="filenew" title="Novo"><i class="fas fa-file"></i></button>
+      <button data-cmd="fileopen" title="Abrir"><i class="fas fa-folder-open"></i></button>
+      <button data-cmd="filesave" title="Salvar (Ctrl+S)"><i class="fas fa-save"></i></button>
+    </div>
+    <div class="wproc-group">
+      <button data-cmd="undo" title="Desfazer"><i class="fas fa-undo"></i></button>
+      <button data-cmd="redo" title="Refazer"><i class="fas fa-redo"></i></button>
+    </div>
+    <div class="wproc-group">
+      <select class="wp-font" title="Fonte">
+        <option value="Calibri, 'Segoe UI', sans-serif">Calibri</option>
+        <option value="'Times New Roman', serif">Times New Roman</option>
+        <option value="Arial, sans-serif">Arial</option>
+        <option value="Georgia, serif">Georgia</option>
+        <option value="'Courier New', monospace">Courier New</option>
+        <option value="'Comic Sans MS', cursive">Comic Sans MS</option>
+      </select>
+      <select class="wp-size" title="Tamanho">
+        <option value="1">8</option><option value="2">10</option><option value="3" selected>12</option>
+        <option value="4">14</option><option value="5">18</option><option value="6">24</option><option value="7">36</option>
+      </select>
+    </div>
+    <div class="wproc-group">
+      <button data-cmd="bold" title="Negrito (Ctrl+B)"><i class="fas fa-bold"></i></button>
+      <button data-cmd="italic" title="Itálico (Ctrl+I)"><i class="fas fa-italic"></i></button>
+      <button data-cmd="underline" title="Sublinhado (Ctrl+U)"><i class="fas fa-underline"></i></button>
+      <button data-cmd="strikeThrough" title="Tachado"><i class="fas fa-strikethrough"></i></button>
+      <input type="color" class="wp-color" title="Cor do texto" value="#1a1a1a">
+      <input type="color" class="wp-hilite" title="Realce" value="#fff59d">
+    </div>
+    <div class="wproc-group">
+      <button data-cmd="justifyLeft" title="Alinhar à esquerda"><i class="fas fa-align-left"></i></button>
+      <button data-cmd="justifyCenter" title="Centralizar"><i class="fas fa-align-center"></i></button>
+      <button data-cmd="justifyRight" title="Alinhar à direita"><i class="fas fa-align-right"></i></button>
+      <button data-cmd="justifyFull" title="Justificar"><i class="fas fa-align-justify"></i></button>
+    </div>
+    <div class="wproc-group">
+      <button data-cmd="insertUnorderedList" title="Lista com marcadores"><i class="fas fa-list-ul"></i></button>
+      <button data-cmd="insertOrderedList" title="Lista numerada"><i class="fas fa-list-ol"></i></button>
+    </div>
+  </div>
+  <div class="wproc-area">
+    <div class="wproc-page" contenteditable="true" spellcheck="true">{{initialHTML}}</div>
+  </div>
+  <div class="wproc-status">
+    <span class="ws-path">{{savedPath}}</span>
+    <span class="ws-words">0 palavras</span>
+  </div>
+</div>

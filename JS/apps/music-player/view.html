@@ -1,0 +1,22 @@
+<div class="mplayer">
+  <div class="mc-cover" id="mc-cover">🎵</div>
+  <audio id="mc-audio" preload="metadata"></audio>
+  <div><div class="mc-title" id="mc-title">{{t0}}</div><div class="mc-art" id="mc-art">{{a0}}</div></div>
+  <div class="mc-prog">
+    <div class="mc-prog-bar" id="mc-prog-bar" onclick="seekTrack(event,this)"><div class="mc-prog-fill" id="mc-fill" style="width:0%"></div></div>
+  </div>
+  <div class="mc-time"><span id="mc-cur">0:00</span><span id="mc-dur">{{dur0}}</span></div>
+  <div class="mc-ctrl">
+    <button onclick="mcPrev()"><i class="fas fa-step-backward"></i></button>
+    <button onclick="mcShuffle()"><i class="fas fa-random"></i></button>
+    <button class="mc-play" id="mc-play" onclick="mcToggle()"><i class="fas fa-play" id="mc-play-ico"></i></button>
+    <button onclick="mcRepeat()" id="mc-repeat-btn"><i class="fas fa-redo"></i></button>
+    <button onclick="mcNext()"><i class="fas fa-step-forward"></i></button>
+  </div>
+  <div class="mc-vol">
+    <i class="fas fa-volume-down"></i>
+    <input type="range" id="mc-vol-slider" min="0" max="100" value="{{volume}}" oninput="S.volume=this.value;document.getElementById('mc-audio').volume=this.value/100">
+    <i class="fas fa-volume-up"></i>
+  </div>
+  <div class="mc-tracklist">{{tracks}}</div>
+</div>

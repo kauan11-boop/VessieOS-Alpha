@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VessieOS · Conectando ao Discord</title>
+<!--
+  Esta página faltava completamente no projeto. systems/online/auth.js e
+  systems/online/config.js já apontavam o Discord/GitHub para
+  "{origem}/callback.html" como redirect_uri, e o QUICK-START/README
+  instruíam a cadastrar essa URL no Discord Developer Portal — mas o
+  arquivo nunca existia, então qualquer login OAuth2 terminava em 404 e
+  o token nunca voltava para o VessieOS. Esta página resolve isso:
+  1. Lê o token (fluxo implicit, via #access_token na URL) ou o code
+     (fluxo authorization_code, via ?code=) que o Discord devolve.
+  2. Usa AuthenticationSystem (systems/online/auth.js) para validar e
+     guardar o token, buscar os dados do usuário e persistir tudo.
+  3. Avisa a janela que abriu este popup/aba (se houver) e fecha,
+     ou redireciona de volta para o VessieOS.
+-->
+<style>
+  :root{
+    --a:#60a5fa; --a2:#a78bfa;
+    --bg:#0f0f1a; --card: rgba(20,22,30,.86);
+    --text:#f4f5f9; --dim:#8a90a0; --err:#f87171; --ok:#3ba55c;
+    --border: rgba(255,255,255,.09);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0}
+  body{
+    display:flex;align-items:center;justify-content:center;
+    background:
+      radial-gradient(1200px 700px at 15% -10%, rgba(96,165,250,.18), transparent 60%),
+      radial-gradient(1000px 700px at 100% 110%, rgba(167,139,250,.16), transparent 55%),
+      var(--bg);
+    color:var(--text);
+    font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
+  }
+  .card{
+    width:min(420px, 92vw);
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:32px 28px;
+    text-align:center;
+    backdrop-filter:blur(24px);
+    box-shadow:0 24px 60px rgba(0,0,0,.45);
+  }
+  .logo{
+    width:64px;height:64px;border-radius:50%;margin:0 auto 16px;
+    display:flex;align-items:center;justify-content:center;font-size:1.8rem;
+    background:linear-gradient(135deg,var(--a),var(--a2));
+  }
+  h1{font-size:1.15rem;margin:0 0 6px}
+  p{color:var(--dim);font-size:.88rem;line-height:1.5;margin:0 0 18px}
+  .spin{
+    width:28px;height:28px;border-radius:50%;margin:0 auto 18px;
+    border:3px solid rgba(255,255,255,.14); border-top-color:var(--a);
+    animation:sp .8s linear infinite;
+  }
+  @keyframes sp{to{transform:rotate(360deg)}}
+  .status{font-size:.82rem;font-weight:600;margin-bottom:4px}
+  .status.ok{color:var(--ok)}
+  .status.err{color:var(--err)}
+  a.btn{
+    display:inline-block;margin-top:8px;padding:10px 18px;border-radius:10px;
+    background:linear-gradient(135deg,var(--a),var(--a2));color:#fff;
+    text-decoration:none;font-weight:600;font-size:.85rem;
+  }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">💜</div>
+    <h1>VessieOS</h1>
+    <div id="spin" class="spin"></div>
+    <p id="msg">Confirmando sua conexão com o Discord...</p>
+    <div id="statusLine"></div>
+    <a class="btn" id="backBtn" href="./index.html" style="display:none">Voltar para o VessieOS</a>
+  </div>
+
+  <script src="./systems/online/config.js"></script>
+  <script src="./systems/online/auth.js"></script>
+  <script>
+    (function () {
+      const msgEl = document.getElementById('msg');
+      const statusEl = document.getElementById('statusLine');
+      const spinEl = document.getElementById('spin');
+      const backBtn = document.getElementById('backBtn');
+
+      function finish(ok, text) {
+        spinEl.style.display = 'none';
+        statusEl.className = 'status ' + (ok ? 'ok' : 'err');
+        statusEl.textContent = (ok ? '✅ ' : '❌ ') + text;
+        backBtn.style.display = 'inline-block';
+
+        // Se este callback abriu em popup (window.open), avisa a janela
+        // principal e fecha sozinho; senão, volta para o VessieOS.
+        if (window.opener && !window.opener.closed) {
+          try {
+            window.opener.postMessage({ type: 'vessieos-discord-auth', ok }, window.location.origin);
+          } catch (e) { /* ignore */ }
+          setTimeout(() => window.close(), 1200);
+        } else if (ok) {
+          setTimeout(() => { window.location.href = './index.html'; }, 1500);
+        }
+      }
+
+      async function run() {
+        try {
+          if (!window.AuthenticationSystem) {
+            throw new Error('systems/online/auth.js não carregou.');
+          }
+          const cfg = window.OnlineConfig ? window.OnlineConfig.discord : {};
+          const auth = new AuthenticationSystem({
+            discordClientId: cfg.clientId || OnlineConfig.getEnv('DISCORD_CLIENT_ID', ''),
+            discordRedirectUri: window.location.origin + window.location.pathname
+          });
+
+          if (window.location.hash && window.location.hash.includes('access_token')) {
+            // Fluxo implicit (response_type=token) — funciona 100% estático,
+            // sem precisar de client secret nem backend.
+            const user = await auth.handleDiscordCallback(window.location.hash);
+            msgEl.textContent = `Conectado como ${user.username}#${user.discriminator || '0'}.`;
+            finish(true, 'Discord conectado com sucesso!');
+            return;
+          }
+
+          const params = new URLSearchParams(window.location.search);
+          if (params.get('code')) {
+            // Fluxo authorization_code — precisa de um backend/serverless
+            // próprio para trocar o code por token com segurança (o
+            // client secret nunca deve rodar no navegador). Este projeto,
+            // servido estaticamente, não tem esse backend embutido.
+            msgEl.textContent = 'Este site é 100% estático e não tem backend para trocar o código de autorização com segurança.';
+            finish(false, 'Configure response_type=token (fluxo implicit) na sua aplicação Discord, ou implemente um backend próprio para o fluxo com code.');
+            return;
+          }
+
+          const err = params.get('error') || (window.location.hash && new URLSearchParams(window.location.hash.replace('#', '?')).get('error'));
+          if (err) {
+            msgEl.textContent = 'O Discord recusou a autorização.';
+            finish(false, err);
+            return;
+          }
+
+          msgEl.textContent = 'Nenhuma credencial encontrada na URL.';
+          finish(false, 'Abra esta página apenas através do botão "Conectar com Discord" nas Configurações do VessieOS.');
+        } catch (e) {
+          msgEl.textContent = 'Não foi possível concluir a conexão.';
+          finish(false, e.message || String(e));
+        }
+      }
+
+      run();
+    })();
+  </script>
+</body>
+</html>

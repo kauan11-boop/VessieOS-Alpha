@@ -1,0 +1,104 @@
+/* NVIDIA APP - estilos movidos do <style> embutido na janela (visuais identicos). */
+      .nvidia-nav-item {
+        padding: 10px 14px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: .14s;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #8fa0bf;
+        font-size: .85rem;
+      }
+      .nvidia-nav-item:hover {
+        background: rgba(255,255,255,.06);
+        color: #eef2ff;
+      }
+      .nvidia-nav-item.active {
+        background: rgba(102,192,244,.15);
+        color: #66c0f4;
+        box-shadow: inset 3px 0 0 #66c0f4;
+      }
+      .nvidia-nav-item i { width: 18px; text-align: center; }
+      .nvidia-section { display: none; animation: fu .25s ease; }
+      .nvidia-section.active { display: block; }
+      .nvidia-card {
+        background: rgba(255,255,255,.04);
+        border: 1px solid rgba(255,255,255,.08);
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 14px;
+        transition: .14s;
+      }
+      .nvidia-card:hover {
+        border-color: rgba(255,255,255,.15);
+      }
+      .nvidia-stat {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 6px 0;
+        border-bottom: 1px solid rgba(255,255,255,.05);
+      }
+      .nvidia-stat:last-child { border-bottom: none; }
+      .nvidia-progress-bar {
+        height: 6px;
+        background: rgba(255,255,255,.08);
+        border-radius: 3px;
+        overflow: hidden;
+        margin-top: 4px;
+      }
+      .nvidia-progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #66c0f4, #4f94c9);
+        border-radius: 3px;
+        transition: width .6s ease;
+        width: 0%;
+      }
+      .nvidia-slider {
+        width: 100%;
+        accent-color: #66c0f4;
+        cursor: pointer;
+      }
+      .nvidia-toggle {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+      }
+      .nvidia-toggle input[type="checkbox"] {
+        appearance: none;
+        width: 40px;
+        height: 22px;
+        background: rgba(255,255,255,.15);
+        border-radius: 11px;
+        position: relative;
+        transition: .2s;
+        cursor: pointer;
+        flex-shrink: 0;
+      }
+      .nvidia-toggle input[type="checkbox"]:checked {
+        background: #66c0f4;
+      }
+      .nvidia-toggle input[type="checkbox"]::after {
+        content: '';
+        position: absolute;
+        width: 18px;
+        height: 18px;
+        background: #fff;
+        border-radius: 50%;
+        top: 2px;
+        left: 2px;
+        transition: .2s;
+      }
+      .nvidia-toggle input[type="checkbox"]:checked::after {
+        left: 20px;
+      }
+      .nvidia-badge {
+        background: #c0392b;
+        color: #fff;
+        border-radius: 50%;
+        padding: 0 6px;
+        font-size: .65rem;
+        margin-left: auto;
+      }

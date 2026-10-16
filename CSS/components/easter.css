@@ -1,0 +1,81 @@
+#eg {
+  position: fixed;
+  inset: 0;
+  display: none;
+  z-index: 9999;
+}
+
+#eg.horror {
+  display: flex !important;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: radial-gradient(circle at center, #000 0%, #040404 40%, #000 100%);
+  color: #fff;
+  text-shadow: 0 0 18px rgba(255, 255, 255, 0.35);
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+#eg.horror .horror-title {
+  font-size: 2.15rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+#eg.horror .horror-sub {
+  font-size: 1rem;
+  color: #ff6b6b;
+  margin-top: 8px;
+}
+
+/* Textura de "estática" de TV velha atrás do texto — puramente CSS,
+   sem imagem externa, então funciona offline e não depende de terceiros. */
+#eg.horror .eg-static {
+  position: absolute;
+  inset: 0;
+  opacity: .06;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, .5) 0px, transparent 1px, transparent 2px),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, .5) 0px, transparent 1px, transparent 2px);
+  background-size: 3px 3px;
+  animation: eg-noise .2s steps(2) infinite;
+  pointer-events: none;
+}
+
+/* O coraçãozinho mascote do VessieOS, só que "assombrado": pisca em
+   vermelho e treme de leve — assustador na estética, mas continua sendo
+   o mesmo coração fofo de sempre (login/notificações), não algo novo. */
+#eg.horror .eg-heart {
+  font-size: 3.4rem;
+  filter: grayscale(1) drop-shadow(0 0 22px rgba(255, 40, 60, .55));
+  animation: eg-flicker 1.6s infinite, eg-shake .18s infinite;
+  margin-bottom: 6px;
+}
+
+#eg.horror .horror-title {
+  animation: eg-glitch 2.4s infinite;
+}
+
+@keyframes eg-noise {
+  0% { transform: translate(0, 0); }
+  50% { transform: translate(-1px, 1px); }
+  100% { transform: translate(1px, -1px); }
+}
+
+@keyframes eg-flicker {
+  0%, 19%, 21%, 23%, 54%, 56%, 100% { opacity: 1; filter: grayscale(1) drop-shadow(0 0 22px rgba(255, 40, 60, .55)); }
+  20%, 22%, 55% { opacity: .35; filter: grayscale(1) drop-shadow(0 0 6px rgba(255, 40, 60, .25)); }
+}
+
+@keyframes eg-shake {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(1px, -1px); }
+}
+
+@keyframes eg-glitch {
+  0%, 92%, 100% { text-shadow: 0 0 18px rgba(255, 255, 255, 0.35); transform: translateX(0); }
+  93% { text-shadow: -2px 0 #ff2a3d, 2px 0 #2ad3ff; transform: translateX(-2px); }
+  95% { text-shadow: 2px 0 #ff2a3d, -2px 0 #2ad3ff; transform: translateX(2px); }
+  97% { text-shadow: 0 0 18px rgba(255, 255, 255, 0.35); transform: translateX(0); }
+}

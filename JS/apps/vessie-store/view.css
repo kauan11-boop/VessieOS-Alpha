@@ -1,0 +1,33 @@
+/* Vessie-Store — loja de aplicativos do sistema. */
+.vstore { display: flex; flex-direction: column; gap: 12px; height: 100%; padding: 16px 18px; overflow: hidden; }
+.vstore-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.vstore-title { display: flex; align-items: center; gap: 12px; }
+.vstore-title > i { font-size: 1.6rem; color: #a78bfa; }
+.vstore-title strong { display: block; font-size: 1.05rem; color: #fff; }
+.vstore-title span { font-size: .74rem; color: var(--dim); }
+.vstore-search { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,.05); border: 1px solid var(--hairline); border-radius: 10px; padding: 8px 12px; min-width: 220px; flex: 1; max-width: 320px; }
+.vstore-search i { color: var(--dim); font-size: .8rem; }
+.vstore-search input { flex: 1; background: none; border: none; outline: none; color: #fff; font-size: .85rem; }
+.vstore-chips { display: flex; gap: 8px; }
+.vstore-chip { background: rgba(255,255,255,.05); border: 1px solid var(--hairline); color: var(--text-2); font-size: .76rem; border-radius: 999px; padding: 6px 14px; cursor: pointer; }
+.vstore-chip.ac { background: rgba(167,139,250,.18); border-color: rgba(167,139,250,.5); color: #fff; }
+.vstore-grid { flex: 1; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; align-content: start; padding-bottom: 8px; }
+.vs-card { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08); border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 8px; }
+.vs-card:hover { border-color: rgba(167,139,250,.4); }
+.vs-top { display: flex; align-items: center; gap: 10px; }
+.vs-ic { width: 42px; height: 42px; border-radius: 11px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; background: rgba(167,139,250,.12); flex-shrink: 0; overflow: hidden; }
+.vs-ic img { width: 100%; height: 100%; object-fit: cover; }
+.vs-top strong { display: block; font-size: .9rem; color: #fff; }
+.vs-top small { font-size: .68rem; color: var(--dim); }
+.vs-desc { font-size: .76rem; color: var(--text-2); line-height: 1.45; min-height: 33px; }
+.vs-meta { font-size: .68rem; color: var(--muted, #5b6172); }
+.vs-actions { display: flex; gap: 8px; margin-top: auto; }
+.vs-btn { flex: 1; border: none; border-radius: 9px; padding: 8px; font-size: .78rem; font-weight: 700; cursor: pointer; }
+.vs-install { background: linear-gradient(135deg, #7c3aed, #4f46e5); color: #fff; }
+.vs-open { background: rgba(74,222,128,.14); border: 1px solid rgba(74,222,128,.4); color: #4ade80; }
+.vs-uninst { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); color: var(--text-2); }
+.vs-core { font-size: .68rem; color: var(--dim); border: 1px dashed var(--hairline); border-radius: 9px; padding: 8px; text-align: center; }
+.vs-prog { height: 8px; border-radius: 5px; background: rgba(255,255,255,.1); overflow: hidden; }
+.vs-prog i { display: block; height: 100%; width: 0; border-radius: 5px; background: linear-gradient(90deg, #a78bfa, #60a5fa); transition: width .12s; }
+.vs-prog-lbl { font-size: .7rem; color: var(--dim); text-align: center; }
+.vs-empty { grid-column: 1 / -1; text-align: center; color: var(--muted, #5b6172); font-size: .85rem; padding: 40px 0; }

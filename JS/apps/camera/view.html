@@ -1,0 +1,13 @@
+<div class="cam-app" id="{{uid}}">
+  <div class="cam-viewport">
+    <video class="cam-video" autoplay playsinline muted></video>
+    <div class="cam-off-msg"><i class="fas fa-video-slash"></i><span>Câmera desligada</span></div>
+    <canvas class="cam-canvas" style="display:none"></canvas>
+  </div>
+  <div class="cam-controls">
+    <button class="cam-tool" data-cmd="mirror" title="Espelhar"><i class="fas fa-arrows-left-right"></i></button>
+    <button class="cam-shutter" data-cmd="snap" title="Tirar foto"><i class="fas fa-camera"></i></button>
+    <button class="cam-tool" data-cmd="toggle" title="Ligar/Desligar câmera"><i class="fas fa-power-off"></i></button>
+  </div>
+  <div class="cam-filmstrip"><div class="cam-filmstrip-empty">Suas fotos aparecem aqui</div></div>
+</div>

@@ -1,0 +1,11 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Monitor do Sistema</title><link rel="stylesheet" href="../_sdk/vessie-ui.css"><link rel="stylesheet" href="style.css"></head>
+<body><div class="grid">
+  <section class="card"><h3>Sistema</h3><dl id="sys"></dl></section>
+  <section class="card"><h3>Controles</h3>
+    <label for="vol">Volume do sistema <span id="volv" class="dim"></span></label><input id="vol" type="range" min="0" max="100">
+    <label for="acc">Cor de destaque</label><div class="row"><input id="acc" type="color" style="width:56px;padding:2px"><button id="accReset">Restaurar</button></div>
+    <div class="row" style="margin-top:8px"><button id="tile">Lado a lado</button><button id="cascade">Cascata</button><button id="beep">Testar som</button></div></section>
+  <section class="card wide"><h3>Janelas abertas <span id="wc" class="dim"></span></h3><table><tbody id="wins"></tbody></table></section>
+  <section class="card wide"><h3>Motor neural</h3><div id="neu" class="dim">—</div></section>
+</div><script src="../_sdk/vessie-sdk.js"></script><script src="app.js"></script></body></html>

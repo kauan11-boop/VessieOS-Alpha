@@ -1,0 +1,34 @@
+/* Sistema: Desktop / Categoria: Interface */
+@import url("../../base/reset.css");
+@import url("../../base/theme.css");
+@import url("../../base/layout.css");
+@import url("../../components/boot.css");
+@import url("../../components/login.css");
+@import url("../../components/vessielang-studio.css");
+@import url("../../components/desktop.css");
+@import url("../../components/taskbar.css");
+@import url("../../components/start-menu.css");
+@import url("../../components/search.css");
+@import url("../../components/notifications.css");
+@import url("../../components/tray.css");
+@import url("../../components/windows.css");
+@import url("../../components/easter.css");
+@import url("../../components/execute-exes.css");
+@import url("../../base/main.css");
+@import url("../../components/login.css");
+@import url("../../components/copilot.css");
+@import url("../../components/emulator.css");
+/* (Tema claro removido totalmente do VessieOS — sistema somente escuro.) */
+/* Redesign do app de Configurações (namespace vset-*) — importado depois de
+   base/main.css de propósito, pra vencer no empate de especificidade contra
+   as regras antigas .sett/.s-sec/.wg/.wt que ainda existem lá. */
+@import url("../../components/settings.css");
+/* Regras dos 155 micro-sistemas (visual/acessibilidade/gamehub/widgets) —
+   importado por último para poder sobrescrever com segurança quando um
+   sistema estiver ativo (ex: vsys-high-contrast, vsys-reduce-motion). */
+@import url("../micro-systems.css");
+/* Camada visual moderna (grafite) — depois dos micro-sistemas e antes do mobile.css. */
+@import url("../modern.css");
+/* Compatibilidade com dispositivos móveis — ver comentário no topo do
+   arquivo sobre por que este import vem por último. */
+@import url("../../base/mobile.css");

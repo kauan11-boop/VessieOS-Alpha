@@ -1,0 +1,44 @@
+<section class="vls">
+  <header class="vls-toolbar">
+    <div class="vls-brand"><span class="vls-mark"><i class="fas fa-terminal"></i></span><div><strong>VessieLang Studio</strong><small>Editor integrado ao VessieOS</small></div></div>
+    <div class="vls-actions">
+      <select class="vls-language" aria-label="Linguagem do editor">
+        <option value="vl">VessieLang · B1 / J3 / G5 / FULL</option>
+        <option value="html">HTML · prévia segura</option>
+        <option value="javascript">JavaScript · prévia segura</option>
+        <option value="css">CSS · prévia segura</option>
+      </select>
+      <input class="vls-filename" value="ola.vl" aria-label="Nome do arquivo">
+      <button class="vls-button secondary" data-vls="open"><i class="fas fa-folder-open"></i><span>Abrir</span></button>
+      <button class="vls-button secondary" data-vls="save"><i class="fas fa-save"></i><span>Salvar</span></button>
+      <button class="vls-button primary" data-vls="run"><i class="fas fa-play"></i><span>Executar</span></button>
+    </div>
+  </header>
+  <div class="vls-workspace">
+    <aside class="vls-sidebar">
+      <div class="vls-side-heading"><i class="fas fa-folder-tree"></i> PROJETO</div>
+      <div class="vls-project-name"><i class="fas fa-folder-open"></i> Documentos / Projetos</div>
+      <select class="vls-files" size="5" aria-label="Scripts salvos"></select>
+      <div class="vls-side-heading vls-api-heading"><i class="fas fa-book"></i> BIBLIOTECA VESSIE</div>
+      <div class="vls-api"><code>escreva(valor)</code><span>Saída no console</span></div>
+      <div class="vls-api"><code>vessieos.notificar(t, m)</code><span>Notificação do sistema</span></div>
+      <div class="vls-api"><code>ai.ask(pergunta)</code><span>Integração com IA local</span></div>
+      <div class="vls-api"><code>net.get(url)</code><span>Requisições de rede</span></div>
+      <div class="vls-api"><code>collector.games()</code><span>Biblioteca de jogos</span></div>
+      <p class="vls-help">Use "vl nome.vl" no Terminal ou abra um arquivo .vl pelo Explorador.</p>
+    </aside>
+    <main class="vls-main">
+      <div class="vls-editor-head"><span><i class="fas fa-file-code"></i> <span data-vls-filename>ola.vl</span></span><span data-vls-status>VessieLang FULL</span></div>
+      <textarea class="vls-editor" spellcheck="false" aria-label="Editor de código"></textarea>
+      <section class="vls-console">
+        <div class="vls-console-head"><span><i class="fas fa-terminal"></i> SAÍDA</span><button type="button" data-vls="clear">Limpar</button></div>
+        <pre class="vls-output" aria-live="polite">Pronto para executar. Os scripts VessieLang rodam pelo interpretador integrado.</pre>
+      </section>
+    </main>
+    <aside class="vls-preview-panel">
+      <div class="vls-preview-head"><span><i class="fas fa-eye"></i> PRÉVIA</span><span>iframe sandbox</span></div>
+      <iframe class="vls-preview" title="Prévia isolada de HTML, CSS ou JavaScript" sandbox="allow-scripts"
+        srcdoc="<html><body style='font:14px Segoe UI,sans-serif;color:#667085;padding:18px'>Selecione HTML, CSS ou JavaScript e execute para visualizar.</body></html>"></iframe>
+    </aside>
+  </div>
+</section>

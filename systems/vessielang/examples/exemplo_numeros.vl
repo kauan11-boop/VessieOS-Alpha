@@ -1,0 +1,11 @@
+// Exemplo numeros normais - vale para B1/J3/G5
+var n1 = 42;
+var n2 = -7;
+var n3 = 3.14;
+var n4 = 1_000_000;
+var n5 = 0xFF;
+var n6 = 0b1010;
+var n7 = 0o17;
+escreva(n1 + n2 + n3);
+escreva(n4);
+escreva(n5 + n6 + n7);

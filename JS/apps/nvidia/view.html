@@ -1,0 +1,182 @@
+    <div style="display:flex;height:100%;background:linear-gradient(135deg,#090b10,#101722);color:#eef2ff;font-family:'Segoe UI',sans-serif;overflow:hidden;">
+      
+      <!-- SIDEBAR -->
+      <div style="width:220px;background:rgba(0,0,0,.35);border-right:1px solid rgba(255,255,255,.06);padding:16px 10px;display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;">
+        <div style="display:flex;align-items:center;gap:10px;padding:0 4px 16px;border-bottom:1px solid rgba(255,255,255,.06);margin-bottom:12px;">
+          <span style="font-size:1.6rem;background:linear-gradient(135deg,#66c0f4,#4f94c9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:800;">NVIDIA</span>
+          <span style="font-size:.65rem;color:#5b6680;background:rgba(255,255,255,.06);padding:2px 8px;border-radius:10px;">APP</span>
+        </div>
+        <div class="nvidia-nav-item active" data-section="home" onclick="nvidiaNavigate('home')"><i class="fas fa-home"></i> Página inicial</div>
+        <div class="nvidia-nav-item" data-section="drivers" onclick="nvidiaNavigate('drivers')"><i class="fas fa-microchip"></i> Drivers</div>
+        <div class="nvidia-nav-item" data-section="performance" onclick="nvidiaNavigate('performance')"><i class="fas fa-chart-line"></i> Desempenho</div>
+        <div class="nvidia-nav-item" data-section="overclock" onclick="nvidiaNavigate('overclock')"><i class="fas fa-tachometer-alt"></i> Overclock</div>
+        <div class="nvidia-nav-item" data-section="system" onclick="nvidiaNavigate('system')"><i class="fas fa-desktop"></i> Sistema</div>
+        <div class="nvidia-nav-item" data-section="redeem" onclick="nvidiaNavigate('redeem')"><i class="fas fa-gift"></i> Resgatar</div>
+        <div class="nvidia-nav-item" data-section="settings" onclick="nvidiaNavigate('settings')"><i class="fas fa-cog"></i> Configurações</div>
+        <div style="margin-top:auto;padding-top:12px;border-top:1px solid rgba(255,255,255,.06);font-size:.7rem;color:#5b6680;text-align:center;">
+          <div>NVIDIA App v1.2.0</div>
+          <div style="margin-top:2px;">GPU: {{t1}}</div>
+        </div>
+      </div>
+
+      <!-- MAIN CONTENT -->
+      <div style="flex:1;padding:20px 24px;overflow-y:auto;">
+
+        <!-- NOTIFICAÇÕES (topo) -->
+        <div id="nvidia-notifications" style="margin-bottom:16px;padding:8px 12px;background:rgba(0,0,0,.2);border-radius:8px;border:1px solid rgba(255,255,255,.04);min-height:36px;"></div>
+
+        <!-- HOME -->
+        <div class="nvidia-section active" id="nvidia-home">
+          <h2 style="font-size:1.25rem;margin:0 0 4px;">Centro NVIDIA</h2>
+          <p style="color:#8fa0bf;font-size:.9rem;line-height:1.6;margin:0 0 18px;">Painel de controle avançado para drivers, performance e experiências de jogos com IA.</p>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;">
+            <div class="nvidia-card">
+              <div style="font-size:.7rem;text-transform:uppercase;color:#5b6680;">Driver</div>
+              <div style="font-size:1.1rem;font-weight:600;margin-top:4px;" id="nvidia-driver-version">{{t2}}</div>
+              <div style="font-size:.75rem;color:#66c0f4;">Game Ready</div>
+            </div>
+            <div class="nvidia-card">
+              <div style="font-size:.7rem;text-transform:uppercase;color:#5b6680;">GPU</div>
+              <div style="font-size:1.1rem;font-weight:600;margin-top:4px;">{{t3}}</div>
+              <div style="font-size:.75rem;color:#8fa0bf;">{{t4}}</div>
+            </div>
+            <div class="nvidia-card">
+              <div style="font-size:.7rem;text-transform:uppercase;color:#5b6680;">Temperatura</div>
+              <div style="font-size:1.5rem;font-weight:600;margin-top:4px;color:{{t5}};" id="gpu-temp">{{t6}}°C</div>
+              <div style="font-size:.75rem;color:#8fa0bf;">Máx: {{t7}}°C</div>
+            </div>
+            <div class="nvidia-card">
+              <div style="font-size:.7rem;text-transform:uppercase;color:#5b6680;">Uso</div>
+              <div style="font-size:1.5rem;font-weight:600;margin-top:4px;" id="gpu-usage">{{t8}}%</div>
+              <div class="nvidia-progress-bar"><div class="nvidia-progress-fill" id="gpu-usage" style="width:{{t9}}%;"></div></div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:12px;">
+            <div class="nvidia-card"><div style="font-size:.7rem;text-transform:uppercase;color:#5b6680;">Fan</div><div style="font-size:1.1rem;font-weight:600;" id="gpu-fan">{{t10}}%</div></div>
+            <div class="nvidia-card"><div style="font-size:.7rem;text-transform:uppercase;color:#5b6680;">Memória</div><div style="font-size:1.1rem;font-weight:600;" id="gpu-memory">{{t11}}%</div><div class="nvidia-progress-bar"><div class="nvidia-progress-fill" id="gpu-memory" style="width:{{t12}}%;"></div></div></div>
+            <div class="nvidia-card"><div style="font-size:.7rem;text-transform:uppercase;color:#5b6680;">Potência</div><div style="font-size:1.1rem;font-weight:600;" id="gpu-power">{{t13}}W</div></div>
+            <div class="nvidia-card"><div style="font-size:.7rem;text-transform:uppercase;color:#5b6680;">Clock</div><div style="font-size:1.1rem;font-weight:600;" id="gpu-clock">{{t14}} MHz</div></div>
+          </div>
+          <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap;">
+            <button onclick="nvidiaCheckDrivers()" id="nvidia-check-drivers" style="background:#66c0f4;border:none;color:#090b10;padding:8px 18px;border-radius:8px;font-weight:600;cursor:pointer;transition:.14s;"><i class="fas fa-sync-alt"></i> Verificar drivers</button>
+            <button onclick="nvidiaSimulate()" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#eef2ff;padding:8px 18px;border-radius:8px;cursor:pointer;transition:.14s;"><i class="fas fa-chart-bar"></i> Simular carga</button>
+          </div>
+          <div id="nvidia-driver-status" style="margin-top:10px;font-size:.85rem;color:#8fa0bf;"></div>
+        </div>
+
+        <!-- DRIVERS -->
+        <div class="nvidia-section" id="nvidia-drivers">
+          <h2 style="font-size:1.1rem;margin:0 0 4px;"><i class="fas fa-microchip" style="color:#66c0f4;"></i> Drivers</h2>
+          <p style="color:#8fa0bf;font-size:.85rem;margin:0 0 16px;">Gerencie seus drivers NVIDIA.</p>
+          <div class="nvidia-card">
+            <div class="nvidia-stat"><span>Versão instalada</span><span style="font-weight:600;" id="nvidia-driver-version">{{t15}}</span></div>
+            <div class="nvidia-stat"><span>Tipo</span><span>Game Ready</span></div>
+            <div class="nvidia-stat"><span>Última verificação</span><span>{{t16}}</span></div>
+            <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+              <button onclick="nvidiaCheckDrivers()" style="background:#66c0f4;border:none;color:#090b10;padding:6px 16px;border-radius:6px;font-weight:600;cursor:pointer;"><i class="fas fa-sync-alt"></i> Verificar</button>
+              <button onclick="nvidiaInstallDriver()" style="background:rgba(102,192,244,.15);border:1px solid rgba(102,192,244,.3);color:#66c0f4;padding:6px 16px;border-radius:6px;cursor:pointer;"><i class="fas fa-download"></i> Instalar</button>
+            </div>
+            <div id="nvidia-driver-status" style="margin-top:8px;font-size:.85rem;color:#8fa0bf;"></div>
+          </div>
+          <div class="nvidia-card">
+            <div style="font-weight:600;margin-bottom:8px;">Histórico de drivers</div>
+            <div id="nvidia-driver-history">
+              {{t17}}
+            </div>
+          </div>
+        </div>
+
+        <!-- PERFORMANCE -->
+        <div class="nvidia-section" id="nvidia-performance">
+          <h2 style="font-size:1.1rem;margin:0 0 4px;"><i class="fas fa-chart-line" style="color:#66c0f4;"></i> Desempenho</h2>
+          <p style="color:#8fa0bf;font-size:.85rem;margin:0 0 16px;">Monitoramento em tempo real da sua GPU.</p>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;">
+            <div class="nvidia-card"><div style="font-size:.7rem;text-transform:uppercase;color:#5b6680;">Temperatura</div><div style="font-size:1.8rem;font-weight:600;" id="gpu-temp-perf">{{t18}}°C</div><div style="font-size:.75rem;color:#8fa0bf;">Máx: {{t19}}°C</div></div>
+            <div class="nvidia-card"><div style="font-size:.7rem;text-transform:uppercase;color:#5b6680;">Clock GPU</div><div style="font-size:1.8rem;font-weight:600;" id="gpu-clock-perf">{{t20}} MHz</div><div style="font-size:.75rem;color:#8fa0bf;">Base: 2640 MHz</div></div>
+            <div class="nvidia-card"><div style="font-size:.7rem;text-transform:uppercase;color:#5b6680;">Memória</div><div style="font-size:1.8rem;font-weight:600;" id="gpu-mem-perf">{{t21}} MHz</div><div style="font-size:.75rem;color:#8fa0bf;">{{t22}}</div></div>
+            <div class="nvidia-card"><div style="font-size:.7rem;text-transform:uppercase;color:#5b6680;">Potência</div><div style="font-size:1.8rem;font-weight:600;" id="gpu-power-perf">{{t23}} W</div><div style="font-size:.75rem;color:#8fa0bf;">TDP: 320W</div></div>
+          </div>
+          <div class="nvidia-card">
+            <div style="font-weight:600;margin-bottom:8px;">Uso da GPU</div>
+            <div class="nvidia-stat"><span>Utilização</span><span id="gpu-usage-label">{{t24}}%</span></div>
+            <div class="nvidia-progress-bar"><div class="nvidia-progress-fill" id="gpu-usage-bar" style="width:{{t25}}%;"></div></div>
+            <div class="nvidia-stat" style="margin-top:8px;"><span>Memória VRAM</span><span id="gpu-memory-label">{{t26}}%</span></div>
+            <div class="nvidia-progress-bar"><div class="nvidia-progress-fill" id="gpu-memory-bar" style="width:{{t27}}%;"></div></div>
+          </div>
+        </div>
+
+        <!-- OVERCLOCK -->
+        <div class="nvidia-section" id="nvidia-overclock">
+          <h2 style="font-size:1.1rem;margin:0 0 4px;"><i class="fas fa-tachometer-alt" style="color:#66c0f4;"></i> Overclock</h2>
+          <p style="color:#8fa0bf;font-size:.85rem;margin:0 0 16px;">Ajuste fino para extrair o máximo da sua GPU.</p>
+          <div class="nvidia-card">
+            <div style="margin-bottom:12px;">
+              <div style="display:flex;justify-content:space-between;"><span>Offset do Core</span><span id="nvidia-oc-core-val">0 MHz</span></div>
+              <input type="range" id="nvidia-oc-core" min="-100" max="300" value="0" class="nvidia-slider" oninput="document.getElementById('nvidia-oc-core-val').textContent=this.value+' MHz'">
+            </div>
+            <div style="margin-bottom:12px;">
+              <div style="display:flex;justify-content:space-between;"><span>Offset da Memória</span><span id="nvidia-oc-mem-val">0 MHz</span></div>
+              <input type="range" id="nvidia-oc-mem" min="-200" max="500" value="0" class="nvidia-slider" oninput="document.getElementById('nvidia-oc-mem-val').textContent=this.value+' MHz'">
+            </div>
+            <div style="margin-bottom:12px;">
+              <div style="display:flex;justify-content:space-between;"><span>Limite de Potência</span><span id="nvidia-oc-power-val">100%</span></div>
+              <input type="range" id="nvidia-oc-power" min="80" max="120" value="100" class="nvidia-slider" oninput="document.getElementById('nvidia-oc-power-val').textContent=this.value+'%'">
+            </div>
+            <div style="margin-bottom:12px;">
+              <div style="display:flex;justify-content:space-between;"><span>Limite de Temperatura</span><span id="nvidia-oc-temp-val">83°C</span></div>
+              <input type="range" id="nvidia-oc-temp" min="70" max="90" value="83" class="nvidia-slider" oninput="document.getElementById('nvidia-oc-temp-val').textContent=this.value+'°C'">
+            </div>
+            <button onclick="nvidiaApplyOC()" style="background:#66c0f4;border:none;color:#090b10;padding:8px 24px;border-radius:8px;font-weight:600;cursor:pointer;width:100%;"><i class="fas fa-bolt"></i> Aplicar Overclock</button>
+          </div>
+        </div>
+
+        <!-- SISTEMA -->
+        <div class="nvidia-section" id="nvidia-system">
+          <h2 style="font-size:1.1rem;margin:0 0 4px;"><i class="fas fa-desktop" style="color:#66c0f4;"></i> Sistema</h2>
+          <p style="color:#8fa0bf;font-size:.85rem;margin:0 0 16px;">Informações detalhadas do seu sistema.</p>
+          <div class="nvidia-card">
+            <div class="nvidia-stat"><span>GPU</span><span>{{t28}}</span></div>
+            <div class="nvidia-stat"><span>VRAM</span><span>{{t29}}</span></div>
+            <div class="nvidia-stat"><span>Driver</span><span id="nvidia-sys-driver">{{t30}}</span></div>
+            <div class="nvidia-stat"><span>DirectX</span><span>12 Ultimate</span></div>
+            <div class="nvidia-stat"><span>Resizable BAR</span><span>Ativado</span></div>
+            <div class="nvidia-stat"><span>G-SYNC</span><span>Compatível</span></div>
+            <div class="nvidia-stat"><span>DLSS</span><span>3.5 com Frame Generation</span></div>
+            <div class="nvidia-stat"><span>Ray Tracing</span><span>Ativado</span></div>
+          </div>
+        </div>
+
+        <!-- RESGATAR -->
+        <div class="nvidia-section" id="nvidia-redeem">
+          <h2 style="font-size:1.1rem;margin:0 0 4px;"><i class="fas fa-gift" style="color:#66c0f4;"></i> Resgatar</h2>
+          <p style="color:#8fa0bf;font-size:.85rem;margin:0 0 16px;">Resgate códigos promocionais e ganhe jogos.</p>
+          <div class="nvidia-card">
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <input id="nvidia-redeem-input" placeholder="Código promocional" style="flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:8px 14px;color:#eef2ff;outline:none;font-size:.85rem;min-width:200px;">
+              <button onclick="nvidiaRedeem()" style="background:#66c0f4;border:none;color:#090b10;padding:8px 18px;border-radius:8px;font-weight:600;cursor:pointer;"><i class="fas fa-check"></i> Resgatar</button>
+            </div>
+            <div id="nvidia-redeem-status" style="margin-top:8px;font-size:.85rem;color:#8fa0bf;"></div>
+          </div>
+          <div class="nvidia-card">
+            <div style="font-weight:600;margin-bottom:8px;">Histórico de resgates</div>
+            <div id="nvidia-redeemed-list">
+              {{t31}}
+            </div>
+          </div>
+        </div>
+
+        <!-- CONFIGURAÇÕES -->
+        <div class="nvidia-section" id="nvidia-settings">
+          <h2 style="font-size:1.1rem;margin:0 0 4px;"><i class="fas fa-cog" style="color:#66c0f4;"></i> Configurações</h2>
+          <p style="color:#8fa0bf;font-size:.85rem;margin:0 0 16px;">Personalize sua experiência NVIDIA.</p>
+          <div class="nvidia-card">
+            {{t32}}
+          </div>
+          <div class="nvidia-card" style="border-color:rgba(239,68,68,.2);">
+            <div style="font-weight:600;color:#f87171;margin-bottom:8px;">Área restrita</div>
+            <button onclick="if(confirm('Restaurar configurações padrão?')){location.reload();}" style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);color:#f87171;padding:6px 16px;border-radius:6px;cursor:pointer;"><i class="fas fa-undo-alt"></i> Restaurar padrões</button>
+          </div>
+        </div>
+
+      </div>
+    </div>

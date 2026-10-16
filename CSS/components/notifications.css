@@ -1,0 +1,72 @@
+#np {
+  position: fixed;
+  right: 16px;
+  top: 16px;
+  width: min(360px, calc(100vw - 24px));
+  padding: 18px 16px 14px;
+  border-radius: 20px;
+  background: rgba(15, 18, 26, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: var(--shadow-2);
+  z-index: 1500;
+  display: none;
+}
+
+#np.open {
+  display: block;
+  animation: np-in .22s var(--ease, ease);
+}
+
+@keyframes np-in {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.qt-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.qt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 8px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  color: var(--dim);
+  font-size: 0.72rem;
+}
+
+.qt.on {
+  border-color: rgba(96, 165, 250, 0.24);
+  background: rgba(96, 165, 250, 0.1);
+  color: var(--text);
+}
+
+#notif-list {
+  display: grid;
+  gap: 10px;
+}
+
+.n-item {
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.n-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.n-body {
+  font-size: 0.72rem;
+  color: var(--dim);
+  line-height: 1.5;
+}

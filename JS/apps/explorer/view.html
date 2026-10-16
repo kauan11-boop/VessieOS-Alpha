@@ -1,0 +1,48 @@
+<div class="fexp">
+  <div class="fesb">
+    <div class="fesb-title">Acesso rápido</div>
+    {{quickAccess}}
+    <div class="fesb-title fesb-pc-toggle" data-toggle="pc"><i class="fas fa-chevron-down chev"></i> Este Computador</div>
+    <div class="fesb-pc-list">
+      <div class="fld fld-drive" data-dir=""><i class="fas fa-hdd"></i> Disco Local (C:)</div>
+      {{fsList}}
+    </div>
+    <div class="fesb-title"><i class="fas fa-star" style="color:#f1c40f"></i> Favoritos</div>
+    <div class="fe-favs" data-fe-favs></div>
+    <div class="fesb-title fesb-remote-title"><span><i class="fas fa-plug"></i> Remote Device</span><span class="remote-device-count" data-remote-count></span></div>
+    <div class="remote-device-list" data-remote-list></div>
+    <small class="remote-device-note">Acesso limitado à pasta escolhida. Nada fora dela é lido, movido ou formatado.</small>
+    <button class="fld fld-remote-connect" type="button" data-cmd="mountdevice">
+      <i class="fas fa-folder-open"></i> Selecionar pasta...
+    </button>
+  </div>
+  <div class="fem">
+    <div class="fe-tb">
+      <button class="fe-tbtn" data-cmd="back" title="Pasta acima"><i class="fas fa-arrow-left"></i></button>
+      <button class="fe-tbtn" data-cmd="histback" title="Voltar no histórico"><i class="fas fa-chevron-left"></i></button>
+      <button class="fe-tbtn" data-cmd="histfwd" title="Avançar no histórico"><i class="fas fa-chevron-right"></i></button>
+      <button class="fe-tbtn" data-cmd="fav" title="Favoritar pasta atual"><i class="far fa-star"></i></button>
+      <div class="fe-crumbs" id="fe-crumbs"></div>
+      <input class="fe-search" id="fe-search" placeholder="Pesquisar nesta pasta">
+      <button class="fe-tbtn" data-cmd="mountdevice" title="Conectar uma pasta do computador"><i class="fas fa-plug"></i> Remote Device</button>
+      <button class="fe-tbtn" data-cmd="refresh" title="Atualizar pasta atual"><i class="fas fa-rotate-right"></i></button>
+      <button class="fe-tbtn" data-cmd="upload" title="Enviar arquivos para a pasta atual"><i class="fas fa-upload"></i></button>
+      <button class="fe-tbtn" data-cmd="newfolder"><i class="fas fa-folder-plus"></i> Pasta</button>
+      <button class="fe-tbtn" data-cmd="newfile"><i class="fas fa-file-plus"></i> Arquivo</button>
+      <button class="fe-tbtn fe-newvl" data-cmd="newvl" title="Novo script VessieLang"><i class="fas fa-terminal"></i> .vl</button>
+      <button class="fe-tbtn" data-cmd="template" title="Novo arquivo a partir de um modelo"><i class="fas fa-wand-magic-sparkles"></i> Modelo</button>
+      <button class="fe-tbtn" data-cmd="view" title="Alternar grade/lista"><i class="fas fa-list"></i></button>
+      <button class="fe-tbtn" data-cmd="sort" title="Ordenar: nome/tipo"><i class="fas fa-arrow-down-a-z"></i></button>
+    </div>
+    <div class="fem-body">
+      <div class="fgrid" id="fe-grid" tabindex="0" title="Enter abre · F2 renomeia · Delete exclui · Ctrl+A seleciona tudo · Ctrl+C/X/V copiar/recortar/colar"></div>
+      <div class="feprev" id="fe-preview">
+        <h4>Visualização</h4>
+        <div class="fp-media" id="fe-media"><span style="color:var(--dim)">Selecione um item para ver detalhes</span></div>
+        <div class="fp-meta" id="fe-meta"></div>
+        <div class="fp-actions" id="fe-actions"></div>
+      </div>
+    </div>
+    <div class="fe-statusbar" id="fe-status"></div>
+  </div>
+</div>

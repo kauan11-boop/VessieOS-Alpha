@@ -1,8 +1,0 @@
-[
-    { "id": "snake", "title": "Snake", "genre": "Arcade", "price": 0, "image": "assets/games/snake.png" },
-    { "id": "tetris", "title": "Tetris", "genre": "Puzzle", "price": 0, "image": "assets/games/tetris.png" },
-    { "id": "pong", "title": "Pong", "genre": "Sports", "price": 0, "image": "assets/games/pong.png" },
-    { "id": "pacman", "title": "Pac-Man", "genre": "Arcade", "price": 0, "image": "assets/games/pacman.png" },
-    { "id": "chess", "title": "Xadrez", "genre": "Estratégia", "price": 0, "image": "assets/games/chess.png" },
-    { "id": "platformer", "title": "Platformer", "genre": "Aventura", "price": 0, "image": "assets/games/platformer.png" }
-]

@@ -1,0 +1,102 @@
+/* Settings — estilos convertidos do inline original (visuais idênticos). */
+/* Cores e variáveis */
+:root {
+  --a: #60a5fa;
+  --a2: #a78bfa;
+  --dim: #5b6680;
+}
+
+/* Estrutura global */
+.vset {
+  height: 100%;
+  background: #0d0d12;
+  color: #eee;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+/* Navbar */
+.vset-nav {
+  display: flex;
+  flex-direction: column;
+  background: #1a1a2e;
+  border-right: 1px solid rgba(255,255,255,.05);
+}
+.vset-nav-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border-bottom: 1px solid rgba(255,255,255,.05);
+}
+.vset-logo {
+  width: 32px; height: 32px;
+  background: linear-gradient(135deg, var(--a), var(--a2));
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-weight: bold; font-size: 1.2rem;
+}
+.vset-nav-head-text strong { color: #fff; }
+.vset-nav-head-text span { color: var(--dim); font-size: .8rem; }
+.vset-search {
+  padding: 0 18px;
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+}
+.vset-search-input {
+  flex: 1; padding: 8px 12px; border: 1px solid rgba(255,255,255,.06);
+  border-radius: 20px; background: rgba(255,255,255,.03); color: #fff;
+  outline: none; font-size: .85rem;
+}
+.vset-nav-list {
+  padding: 0 18px 14px;
+  overflow-y: auto;
+  max-height: calc(100vh - 200px);
+}
+.vset-nav-item {
+  padding: 10px 12px; margin: 4px 0;
+  border-radius: 8px; cursor: pointer;
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,.03);
+  transition: background .14s;
+}
+.vset-nav-item.active { background: rgba(96,165,250,.15); color: #60a5fa; }
+.vset-nav-item i { width: 18px; text-align: center; }
+.vset-nav-item span { color: #eef2ff; }
+
+/* Seções */
+.vset-section { padding: 18px; }
+.vset-header { margin-bottom: 12px; }
+.vset-header h2 { margin: 0; color: #fff; font-size: 1rem; }
+.vset-header p { margin: 4px 0 0; color: var(--dim); font-size: .85rem; }
+
+/* Cards */
+.vset-card { margin-bottom: 16px; padding: 14px; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.06); border-radius: 10px; }
+/* Toggle */
+.vset-toggle { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+.vset-toggle input { accent-color: var(--a); }
+.vset-tsl { width: 16px; height: 16px; border: 1px solid var(--dim); border-radius: 3px; }
+/* Buttons */
+.vset-btn { padding: 6px 12px; border: none; border-radius: 8px; cursor: pointer; font-size: .85rem; transition: background .14s; }
+.vset-btn-primary { background: linear-gradient(135deg, var(--a), var(--a2)); color: white; }
+.vset-btn-danger { background: rgba(239,68,68,.15); border: 1px solid rgba(239,68,68,.2); color: #f87171; }
+.vset-btn-ghost { background: transparent; color: #8fa0bf; border: 1px solid rgba(255,255,255,.08); }
+.vset-btn-ghost:hover { background: rgba(255,255,255,.04); }
+/* Chips */
+.vset-chip { padding: 6px 12px; border-radius: 20px; margin: 2px; font-size: .8rem; cursor: pointer; }
+.vset-chip.active { background: rgba(96,165,250,.15); color: #60a5fa; }
+/* Empty state */
+.vset-empty { color: var(--dim); padding: 20px; text-align: center; }
+/* Storage bar */
+.vset-storage-bar { height: 12px; background: rgba(255,255,255,.08); border-radius: 6px; overflow: hidden; margin: 8px 0; }
+.vset-storage-bar-fill { height: 100%; background: linear-gradient(90deg, var(--a), var(--a2)); width: 0%; transition: width .6s ease; }
+.vset-storage-caption { color: var(--dim); font-size: .8rem; }
+.vset-storage-stats { display: flex; gap: 20px; margin-top: 8px; font-size: .75rem; }
+.vset-storage-stat { color: var(--dim); }
+.vset-actions-row { margin-top: 12px; display: flex; gap: 8px; justify-content: flex-end; }
+/* About specs */
+.vset-specs { margin-top: 12px; display: grid; gap: 8px; font-size: .8rem; }
+.vset-spec { display: flex; justify-content: space-between; color: var(--dim); }
+.vset-about-hero { text-align: center; padding: 20px; }
+.vset-logo-lg { width: 64px; height: 64px; background: linear-gradient(135deg, var(--a), var(--a2)); border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; color: white; font-size: 2rem; margin: 0 auto 12px; }
+.vset-nav { max-height: calc(100vh - 180px); overflow-y: auto; }

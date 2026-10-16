@@ -1,0 +1,226 @@
+.execute-exes-window {
+  z-index: 1300;
+}
+
+.execute-exes-body {
+  display: grid;
+  grid-template-columns: minmax(220px, 320px) 1fr;
+  gap: 18px;
+  height: calc(100% - 42px);
+}
+
+.execute-exes-sidebar,
+.execute-exes-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.execute-exes-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.execute-exes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.exe-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.025);
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+
+.exe-item.active {
+  border-color: rgba(96, 165, 250, 0.4);
+  background: rgba(96, 165, 250, 0.1);
+}
+
+.exe-item span {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 1.2rem;
+}
+
+.exe-item strong {
+  display: block;
+  font-size: 0.8rem;
+}
+
+.exe-item small {
+  color: var(--dim);
+}
+
+.path-registry-remove {
+  margin-left: auto;
+  opacity: .55;
+  padding: 2px 7px;
+  border-radius: 6px;
+  font-size: .78rem;
+}
+
+.path-registry-remove:hover {
+  opacity: 1;
+  background: rgba(239, 83, 80, .18);
+  color: #ef5350;
+}
+
+.execute-exes-card {
+  padding: 16px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.execute-exes-card-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.execute-exes-card-head span {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(96, 165, 250, 0.25), rgba(167, 139, 250, 0.25));
+  font-size: 1.8rem;
+}
+
+.execute-exes-card-head h3 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.execute-exes-card-head small {
+  color: var(--dim);
+}
+
+.execute-exes-card p {
+  margin-top: 12px;
+  color: var(--text-2);
+}
+
+.execute-exes-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.execute-exes-button {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.execute-exes-button.primary {
+  background: linear-gradient(135deg, var(--a), var(--a2));
+  border: none;
+  font-weight: 700;
+}
+
+.execute-exes-button.tiny {
+  padding: 6px 8px;
+  font-size: 0.75rem;
+}
+
+.execute-exes-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.metric-box {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.metric-box label {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--dim);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.metric-box strong {
+  font-size: 1rem;
+}
+
+.execute-exes-log-box {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+  min-height: 220px;
+  padding: 14px;
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.execute-exes-log-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.execute-exes-log {
+  display: grid;
+  gap: 8px;
+  overflow: auto;
+}
+
+.execute-log-entry {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-2);
+  font-size: 0.74rem;
+}
+
+.log-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 54px;
+  padding: 4px 6px;
+  border-radius: 999px;
+  background: rgba(96, 165, 250, 0.18);
+  color: #dfeeff;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.execute-log-entry.warning .log-tag {
+  background: rgba(255, 181, 62, 0.16);
+  color: #ffd98a;
+}

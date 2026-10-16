@@ -1,0 +1,21 @@
+// jogo_demo.vl - Jogo demo p/ GameHub (+25 XP ao abrir, conquista, save)
+import "game" as g;
+var moedas = 0;
+var vidas = 3;
+func coletar(n) {
+  moedas = moedas + n;
+  system.print("moedas=" + moedas);
+  se (moedas >= 100) {
+    game.conquista("colecionador_100");
+    system.print("conquista! +50 XP");
+  }
+}
+func iniciar() {
+  game.abrir("demo-aventura");
+  coletar(40);
+  coletar(60);
+  file.write("C:/Users/player/save_demo.json", json.stringify({ moedas: moedas, vidas: vidas }));
+  system.print("save ok. vidas=" + vidas);
+}
+iniciar();
+

@@ -1,0 +1,106 @@
+<div class="fw-container">
+  <!-- TOPO: Cards de status -->
+  <div class="fw-top">
+    <div class="fw-card">
+      <div class="fw-label">Framework</div>
+      <div class="fw-value green">{{fwOnline}}</div>
+    </div>
+    <div class="fw-card">
+      <div class="fw-label">Runtime</div>
+      <div class="fw-value blue">{{fwUptime}}</div>
+    </div>
+    <div class="fw-card">
+      <div class="fw-label">IA</div>
+      <div class="fw-value purple">{{fwAi}}</div>
+    </div>
+    <div class="fw-card">
+      <div class="fw-label">VMs</div>
+      <div class="fw-value gold" id="fw-vm-count">{{fwVms}}</div>
+    </div>
+    <div class="fw-card">
+      <div class="fw-label">Otimizações</div>
+      <div class="fw-value blue" id="fw-opt-count">0</div>
+    </div>
+    <div class="fw-card">
+      <div class="fw-label">Uptime</div>
+      <div class="fw-value gold" id="fw-uptime">{{fwBootUptime}}</div>
+    </div>
+  </div>
+
+  <!-- CORPO: Principal + Sidebar -->
+  <div class="fw-body">
+    <div class="fw-main">
+      <!-- Módulos e Serviços -->
+      <div class="fw-grid2">
+        <div class="fw-section">
+          <div class="fw-section-title"><i class="fas fa-puzzle-piece"></i> Módulos</div>
+          <div class="fw-module-list">
+            {{fwModules}}
+          </div>
+        </div>
+        <div class="fw-section">
+          <div class="fw-section-title"><i class="fas fa-cogs"></i> Serviços</div>
+          <div class="fw-service-list">
+            {{fwServices}}
+          </div>
+        </div>
+      </div>
+
+      <!-- Otimizações -->
+      <div class="fw-section">
+        <div class="fw-section-title"><i class="fas fa-bolt fw-icon-gold"></i> Otimizações ativas</div>
+        <ul class="fw-optimization-list">
+          {{fwOpts}}
+        </ul>
+      </div>
+
+      <!-- Logs -->
+      <div class="fw-section">
+        <div class="fw-section-title"><i class="fas fa-terminal fw-icon-blue"></i> Logs do sistema</div>
+        <div class="fw-logs-container" id="fw-logs">
+          <div class="fw-log-empty">Nenhum log registrado.</div>
+        </div>
+      </div>
+
+      <!-- Ações -->
+      <div class="fw-actions">
+        <button class="primary" onclick="fwApplyOptimization()"><i class="fas fa-rocket"></i> Aplicar otimização</button>
+        <button class="success" onclick="fwCreateVM()"><i class="fas fa-server"></i> Criar VM</button>
+        <button class="fw-btn-vm" onclick="openApp('vm')"><i class="fas fa-cubes"></i> VM Manager</button>
+        <button class="fw-btn-load" onclick="fwSimulateLoad()"><i class="fas fa-fire"></i> Simular carga</button>
+        <button class="fw-btn-export" onclick="fwExportReport()"><i class="fas fa-download"></i> Exportar relatório</button>
+        <button onclick="fwClearCache()" class="danger"><i class="fas fa-broom"></i> Limpar cache</button>
+        <button class="fw-btn-restart" onclick="fwRestartFramework()"><i class="fas fa-sync-alt"></i> Reiniciar</button>
+      </div>
+    </div>
+
+    <!-- SIDEBAR: Métricas em tempo real -->
+    <div class="fw-sidebar">
+      <div class="fw-side-h">📊 Métricas do sistema</div>
+
+      <div class="fw-metric">
+        <div class="fw-metric-label"><span>CPU</span><span id="fw-cpu">0%</span></div>
+        <div class="fw-metric-bar"><div class="fw-metric-fill cpu" id="fw-cpu-bar" style="width:0%;"></div></div>
+      </div>
+
+      <div class="fw-metric">
+        <div class="fw-metric-label"><span>RAM</span><span id="fw-ram">0%</span></div>
+        <div class="fw-metric-bar"><div class="fw-metric-fill ram" id="fw-ram-bar" style="width:0%;"></div></div>
+      </div>
+
+      <div class="fw-metric">
+        <div class="fw-metric-label"><span>Disco</span><span id="fw-disk">0%</span></div>
+        <div class="fw-metric-bar"><div class="fw-metric-fill disk" id="fw-disk-bar" style="width:0%;"></div></div>
+      </div>
+
+      <div class="fw-side-box">
+        <div class="fw-side-dim">
+          <div>🧠 IA: <span class="fw-ai-name">{{fwAi}}</span></div>
+          <div>📦 VMs: <span id="fw-vm-count-side">{{fwVms}}</span></div>
+          <div>⚡ Otimizações: <span id="fw-opt-count-side">0</span></div>
+          <div class="fw-uptime-line">Uptime: <span id="fw-uptime-side">{{fwBootUptime}}</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

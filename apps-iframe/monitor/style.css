@@ -1,0 +1,6 @@
+.grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; padding:12px; align-content:start; height:100%; overflow:auto; }
+.wide { grid-column:1/-1; } h3 { margin:0 0 8px; font-size:.9rem; color:var(--text-2); }
+dl { display:grid; grid-template-columns:auto 1fr; gap:4px 14px; margin:0; } dt { color:var(--dim); } dd { margin:0; font-family:var(--font-mono); font-size:12.5px; }
+label { display:block; margin:8px 0 4px; font-size:.82rem; } table { width:100%; border-collapse:collapse; } td { padding:5px 6px; border-top:1px solid var(--border); font-size:.85rem; }
+td:last-child { text-align:right; white-space:nowrap; } td button { padding:2px 8px; font-size:.75rem; }
+@media (max-width:640px) { .grid { grid-template-columns:1fr; } }

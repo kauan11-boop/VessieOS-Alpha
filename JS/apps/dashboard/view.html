@@ -1,0 +1,31 @@
+<div class="dash" id="dash-main">
+  <div class="dash-top">
+    <h3 class="dash-title">📊 Painel de Controle</h3>
+    <button class="d-ref" onclick="refreshDash()"><i class="fas fa-sync-alt"></i> Atualizar</button>
+  </div>
+  <div class="d-cards" id="d-cards">
+    <div class="dc"><div class="di2">💰</div><div class="dl">Vendas</div><div class="dv" id="dc-vendas">R$42.5k</div><div class="dd pos" id="dc-vp">↑ +8.3%</div></div>
+    <div class="dc"><div class="di2">👥</div><div class="dl">Usuários</div><div class="dv" id="dc-users">12.4k</div><div class="dd pos" id="dc-up">↑ +2.1%</div></div>
+    <div class="dc"><div class="di2">📈</div><div class="dl">Receita</div><div class="dv" id="dc-rec">R$88.2k</div><div class="dd neg" id="dc-rp">↓ -1.4%</div></div>
+    <div class="dc"><div class="di2">🎯</div><div class="dl">Conversão</div><div class="dv" id="dc-conv">3.8%</div><div class="dd pos" id="dc-cp">↑ +0.5%</div></div>
+  </div>
+  <div class="d-chart">
+    <div class="d-ct"><span>Vendas por Mês</span><button class="d-ref" onclick="refreshChart()"><i class="fas fa-random"></i></button></div>
+    <div class="bc" id="bar-chart"></div>
+  </div>
+  <div class="d-chart">
+    <div class="d-ct"><span>Atividade Recente</span>
+      <input class="dash-filter" placeholder="🔍 Filtrar..." oninput="filterTable(this.value)">
+    </div>
+    <table class="d-tbl">
+      <thead><tr><th>Nome</th><th>Status</th><th>Valor</th><th>Data</th><th>Ação</th></tr></thead>
+      <tbody id="d-tbody">
+        <tr><td>Ana Silva</td><td><span class="sb ok">Ativo</span></td><td>R$1.2k</td><td>21/05</td><td><button class="dash-viewbtn" onclick="toast('Detalhes de Ana 📊')">Ver</button></td></tr>
+        <tr><td>Bruno Costa</td><td><span class="sb w">Pendente</span></td><td>R$840</td><td>20/05</td><td><button class="dash-viewbtn" onclick="toast('Detalhes de Bruno 📊')">Ver</button></td></tr>
+        <tr><td>Carla Mendes</td><td><span class="sb ok">Ativo</span></td><td>R$3.1k</td><td>19/05</td><td><button class="dash-viewbtn" onclick="toast('Detalhes de Carla 📊')">Ver</button></td></tr>
+        <tr><td>Diego Ramos</td><td><span class="sb e">Inativo</span></td><td>R$290</td><td>18/05</td><td><button class="dash-viewbtn" onclick="toast('Detalhes de Diego 📊')">Ver</button></td></tr>
+        <tr><td>Elena Santos</td><td><span class="sb ok">Ativo</span></td><td>R$5.6k</td><td>17/05</td><td><button class="dash-viewbtn" onclick="toast('Detalhes de Elena 📊')">Ver</button></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>

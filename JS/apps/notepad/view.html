@@ -1,0 +1,55 @@
+<div class="npad" id="{{uid}}">
+  <div class="npad-menubar">
+    <div class="nm-item" data-menu="arquivo">Arquivo
+      <div class="nm-dropdown">
+        <button data-cmd="new">Novo<span>Ctrl+N</span></button>
+        <button data-cmd="open">Abrir...<span>Ctrl+O</span></button>
+        <button data-cmd="save">Salvar<span>Ctrl+S</span></button>
+        <button data-cmd="saveas">Salvar como...<span>Ctrl+Shift+S</span></button>
+        <hr>
+        <button data-cmd="download">Baixar .txt</button>
+      </div>
+    </div>
+    <div class="nm-item" data-menu="editar">Editar
+      <div class="nm-dropdown">
+        <button data-cmd="undo">Desfazer<span>Ctrl+Z</span></button>
+        <button data-cmd="redo">Refazer<span>Ctrl+Y</span></button>
+        <hr>
+        <button data-cmd="cut">Recortar<span>Ctrl+X</span></button>
+        <button data-cmd="copy">Copiar<span>Ctrl+C</span></button>
+        <button data-cmd="paste">Colar<span>Ctrl+V</span></button>
+        <hr>
+        <button data-cmd="find">Localizar...<span>Ctrl+F</span></button>
+        <button data-cmd="selectall">Selecionar tudo<span>Ctrl+A</span></button>
+        <button data-cmd="datetime">Hora/Data<span>F5</span></button>
+        <button data-cmd="ai">Modificar com IA...</button>
+      </div>
+    </div>
+    <div class="nm-item" data-menu="formatar">Formatar
+      <div class="nm-dropdown">
+        <button data-cmd="wordwrap"><span id="{{uid}}-wwmark">✓</span>&nbsp;Quebra de linha automática</button>
+      </div>
+    </div>
+    <div class="nm-item" data-menu="exibir">Exibir
+      <div class="nm-dropdown">
+        <button data-cmd="zoomin">Aumentar Zoom<span>Ctrl+=</span></button>
+        <button data-cmd="zoomout">Diminuir Zoom<span>Ctrl+-</span></button>
+        <button data-cmd="zoomreset">Zoom padrão<span>Ctrl+0</span></button>
+      </div>
+    </div>
+  </div>
+  <div class="npad-findbar" style="display:none">
+    <input class="nf-input" placeholder="Localizar">
+    <button data-cmd="findprev"><i class="fas fa-chevron-up"></i></button>
+    <button data-cmd="findnext"><i class="fas fa-chevron-down"></i></button>
+    <span class="nf-count"></span>
+    <button class="nf-close" data-cmd="closefind"><i class="fas fa-times"></i></button>
+  </div>
+  <textarea class="npad-area" spellcheck="false" placeholder="Escreva aqui...">{{content}}</textarea>
+  <div class="npad-statusbar">
+    <span class="ns-path">{{savedPath}}</span>
+    <span class="ns-pos">Ln 1, Col 1</span>
+    <span class="ns-count">0 caracteres</span>
+    <span class="ns-zoom">100%</span>
+  </div>
+</div>

@@ -1,0 +1,4 @@
+/* Music Player — ícones de volume com cor suave (era inline). */
+.mplayer .mc-vol > i {
+  color: var(--dim);
+}

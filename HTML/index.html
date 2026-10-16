@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>VessieOS · Windows 11 Ultra</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../CSS/systems/desktop/main.css">
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+</head>
+
+<body>
+
+  <!-- BOOT -->
+  <div id="boot">
+    <div class="boot-logo">VessieOS</div>
+    <div class="boot-sub">VessieOS Version 1.0.3 *</div>
+    <div class="boot-spin"></div>
+  </div>
+
+  <!-- Boas-vindas sobre o mesmo wallpaper da área de trabalho. -->
+  <section id="login" class="login-screen" style="display:none" aria-label="Boas-vindas do VessieOS">
+    <div class="login-wallpaper" id="login-wallpaper" aria-hidden="true"></div>
+    <div class="lc login-content">
+      <div class="l-av" aria-hidden="true"><i class="fas fa-user"></i></div>
+      <p class="login-greeting">Bem-vindo ao</p>
+      <h2>VessieOS</h2>
+      <label class="login-name-label" for="l-name">Como podemos chamar você?</label>
+      <input class="l-inp" id="l-name" placeholder="Visitante" value="Visitante" maxlength="40"
+        autocomplete="nickname">
+      <button class="l-btn" id="l-btn" type="button">Entrar <i class="fas fa-arrow-right"></i></button>
+      <p class="login-hint">Sua sessão está pronta. Não é necessária uma senha.</p>
+    </div>
+    <div class="login-brand"><span>VessieOS</span><span>Um espaço para criar e explorar</span></div>
+  </section>
+
+  <!-- DESKTOP -->
+  <div id="desktop" style="display:none">
+    <div id="desktop-media-bg"></div>
+    <div id="icons-area" style="position:absolute;inset:0;pointer-events:none"></div>
+    <div id="ctx" style="display:none">
+      <div class="cti" data-act="refresh"><i class="fas fa-sync-alt"></i> Atualizar Desktop</div>
+      <div class="cti" data-act="newFolder"><i class="fas fa-folder-plus"></i> Nova Pasta</div>
+      <div class="cti" data-act="personalize"><i class="fas fa-paint-brush"></i> Personalizar</div>
+      <div class="cts"></div>
+      <div class="cti" data-act="terminal"><i class="fas fa-terminal"></i> Abrir Terminal</div>
+      <div class="cti" data-act="taskManager"><i class="fas fa-tasks"></i> Gerenciador de Tarefas</div>
+      <div class="cts"></div>
+      <div class="cti" data-act="about"><i class="fas fa-info-circle"></i> Sobre o VessieOS</div>
+    </div>
+  </div>
+
+  <!-- TASKBAR -->
+  <div id="tb" style="display:none">
+    <div class="tb-l">
+      <button class="tbtn" id="tb-start" title="Iniciar">
+        <i class="fab fa-windows"
+          style="background:linear-gradient(135deg,var(--a),var(--a2));-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 6px rgba(196,111,255,.7))"></i>
+      </button>
+      <button class="tb-search" id="tb-search" type="button" aria-label="Pesquisar apps e arquivos"><i class="fas fa-search" style="font-size:.85rem"></i><span>Pesquisar...</span></button>
+    </div>
+    <div class="tb-c" id="tb-wins"></div>
+    <div class="tb-r">
+      <div class="tb-sys">
+        <i class="fas fa-wifi" title="Wi-Fi"></i>
+        <i class="fas fa-volume-up" title="Volume" id="vol-icon"></i>
+        <i class="fas fa-battery-three-quarters" title="Bateria"></i>
+      </div>
+      <div class="tb-clk">
+        <div class="t" id="tb-time"></div>
+        <div class="d" id="tb-date"></div>
+      </div>
+      <button class="tbtn" id="tb-notif" title="Notificações" style="font-size:1rem"><i
+          class="fas fa-bell"></i></button>
+    </div>
+  </div>
+
+  <!-- NOTIFICATION PANEL -->
+  <div id="np">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+      <h3 style="font-size:1.1rem">Central de Notificações</h3>
+      <button id="np-close" style="background:none;border:none;color:var(--dim);font-size:1.1rem;cursor:pointer"><i
+          class="fas fa-times"></i></button>
+    </div>
+    <div class="qt-grid">
+      <div class="qt on" data-qt="wifi"><i class="fas fa-wifi"></i>Wi-Fi</div>
+      <div class="qt on" data-qt="bt"><i class="fab fa-bluetooth-b"></i>Bluetooth</div>
+      <div class="qt" data-qt="dnd"><i class="fas fa-moon"></i>Não Perturbe</div>
+      <div class="qt" data-qt="dark"><i class="fas fa-adjust"></i>Tema</div>
+      <div class="qt on" data-qt="vol"><i class="fas fa-volume-up"></i>Som</div>
+      <div class="qt" data-qt="focus"><i class="fas fa-crosshairs"></i>Foco</div>
+      <div class="qt" data-qt="nightlight"><i class="fas fa-sun"></i>Luz Noturna</div>
+      <div class="qt" data-qt="airplane"><i class="fas fa-plane"></i>Avião</div>
+    </div>
+    <div style="margin-top:22px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <span style="font-size:.85rem;font-weight:600">Notificações</span>
+        <button id="clr-notifs"
+          style="background:none;border:none;color:var(--dim);font-size:.78rem;cursor:pointer">Limpar todas</button>
+      </div>
+      <div id="notif-list">
+        <div class="n-item">
+          <div class="n-title">💜 Bem-vindo ao VessieOS!</div>
+          <div class="n-body">Sistema iniciado com sucesso. Clique no ícone da Vessie para começar.</div>
+        </div>
+        <div class="n-item info">
+          <div class="n-title">🎮 Jogos disponíveis</div>
+          <div class="n-body">${GAMES.length} jogos desbloqueados. Abra o Game Hub para jogar!</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- START MENU -->
+  <div id="sm" role="dialog" aria-modal="false" aria-label="Menu Iniciar">
+    <div class="sm-top">
+      <div class="sm-srch">
+        <i class="fas fa-search sm-srch-icon" aria-hidden="true" style="color:var(--dim)"></i>
+        <label for="sm-q" class="sr-only">Pesquisar</label>
+        <input id="sm-q" class="sm-srch-input" type="text" placeholder="Pesquisar apps, configurações..."
+          autocomplete="off" aria-label="Pesquisar apps e configurações">
+      </div>
+    </div>
+
+    <div class="sm-body">
+      <div class="sm-view sm-view-pinned" id="sm-view-pinned">
+        <div class="sm-row-head">
+          <span>Fixados</span>
+          <button class="sm-alllink" id="sm-goto-all">Todos os apps <i class="fas fa-chevron-right"></i></button>
+        </div>
+        <div class="sm-pin-grid" id="sm-pin-grid" role="listbox" aria-label="Aplicativos Fixados"></div>
+
+        <div class="sm-row-head" style="margin-top:16px"><span>Recomendados</span></div>
+        <div id="sm-recent" class="sm-recent-list" role="listbox" aria-label="Aplicativos Recentes">
+          <span class="sm-recent-empty">Nenhum app recente</span>
+        </div>
+      </div>
+
+      <div class="sm-view sm-view-all" id="sm-view-all" style="display:none">
+        <div class="sm-row-head sm-row-head-back">
+          <button class="sm-backlink" id="sm-goto-pinned" aria-label="Voltar"><i class="fas fa-chevron-left"></i></button>
+          <span>Todos os apps</span>
+        </div>
+        <div id="sm-grid" role="listbox" aria-label="Todos os aplicativos"></div>
+      </div>
+
+      <div class="sm-view sm-view-search" id="sm-view-search" style="display:none">
+        <div class="sm-row-head"><span id="sm-search-count">Resultados</span></div>
+        <div class="sm-search-grid" id="sm-search-grid"></div>
+      </div>
+    </div>
+
+    <div class="sm-ft">
+      <div class="sm-usr" role="button" tabindex="0" aria-label="Conta de usuário: Visitante" id="sm-usr">
+        <div class="sm-uav" aria-hidden="true">💜</div>
+        <span id="sm-uname">Visitante</span>
+      </div>
+      <div class="sm-pw-wrap">
+        <button class="sm-pw" id="sm-power" aria-label="Opções de energia" title="Opções de energia"><i class="fas fa-power-off" aria-hidden="true"></i></button>
+        <div class="sm-pw-menu" id="sm-pw-menu">
+          <div class="cti" data-act="sleep"><i class="fas fa-moon"></i> Suspender</div>
+          <div class="cti" data-act="restart"><i class="fas fa-rotate-right"></i> Reiniciar</div>
+          <div class="cti" data-act="shutdown"><i class="fas fa-power-off"></i> Desligar</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST CONTAINER -->
+  <div id="toasts"></div>
+
+  <!-- AI PROMPT PANEL -->
+  <div id="ai-prompt-panel" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:9999;color:#fff;">
+    <div style="position:absolute;top:20%;left:25%;right:25%;background:rgba(15,18,26,.9);border:1px solid var(--border);border-radius:12px;padding:30px;max-width:500px;min-width:300px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+        <h3><i class="fas fa-robot"></i> Prompt IA para Node.js</h3>
+        <button id="ai-prompt-close" style="background:none;border:none;color:var(--dim);font-size:1.2rem;cursor:pointer"><i class="fas fa-times"></i></button>
+      </div>
+      <div style="height:200px;background:rgba(0,0,0,.5);border-radius:8px;padding:15px;overflow:margin;min-height:200px;max-height:400px;display:flex;flex-direction:column;justify-content:flex-start;">
+        <textarea id="ai-prompt-text" style="flex:1;border:none;background:transparent;color:#fff;font-family:Consolas,monospace;padding:10px;resize:vertical;min-height:150px;"></textarea>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:20px;padding-top:20px;border-top:1px solid var(--dim);">
+        <button id="ai-prompt-clear" style="flex:1;background:var(--a);color:#fff;border:none;padding:10px;font-weight:600;">Limpar</button>
+        <button id="ai-prompt-send" style="flex:1;background:linear-gradient(135deg,#c46fff,#7a3eb8);color:#fff;border:none;padding:10px;font-weight:600;">Gerar Node.js</button>
+      </div>
+      <div id="ai-prompt-result" style="margin-top:20px;max-height:300px;overflow:auto;display:none;"></div>
+    </div>
+  </div>
+
+  <!-- TOAST CONTAINER -->
+  <script src="../JS/systems/desktop/main.js"></script>
+  <script type="module" src="../JS/kernel/modules/index.js"></script>
+</body>
+
+</html>

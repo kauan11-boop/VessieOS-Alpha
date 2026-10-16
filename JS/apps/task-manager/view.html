@@ -1,0 +1,113 @@
+<div class="taskmgr-container">
+  <!-- Abas -->
+  <div class="taskmgr-tabs">
+    <button class="taskmgr-tab active" data-tab="processos" onclick="switchTaskTab('processos')"><i class="fas fa-list"></i> Processos</button>
+    <button class="taskmgr-tab" data-tab="desempenho" onclick="switchTaskTab('desempenho')"><i class="fas fa-chart-bar"></i> Desempenho</button>
+    <button class="taskmgr-tab" data-tab="usuarios" onclick="switchTaskTab('usuarios')"><i class="fas fa-users"></i> Usuários</button>
+    <button class="taskmgr-tab" data-tab="historico" onclick="switchTaskTab('historico')"><i class="fas fa-clock"></i> Histórico</button>
+  </div>
+
+  <!-- Conteúdo -->
+  <div class="taskmgr-content" id="taskmgr-content">
+    <!-- ABA PROCESSOS -->
+    <div id="taskmgr-panel-processos">
+      <div class="taskmgr-stats">
+        <div class="taskmgr-stat-item">
+          <div class="label">Processos</div>
+          <div class="value" id="taskmgr-proc-count">0</div>
+        </div>
+        <div class="taskmgr-stat-item">
+          <div class="label">RAM</div>
+          <div class="value" id="taskmgr-ram">—</div>
+        </div>
+        <div class="taskmgr-stat-item">
+          <div class="label">Disco</div>
+          <div class="value" id="taskmgr-disk">—</div>
+        </div>
+        <div class="taskmgr-stat-item">
+          <div class="label">Rede</div>
+          <div class="value" id="taskmgr-net" style="font-size:.95rem;">—</div>
+        </div>
+      </div>
+
+      <table class="taskmgr-table">
+        <thead>
+          <tr>
+            <th>Processo</th>
+            <th class="tmg-th-c">Nós DOM</th>
+            <th class="tmg-th-c">Status</th>
+            <th class="tmg-th-c">Ação</th>
+          </tr>
+        </thead>
+        <tbody id="taskmgr-tbody"></tbody>
+      </table>
+
+      <div class="taskmgr-actions">
+        <button onclick="refreshProcesses()"><i class="fas fa-sync-alt"></i> Atualizar</button>
+      </div>
+      <p class="tmg-note">Janelas reais do VessieWM. Finalizar remove a janela mesmo que o app tenha travado.</p>
+    </div>
+
+    <!-- ABA DESEMPENHO -->
+    <div id="taskmgr-panel-desempenho" style="display:none;">
+      <div class="taskmgr-perf">
+        <div class="taskmgr-perf-card">
+          <div class="label">CPU · núcleos</div>
+          <div class="value" id="perf-cpu">—</div>
+          <div class="bar"><div class="fill" id="perf-cpu-bar" style="width:0%;background:var(--a);"></div></div>
+        </div>
+        <div class="taskmgr-perf-card">
+          <div class="label">RAM · heap JS</div>
+          <div class="value" id="perf-ram">—</div>
+          <div class="bar"><div class="fill" id="perf-ram-bar" style="width:0%;background:var(--a2);"></div></div>
+        </div>
+        <div class="taskmgr-perf-card">
+          <div class="label">Disco · localStorage</div>
+          <div class="value" id="perf-disk">—</div>
+          <div class="bar"><div class="fill" id="perf-disk-bar" style="width:0%;background:var(--a3);"></div></div>
+        </div>
+        <div class="taskmgr-perf-card">
+          <div class="label">Rede</div>
+          <div class="value" id="perf-net" style="font-size:1.05rem;">—</div>
+        </div>
+        <div class="taskmgr-perf-card">
+          <div class="label">Processos ativos</div>
+          <div class="value" id="perf-proc">0</div>
+        </div>
+      </div>
+      <div class="tmg-membox">
+        <div class="tmg-boxtitle">📊 Janelas por peso (nós DOM reais)</div>
+        <div id="perf-mem-details" class="tmg-memdetails"></div>
+      </div>
+      <p class="tmg-note">% de CPU por processo não é exposto pelo navegador; a barra da CPU mostra a fluidez (quadros por segundo).</p>
+    </div>
+
+    <!-- ABA USUÁRIOS -->
+    <div id="taskmgr-panel-usuarios" style="display:none;">
+      <div class="taskmgr-perf">
+        <div class="taskmgr-perf-card">
+          <div class="label">Sessão ativa</div>
+          <div class="value" id="tmg-user" style="font-size:1.15rem;">—</div>
+        </div>
+        <div class="taskmgr-perf-card">
+          <div class="label">Sessão desde</div>
+          <div class="value" id="tmg-since" style="font-size:.95rem;">—</div>
+        </div>
+      </div>
+      <p class="tmg-note">O VessieOS roda uma sessão por navegador; o nome vem do login e a persistência, do armazenamento local.</p>
+    </div>
+
+    <!-- ABA HISTÓRICO -->
+    <div id="taskmgr-panel-historico" style="display:none;">
+      <div class="tmg-membox">
+        <div class="tmg-boxtitle">📋 Histórico de ações</div>
+        <div id="taskmgr-history-list" class="tmg-histlist">
+          <div class="tmg-histempty">Nenhuma ação registrada.</div>
+        </div>
+      </div>
+      <div class="taskmgr-actions">
+        <button onclick="clearHistory()"><i class="fas fa-trash"></i> Limpar histórico</button>
+      </div>
+    </div>
+  </div>
+</div>

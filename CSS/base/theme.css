@@ -1,0 +1,132 @@
+/*
+ * DESIGN TOKENS — VessieOS
+ * ------------------------------------------------------------------
+ * Todas as variáveis abaixo já existiam e são usadas por milhares de
+ * linhas em CSS/base/main.css e CSS/components/*.css — por isso NENHUM
+ * nome foi removido ou renomeado (isso quebraria o projeto inteiro).
+ *
+ * O que mudou: o arquivo ganhou seções, comentários, e ESCALAS que
+ * antes não existiam (espaçamento fluido, tipografia, camadas z,
+ * duração de movimento, breakpoints) — a base para qualquer CSS novo
+ * (como CSS/systems/micro-systems.css) e para migração gradual do CSS
+ * antigo, sem precisar reescrever tudo de uma vez.
+ * ------------------------------------------------------------------
+ */
+:root {
+  /* ---------- Cor de marca / acento (Vessie) ---------- */
+  --a: #60a5fa;
+  --a2: #a78bfa;
+  --a3: #22d3ee;
+  --acc-glow: rgba(96, 165, 250, 0.42);
+  --acc-glow-2: rgba(167, 139, 250, 0.35);
+  /* Alias semântico — prefira estes nomes em CSS novo */
+  --color-accent: var(--a);
+  --color-accent-2: var(--a2);
+  --color-accent-3: var(--a3);
+
+  /* ---------- Semáforo de janela (macOS-style traffic lights) ---------- */
+  --tl-close: #ff5f57;
+  --tl-min: #febc2e;
+  --tl-max: #28c840;
+
+  /* ---------- Superfícies de vidro (glassmorphism) ---------- */
+  --mica: rgba(20, 22, 30, 0.78);
+  --mica-2: rgba(26, 28, 38, 0.84);
+  --acrylic: rgba(18, 20, 28, 0.62);
+  --acrylic-strong: rgba(14, 16, 24, 0.86);
+  --surface: rgba(255, 255, 255, 0.045);
+  --surface-2: rgba(255, 255, 255, 0.075);
+  --surface-3: rgba(255, 255, 255, 0.12);
+  --bg-w: rgba(26, 28, 38, 0.84);
+  /* Intensidade do blur usada pelos painéis de vidro — o sistema
+     "Vidro Fosco Intenso" (visual.frost-intensity) sobrescreve isto
+     dinamicamente via JS quando ativado. */
+  --vsys-frost-blur: 18px;
+
+  /* ---------- Bordas ---------- */
+  --border: rgba(255, 255, 255, 0.09);
+  --border-strong: rgba(255, 255, 255, 0.16);
+  --hairline: rgba(255, 255, 255, 0.055);
+
+  /* ---------- Texto ---------- */
+  --text: #f4f5f9;
+  --text-2: #c9cdd8;
+  --dim: #8a90a0;
+  --muted: #5b6172;
+
+  /* ---------- Métricas de layout ---------- */
+  --th: 52px; /* altura da taskbar */
+
+  /* ---------- Escala de espaçamento fluido (NOVO) ----------
+     Usa clamp() para escalar suavemente entre telas pequenas e
+     grandes sem precisar de media queries repetidas. Use estes
+     tokens em qualquer CSS novo em vez de valores de pixel soltos. */
+  --space-1: clamp(4px, 0.3vw, 6px);
+  --space-2: clamp(8px, 0.6vw, 10px);
+  --space-3: clamp(12px, 0.9vw, 16px);
+  --space-4: clamp(16px, 1.2vw, 22px);
+  --space-5: clamp(24px, 1.8vw, 32px);
+  --space-6: clamp(32px, 2.4vw, 48px);
+
+  /* ---------- Escala tipográfica fluida (NOVO) ---------- */
+  --font-size-xs: clamp(0.72rem, 0.68rem + 0.2vw, 0.78rem);
+  --font-size-sm: clamp(0.82rem, 0.78rem + 0.2vw, 0.88rem);
+  --font-size-md: clamp(0.92rem, 0.88rem + 0.25vw, 1rem);
+  --font-size-lg: clamp(1.08rem, 1rem + 0.4vw, 1.25rem);
+  --font-size-xl: clamp(1.4rem, 1.25rem + 0.8vw, 1.8rem);
+
+  /* ---------- Raio de borda ---------- */
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 14px;
+  --r-xl: 18px;
+
+  /* ---------- Sombras ---------- */
+  --shadow-1: 0 2px 6px rgba(0, 0, 0, 0.35);
+  --shadow-2: 0 10px 28px rgba(0, 0, 0, 0.5);
+  --shadow-3: 0 24px 64px rgba(0, 0, 0, 0.55);
+  --shadow-win: 0 40px 80px rgba(0, 0, 0, 0.6), 0 2px 8px rgba(0, 0, 0, 0.45);
+  --shadow-dock: 0 -1px 0 rgba(255, 255, 255, 0.06) inset, 0 12px 40px rgba(0, 0, 0, 0.55);
+  /* Sombra extra usada pelo sistema "Sombras Profundas" (visual.window-shadow-depth) */
+  --shadow-win-deep: 0 60px 120px rgba(0, 0, 0, 0.7), 0 4px 16px rgba(0, 0, 0, 0.55);
+
+  /* ---------- Movimento ---------- */
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* Durações nomeadas (NOVO) — evita "magic numbers" tipo transition: .2s */
+  --motion-fast: 120ms;
+  --motion-base: 200ms;
+  --motion-slow: 360ms;
+  --motion-slower: 600ms;
+
+  /* ---------- Escala de camadas (z-index) — DOCUMENTAÇÃO (NOVO) ----------
+     O projeto usa valores fixos espalhados por vários arquivos de
+     componente (taskbar: 1200, start-menu: 1400, notifications: 1500,
+     execute-exes: 1300, boot: 10000, easter: 9999, login: 8000-9000).
+     Esta escala documenta as faixas já em uso — CSS novo deve usar
+     estes tokens; CSS antigo pode ser migrado gradualmente sem
+     quebrar nada, já que os valores numéricos batem com o que já
+     está em produção. */
+  --z-desktop: 1;
+  --z-window: 100;
+  --z-window-active: 500;
+  --z-taskbar: 1200;
+  --z-execute-exes: 1300;
+  --z-start-menu: 1400;
+  --z-notifications: 1500;
+  --z-widget: 1600;      /* usado pelos widgets flutuantes dos 155 micro-sistemas */
+  --z-login: 8000;
+  --z-login-top: 9000;
+  --z-easter: 9999;
+  --z-boot: 10000;
+
+  /* ---------- Breakpoints como custom properties (NOVO, uso em JS) ---------- */
+  --bp-mobile: 480px;
+  --bp-tablet: 768px;
+  --bp-desktop: 1200px;
+}
+
+/* (Seletor html.theme-light removido junto com o tema claro.) */
+html.theme-dark {
+  color-scheme: dark;
+}

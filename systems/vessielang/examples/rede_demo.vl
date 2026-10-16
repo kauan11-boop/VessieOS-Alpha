@@ -1,0 +1,19 @@
+// rede_demo.vl - Rede + cripto + numeros normais
+import "network" as net;
+var mask = 0xFF;
+var perm = 0b1010;
+var modo = 0o17;
+var big = 1_000_000;
+func principal_rede() {
+  system.print("mask=" + mask + " perm=" + perm + " modo=" + modo + " big=" + big);
+  system.print("status=" + network.status());
+  system.print("ip=" + network.ip());
+  var h = crypto.hash("senha123");
+  system.print("hash=" + h);
+  var c = crypto.encrypt("segredo", "chave");
+  system.print("enc=" + c);
+  system.print("dec=" + crypto.decrypt(c, "chave"));
+  storage.set("sessao", "abc123");
+  system.print("sessao=" + storage.get("sessao"));
+}
+principal_rede();

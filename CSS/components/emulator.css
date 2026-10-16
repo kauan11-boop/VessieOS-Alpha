@@ -1,0 +1,425 @@
+/* Emulador de executáveis — Executar / Inspeção / Compatibilidade */
+.emu {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  overflow: hidden;
+  background: #0b0e14;
+  color: #eef2ff;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.emu-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #292f3b;
+}
+
+.emu-icon {
+  font-size: 1.6rem;
+}
+
+.emu-title {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+  gap: 2px;
+}
+
+.emu-title strong {
+  overflow: hidden;
+  font-size: .92rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.emu-title small {
+  overflow: hidden;
+  color: #8d97a9;
+  font-size: .72rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.emu-badge {
+  flex: 0 0 auto;
+  padding: 3px 10px;
+  border: 1px solid;
+  border-radius: 20px;
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+}
+
+.emu-tabs {
+  display: flex;
+  gap: 6px;
+  padding: 10px 16px 0;
+  border-bottom: 1px solid #292f3b;
+}
+
+.emu-tabs button {
+  padding: 8px 14px;
+  border: 1px solid transparent;
+  border-bottom: 0;
+  border-radius: 8px 8px 0 0;
+  background: transparent;
+  color: #aab4c8;
+  cursor: pointer;
+  font-size: .8rem;
+}
+
+.emu-tabs button.ac {
+  border-color: #292f3b;
+  background: #131826;
+  color: #fff;
+}
+
+.emu-tab {
+  min-height: 0;
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+}
+
+.emu-runbox {
+  display: grid;
+  gap: 10px;
+  justify-items: center;
+}
+
+.emu-screen {
+  width: min(640px, 100%);
+  border: 1px solid #2d3442;
+  border-radius: 8px;
+  background: #000;
+  image-rendering: pixelated;
+}
+
+.emu-status {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #292f3b;
+  border-radius: 7px;
+  background: #0b0e14;
+  color: #c9d4e8;
+  font-size: .78rem;
+}
+
+.emu-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.emu-actions button {
+  padding: 8px 14px;
+  border: 1px solid #3c4657;
+  border-radius: 7px;
+  background: #222b3a;
+  color: #f4f7ff;
+  cursor: pointer;
+  font-size: .8rem;
+}
+
+.emu-actions button.primary {
+  border-color: #69a7ff;
+  background: #243d60;
+  font-weight: 700;
+}
+
+.emu-actions button:disabled {
+  cursor: not-allowed;
+  opacity: .45;
+}
+
+.emu-note {
+  width: 100%;
+  margin: 0;
+  color: #8d97a9;
+  font-size: .76rem;
+  line-height: 1.5;
+}
+
+.emu-note.emu-warn {
+  color: #ffd88a;
+}
+
+.emu-inspect {
+  display: grid;
+  gap: 12px;
+}
+
+.emu-inspect h4 {
+  margin: 4px 0 0;
+  color: #bac5d8;
+  font-size: .78rem;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.emu-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .78rem;
+}
+
+.emu-table th,
+.emu-table td {
+  padding: 6px 9px;
+  border-bottom: 1px solid #232a36;
+  text-align: left;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+
+.emu-table th {
+  width: 150px;
+  color: #8d97a9;
+  font-weight: 600;
+}
+
+.emu-chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.emu-chips code {
+  padding: 3px 9px;
+  border: 1px solid #2d3442;
+  border-radius: 20px;
+  background: #090c12;
+  color: #9fd0ff;
+  font-size: .72rem;
+}
+
+.emu-strings {
+  border: 1px solid #292f3b;
+  border-radius: 7px;
+  background: #090b10;
+}
+
+.emu-strings summary {
+  padding: 9px 12px;
+  cursor: pointer;
+  font-size: .78rem;
+}
+
+.emu-strings pre {
+  max-height: 220px;
+  overflow: auto;
+  margin: 0;
+  padding: 10px 12px;
+  border-top: 1px solid #232a36;
+  color: #c9d4e8;
+  font: 11px/1.5 Consolas, monospace;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.emu-device-group {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid #292f3b;
+  border-radius: 9px;
+  background: #0e1320;
+}
+
+.emu-device-group h4 {
+  margin: 0;
+  color: #cfe3ff;
+  font-size: .8rem;
+}
+
+.emu-compat-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 10px;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, .03);
+  font-size: .78rem;
+}
+
+.emu-compat-row i {
+  color: #60a5fa;
+}
+
+.emu-compat-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.emu-compat-row button {
+  flex: 0 0 auto;
+  padding: 5px 12px;
+  border: 1px solid #3c4657;
+  border-radius: 6px;
+  background: #222b3a;
+  color: #fff;
+  cursor: pointer;
+  font-size: .74rem;
+}
+
+.emu-compat-row button:disabled {
+  cursor: wait;
+  opacity: .5;
+}
+
+/* ===== Hardware virtual + Log exclusivo ===== */
+.emu-hw {
+  display: grid;
+  gap: 10px;
+}
+
+.emu-hw h4 {
+  margin: 6px 0 0;
+  color: #bac5d8;
+  font-size: .78rem;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.emu-profiles {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.emu-profile {
+  display: grid;
+  gap: 4px;
+  padding: 10px 12px;
+  border: 1px solid #2d3442;
+  border-radius: 9px;
+  background: #0e1320;
+  color: #eef2ff;
+  cursor: pointer;
+  text-align: left;
+}
+
+.emu-profile.ac {
+  border-color: #69a7ff;
+  background: #16294a;
+}
+
+.emu-profile strong {
+  font-size: .8rem;
+}
+
+.emu-profile small {
+  color: #8d97a9;
+  font-size: .7rem;
+}
+
+.emu-toggle {
+  min-width: 52px;
+  padding: 3px 10px;
+  border: 1px solid #3c4657;
+  border-radius: 20px;
+  background: #222b3a;
+  color: #8d97a9;
+  cursor: pointer;
+  font-size: .7rem;
+  font-weight: 700;
+}
+
+.emu-toggle.on {
+  border-color: #34d399;
+  background: rgba(52, 211, 153, .14);
+  color: #34d399;
+}
+
+.emu-logbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.emu-logbar select {
+  padding: 6px 10px;
+  border: 1px solid #3c4657;
+  border-radius: 7px;
+  background: #0e1320;
+  color: #eef2ff;
+  font-size: .76rem;
+}
+
+.emu-autoscroll {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #8d97a9;
+  font-size: .74rem;
+}
+
+.emu-autoscroll input {
+  accent-color: #69a7ff;
+}
+
+.emu-logbar button {
+  padding: 6px 12px;
+  border: 1px solid #3c4657;
+  border-radius: 7px;
+  background: #222b3a;
+  color: #f4f7ff;
+  cursor: pointer;
+  font-size: .74rem;
+}
+
+.emu-log {
+  display: flex;
+  min-height: 220px;
+  max-height: 420px;
+  flex-direction: column;
+  gap: 2px;
+  overflow-y: auto;
+  padding: 10px;
+  border: 1px solid #292f3b;
+  border-radius: 8px;
+  background: #06080d;
+  font: 11px/1.6 Consolas, monospace;
+}
+
+.emu-logline {
+  display: flex;
+  gap: 8px;
+  overflow-wrap: anywhere;
+}
+
+.emu-logtime {
+  flex: 0 0 auto;
+  color: #5b6478;
+}
+
+.emu-loglevel {
+  flex: 0 0 auto;
+  font-weight: 700;
+}
+
+.emu-logsrc {
+  flex: 0 0 auto;
+  color: #6b6f7e;
+}
+
+.emu-logline span:last-child {
+  color: #d5dcea;
+}
+
+@media (max-width: 760px) {
+  .emu-tabs button {
+    flex: 1;
+    padding: 8px 6px;
+    font-size: .72rem;
+  }
+}

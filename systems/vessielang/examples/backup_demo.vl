@@ -1,0 +1,11 @@
+// backup_demo.vl - Backup + diagnostico + energia
+func rodar_backup() {
+  system.print("usuario=" + system.user());
+  diagnostic.check();
+  backup.create("C:/Users/joao/Documents");
+  clipboard.copy("backup ok");
+  system.print("colado: " + clipboard.paste());
+  audio.volume(0.8);
+  power.info();
+}
+rodar_backup();

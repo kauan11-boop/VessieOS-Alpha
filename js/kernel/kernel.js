@@ -1,106 +1,111 @@
-import Scheduler from './scheduler.js';
-import IPC from './ipc.js';
-import { Interpreter } from '../interpreter/executor.js';
-import systemModule from '../modules/system.js';
-import fileModule from '../modules/file.js';
-import processModule from '../modules/process.js';
-import guiModule from '../modules/gui.js';
-import networkModule from '../modules/network.js';
-import cryptoModule from '../modules/crypto.js';
-import storageModule from '../modules/storage.js';
-import clipboardModule from '../modules/clipboard.js';
-import powerModule from '../modules/power.js';
-import mathModule from '../modules/math.js';
-import stringModule from '../modules/string.js';
-import jsonModule from '../modules/json.js';
-import dateModule from '../modules/date.js';
-import colorModule from '../modules/color.js';
-import cssModule from '../modules/css.js';
-import optimizerModule from '../modules/optimizer.js';
-import memoryModule from '../modules/memory.js';
-import { notify } from '../ui/notifications.js';
-import { outputChannel } from '../utils/output.js';
+(function () {
+  const kernel = {
+    bootTime: Date.now(),
+    processId: 1000,
+    processes: new Map(),
+    services: new Map(),
+    modules: new Map(),
+    logs: [],
+    memory: {
+      total: 1024,
+      used: 0,
+      map: new Map()
+    },
+    boot() {
+      this.log('info', 'Kernel booted successfully.', 'Kernel');
+      this.registerService('kernel', this);
+      return this;
+    },
+    registerService(name, service) {
+      if (!name || !service) return null;
+      this.services.set(name, service);
+      return service;
+    },
+    getService(name) {
+      return this.services.get(name) || null;
+    },
+    registerModule(name, module) {
+      if (!name || !module) return null;
+      this.modules.set(name, module);
+      return module;
+    },
+    getModule(name) {
+      return this.modules.get(name) || null;
+    },
+    log(level, message, source = 'Kernel') {
+      const entry = {
+        id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+        level,
+        source,
+        message,
+        stamp: new Date().toISOString()
+      };
+      this.logs.unshift(entry);
+      if (this.logs.length > 200) this.logs.pop();
+      return entry;
+    },
+    createProcess(definition) {
+      const spec = {
+        pid: this.processId++,
+        name: definition.name || 'unknown.exe',
+        path: definition.path || `C:/Program Files/${definition.name || 'App'}/${definition.name || 'App'}.exe`,
+        state: definition.state || 'running',
+        memory: definition.memory || 32,
+        owner: definition.owner || 'system',
+        cpu: definition.cpu || 0,
+        startedAt: Date.now(),
+        metadata: definition.metadata || {}
+      };
 
-export default class Kernel {
-    constructor() {
-        this.pidCounter = 1;
-        this.currentPid = 0;
-        this.processes = new Map();
-        this.scheduler = new Scheduler(this);
-        this.ipc = new IPC(this);
-        this.modules = {};
-        this.interpreter = new Interpreter(this);
-        this.loadModules();
+      this.memory.used += spec.memory;
+      spec.memoryUsed = spec.memory;
+      this.processes.set(spec.pid, spec);
+      this.log('info', `Process ${spec.name} started with PID ${spec.pid}.`, 'ProcessManager');
+      return spec;
+    },
+    terminateProcess(pid) {
+      const process = this.processes.get(pid);
+      if (!process) return false;
+      this.memory.used = Math.max(0, this.memory.used - (process.memory || 0));
+      this.processes.delete(pid);
+      this.log('warning', `Process ${process.name} terminated (PID ${pid}).`, 'ProcessManager');
+      return true;
+    },
+    listProcesses() {
+      return [...this.processes.values()].map((process) => ({
+        pid: process.pid,
+        name: process.name,
+        path: process.path,
+        state: process.state,
+        memory: process.memory,
+        owner: process.owner,
+        cpu: process.cpu,
+        startedAt: process.startedAt
+      }));
+    },
+    health() {
+      return {
+        uptime: Date.now() - this.bootTime,
+        processCount: this.processes.size,
+        memory: {
+          total: this.memory.total,
+          used: this.memory.used,
+          free: Math.max(0, this.memory.total - this.memory.used)
+        },
+        services: this.services.size,
+        modules: this.modules.size
+      };
+    },
+    reset() {
+      this.processes.clear();
+      this.logs.length = 0;
+      this.memory.used = 0;
+      this.log('info', 'Kernel reset invoked.', 'Kernel');
+      return this;
     }
+  };
 
-    // Canal de saída usado por system.print / apps
-    write(line) {
-        outputChannel.write(line);
-    }
-
-    notify(title, body, icon = '🔔') {
-        notify(title, body, icon);
-    }
-
-    loadModules() {
-        const defs = {
-            system: systemModule, file: fileModule, process: processModule,
-            gui: guiModule, network: networkModule, crypto: cryptoModule,
-            storage: storageModule, clipboard: clipboardModule, power: powerModule,
-            math: mathModule, string: stringModule, json: jsonModule,
-            date: dateModule, color: colorModule, css: cssModule,
-            optimizer: optimizerModule, memory: memoryModule
-        };
-        for (const [name, factory] of Object.entries(defs)) {
-            try {
-                this.modules[name] = factory(this);
-            } catch (e) {
-                console.error(`Falha ao carregar módulo '${name}':`, e);
-                this.modules[name] = {};
-            }
-        }
-        this.power = this.modules.power;
-    }
-
-    createProcess(name, scriptPath, args = [], background = false) {
-        const pid = this.pidCounter++;
-        const proc = {
-            pid,
-            name,
-            scriptPath,
-            args,
-            status: 'running',
-            background,
-            user: 'admin',
-            cpu: Math.floor(Math.random() * 8) + 1,
-            memory: Math.floor(Math.random() * 50000) + 8000,
-            virtualMemory: Math.floor(Math.random() * 100000) + 20000,
-            machine: false,
-            messages: [],
-            priority: 'normal'
-        };
-        this.processes.set(pid, proc);
-        this.scheduler.add(proc);
-        return pid;
-    }
-
-    runScript(code, timeoutMs) {
-        this.currentPid = this.currentPid || 0;
-        return this.interpreter.run(code, timeoutMs);
-    }
-
-    killProcess(pid) {
-        const proc = this.processes.get(pid);
-        if (proc) {
-            proc.status = 'stopped';
-            this.processes.delete(pid);
-            this.scheduler.remove(pid);
-            return true;
-        }
-        return false;
-    }
-
-    getProcesses() {
-        return Array.from(this.processes.values());
-    }
-}
+  window.VessieOS = window.VessieOS || {};
+  window.VessieOS.Kernel = kernel;
+  window.VessieOS.kernel = kernel;
+})();

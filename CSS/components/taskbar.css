@@ -1,0 +1,121 @@
+#tb {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--th);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  background: rgba(15, 18, 26, 0.66);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(18px) saturate(1.2);
+  -webkit-backdrop-filter: blur(18px) saturate(1.2);
+  z-index: 1200;
+}
+
+.tb-l,
+.tb-c,
+.tb-r {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tbtn {
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 10px;
+  color: var(--text);
+}
+
+.tb-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 220px;
+  height: 34px;
+  padding: 0 12px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  color: var(--dim);
+  font-size: 0.82rem;
+}
+
+.tb-wins {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tb-win {
+  height: 34px;
+  min-width: 36px;
+  padding: 0 12px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  color: var(--text);
+}
+
+.tb-win.active {
+  background: rgba(96, 165, 250, 0.14);
+  border-color: rgba(96, 165, 250, 0.2);
+}
+
+.tb-sys {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-2);
+  font-size: 0.8rem;
+}
+
+.tb-clk {
+  min-width: 88px;
+  text-align: center;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.tb-clk .t {
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.tb-clk .d {
+  font-size: 0.66rem;
+  color: var(--dim);
+}
+
+/* Linha sob botoes de janelas ABERTAS (foco usa .aw, mais forte). */
+.twb.open::after{content:"";position:absolute;bottom:2px;left:50%;transform:translateX(-50%);width:20px;height:2px;background:rgba(255,255,255,.32);border-radius:2px}
+/* Reordenacao por arrastar. */
+.twb.dragging{opacity:.45}
+.twb.drop-hint{outline:2px dashed rgba(96,165,250,.7);outline-offset:-2px}
+/* Barra nas 4 bordas (posicao via body[data-tbpos]). */
+body[data-tbpos="top"] #tb{top:0;bottom:auto;border-top:none;border-bottom:1px solid rgba(255,255,255,.08)}
+body[data-tbpos="left"] #tb,body[data-tbpos="right"] #tb{flex-direction:column;top:0;bottom:0;width:max(var(--th),60px);height:auto;padding:12px 0}
+body[data-tbpos="left"] #tb{left:0;right:auto;border-top:none;border-right:1px solid rgba(255,255,255,.08)}
+body[data-tbpos="right"] #tb{right:0;left:auto;border-top:none;border-left:1px solid rgba(255,255,255,.08)}
+body[data-tbpos="left"] .tb-l,body[data-tbpos="right"] .tb-l,body[data-tbpos="left"] .tb-c,body[data-tbpos="right"] .tb-c,body[data-tbpos="left"] .tb-r,body[data-tbpos="right"] .tb-r{flex-direction:column;width:100%}
+body[data-tbpos="left"] .tb-c,body[data-tbpos="right"] .tb-c{overflow-y:auto;overflow-x:hidden;flex:1;min-height:0;max-width:none}
+body[data-tbpos="left"] .tb-search span,body[data-tbpos="right"] .tb-search span{display:none}
+body[data-tbpos="left"] .tb-search,body[data-tbpos="right"] .tb-search{min-width:0}
+body[data-tbpos="left"] .tb-clk,body[data-tbpos="right"] .tb-clk{min-width:0}
+/* Menu da barra (botao direito). */
+#tb-menu{position:fixed;z-index:2000;min-width:230px;background:var(--acrylic-strong,rgba(15,18,26,.9));backdrop-filter:blur(34px) saturate(1.8);border:1px solid var(--border-strong,rgba(255,255,255,.1));border-radius:10px;padding:6px;box-shadow:var(--shadow-2,0 24px 60px rgba(0,0,0,.5));color:var(--text)}
+.tb-menu-h{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted,#5b6172);padding:8px 14px 4px}
+.tb-menu-size{padding:2px 14px 8px}
+.tb-menu-size input{width:100%;accent-color:var(--a,#60a5fa)}
+.tb-menu-size input:disabled{opacity:.4}
+
+/* Apps fixados na barra (lançadores, separados das janelas abertas). */
+.tbp{background:rgba(255,255,255,.04);border:1px solid transparent;border-radius:10px;color:var(--text);width:36px;height:36px;display:inline-flex;align-items:center;justify-content:center;font-size:1rem;cursor:pointer;transition:.14s;position:relative;flex-shrink:0}
+.tbp:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.08)}
+.tbp .tb-i{display:flex;align-items:center;justify-content:center}
+.tbp.on::after{content:"";position:absolute;bottom:2px;left:50%;transform:translateX(-50%);width:14px;height:2px;background:rgba(255,255,255,.4);border-radius:2px}
